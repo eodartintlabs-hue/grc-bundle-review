@@ -1,0 +1,648 @@
+rules:
+  # ==============================================================================
+  # AOC-02: PASSWORD HYGIENE (NIST SP 800-53 IA-2)
+  # ==============================================================================
+  - id: grc-aoc02-python-hardcoded-credentials
+    languages: [python]
+    severity: ERROR
+    message: "AOC-02 [NIST SP 800-53 IA-2]: Detected hardcoded credential assignment in Python source code. Use environment variables or a secrets manager."
+    metadata:
+      aoc: "AOC-02: Password Hygiene"
+      nist_control: "IA-2: Identification and Authentication"
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: password = "..."
+          - pattern: passwd = "..."
+          - pattern: secret_key = "..."
+          - pattern: api_key = "..."
+          - pattern: auth_token = "..."
+      - pattern-not: password = ""
+      - pattern-not: passwd = ""
+      - pattern-not: secret_key = ""
+      - pattern-not: api_key = ""
+      - pattern-not: auth_token = ""
+
+  - id: grc-aoc02-go-hardcoded-credentials
+    languages: [go]
+    severity: ERROR
+    message: "AOC-02 [NIST SP 800-53 IA-2]: Detected hardcoded credential assignment in Go source code. Store credentials securely outside the repository."
+    metadata:
+      aoc: "AOC-02: Password Hygiene"
+      nist_control: "IA-2: Identification and Authentication"
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: var password string = "..."
+          - pattern: password := "..."
+          - pattern: var passwd string = "..."
+          - pattern: passwd := "..."
+          - pattern: apiKey := "..."
+          - pattern: secretKey := "..."
+      - pattern-not: password := ""
+      - pattern-not: passwd := ""
+      - pattern-not: apiKey := ""
+      - pattern-not: secretKey := ""
+
+  - id: grc-aoc02-java-hardcoded-credentials
+    languages: [java]
+    severity: ERROR
+    message: "AOC-02 [NIST SP 800-53 IA-2]: Detected hardcoded password literal in Java source code. Inject credentials via external configuration or vault."
+    metadata:
+      aoc: "AOC-02: Password Hygiene"
+      nist_control: "IA-2: Identification and Authentication"
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: String password = "...";
+          - pattern: String passwd = "...";
+          - pattern: String apiKey = "...";
+          - pattern: String secretKey = "...";
+      - pattern-not: String password = "";
+      - pattern-not: String passwd = "";
+      - pattern-not: String apiKey = "";
+      - pattern-not: String secretKey = "";
+
+  - id: grc-aoc02-javascript-hardcoded-credentials
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "AOC-02 [NIST SP 800-53 IA-2]: Detected hardcoded credentials in JavaScript/TypeScript code. Use process.env or a secure key store."
+    metadata:
+      aoc: "AOC-02: Password Hygiene"
+      nist_control: "IA-2: Identification and Authentication"
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: const password = "...";
+          - pattern: let password = "...";
+          - pattern: var password = "...";
+          - pattern: const apiKey = "...";
+          - pattern: let apiKey = "...";
+          - pattern: const secretKey = "...";
+          - pattern: let secretKey = "...";
+          - pattern: "({ password: '...' })"
+          - pattern: "({ apiKey: '...' })"
+          - pattern: "({ secretKey: '...' })"
+      - pattern-not: const password = "";
+      - pattern-not: let password = "";
+      - pattern-not: var password = "";
+      - pattern-not: const apiKey = "";
+      - pattern-not: const secretKey = "";
+
+  # ==============================================================================
+  # AOC-03: WEAK ENCRYPTION CHECK (NIST SP 800-53 SI-16)
+  # ==============================================================================
+  - id: grc-aoc03-python-weak-hashing
+    languages: [python]
+    severity: WARNING
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Insecure cryptographic hash function (MD5/SHA-1) detected in Python. Use SHA-256 or SHA-3 for integrity."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-328: Use of Weak Hash"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: hashlib.md5(...)
+      - pattern: hashlib.sha1(...)
+      - pattern: Crypto.Hash.MD5.new(...)
+      - pattern: Crypto.Hash.SHA.new(...)
+
+  - id: grc-aoc03-python-weak-ciphers
+    languages: [python]
+    severity: ERROR
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Insecure cipher (DES, 3DES, RC4, or Blowfish) detected in Python. Upgrade to AES-GCM with >= 256-bit keys."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: Crypto.Cipher.DES.new(...)
+      - pattern: Crypto.Cipher.ARC4.new(...)
+      - pattern: Crypto.Cipher.Blowfish.new(...)
+      - pattern: cryptography.hazmat.primitives.ciphers.algorithms.ARC4(...)
+      - pattern: cryptography.hazmat.primitives.ciphers.algorithms.Blowfish(...)
+
+  - id: grc-aoc03-go-weak-hashing
+    languages: [go]
+    severity: WARNING
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Insecure MD5/SHA-1 hash algorithm detected in Go. Use crypto/sha256 or crypto/sha512."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-328: Use of Weak Hash"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: md5.New()
+      - pattern: md5.Sum(...)
+      - pattern: sha1.New()
+      - pattern: sha1.Sum(...)
+
+  - id: grc-aoc03-go-weak-ciphers
+    languages: [go]
+    severity: ERROR
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Deprecated cipher (DES or RC4) instantiated in Go. Migrate to AES-GCM (crypto/aes and crypto/cipher)."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: des.NewCipher(...)
+      - pattern: des.NewTripleDESCipher(...)
+      - pattern: rc4.NewCipher(...)
+
+  - id: grc-aoc03-java-weak-hashing
+    languages: [java]
+    severity: WARNING
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Weak digest algorithm (MD5 or SHA-1) in Java. Upgrade to SHA-256 or SHA-512."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-328: Use of Weak Hash"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: MessageDigest.getInstance("MD5")
+      - pattern: MessageDigest.getInstance("SHA-1")
+      - pattern: MessageDigest.getInstance("SHA1")
+      - pattern: DigestUtils.md5Hex(...)
+      - pattern: DigestUtils.sha1Hex(...)
+
+  - id: grc-aoc03-java-weak-ciphers
+    languages: [java]
+    severity: ERROR
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Insecure cipher transformation (DES, RC4, or ECB mode) detected in Java. Use AES/GCM/NoPadding."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: Cipher.getInstance("DES")
+      - pattern: Cipher.getInstance("DES/...")
+      - pattern: Cipher.getInstance("DESede/...")
+      - pattern: Cipher.getInstance("RC4")
+      - pattern: Cipher.getInstance("ARCFOUR")
+      - pattern: Cipher.getInstance("AES/ECB/...")
+
+  - id: grc-aoc03-javascript-weak-hashing
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Weak digest algorithm (MD5/SHA-1) in Node.js crypto. Use sha256 or sha512."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-328: Use of Weak Hash"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: crypto.createHash("md5")
+      - pattern: crypto.createHash("sha1")
+      - pattern: crypto.createHash('md5')
+      - pattern: crypto.createHash('sha1')
+
+  - id: grc-aoc03-javascript-weak-ciphers
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "AOC-03 [NIST SP 800-53 SI-16]: Legacy cipher or deprecated createCipher API detected in JavaScript. Use crypto.createCipheriv with aes-256-gcm."
+    metadata:
+      aoc: "AOC-03: Weak Encryption Check"
+      nist_control: "SI-16: Cryptographic Protection"
+      cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: crypto.createCipher(...)
+      - pattern: crypto.createCipheriv("des", ...)
+      - pattern: crypto.createCipheriv("des-cbc", ...)
+      - pattern: crypto.createCipheriv("rc4", ...)
+
+  # ==============================================================================
+  # AOC-04: COMMAND INJECTION (NIST SP 800-53 SI-4)
+  # ==============================================================================
+  - id: grc-aoc04-python-command-injection
+    languages: [python]
+    severity: ERROR
+    message: "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution via shell invocation in Python. Use subprocess.run with arguments list and shell=False."
+    metadata:
+      aoc: "AOC-04: Command Injection"
+      nist_control: "SI-4: Information System Monitoring"
+      cwe: "CWE-78: Improper Neutralization of Special Elements used in an OS Command"
+      owasp: "A03:2021 - Injection"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: os.system($X)
+          - pattern: os.popen($X)
+          - pattern: subprocess.Popen($X, ..., shell=True, ...)
+          - pattern: subprocess.call($X, ..., shell=True, ...)
+          - pattern: subprocess.run($X, ..., shell=True, ...)
+          - pattern: subprocess.check_output($X, ..., shell=True, ...)
+      - pattern-not: os.system("...")
+      - pattern-not: os.popen("...")
+      - pattern-not: subprocess.Popen("...", ..., shell=True, ...)
+      - pattern-not: subprocess.call("...", ..., shell=True, ...)
+      - pattern-not: subprocess.run("...", ..., shell=True, ...)
+      - pattern-not: subprocess.check_output("...", ..., shell=True, ...)
+
+  - id: grc-aoc04-go-command-injection
+    languages: [go]
+    severity: ERROR
+    message: "AOC-04 [NIST SP 800-53 SI-4]: Arbitrary shell execution invocation detected in Go. Execute binaries directly with separate arguments."
+    metadata:
+      aoc: "AOC-04: Command Injection"
+      nist_control: "SI-4: Information System Monitoring"
+      cwe: "CWE-78: OS Command Injection"
+      owasp: "A03:2021 - Injection"
+      confidence: MEDIUM
+    patterns:
+      - pattern-either:
+          - pattern: exec.Command("sh", "-c", $CMD, ...)
+          - pattern: exec.Command("bash", "-c", $CMD, ...)
+          - pattern: exec.CommandContext($CTX, "sh", "-c", $CMD, ...)
+          - pattern: exec.CommandContext($CTX, "bash", "-c", $CMD, ...)
+      - pattern-not: exec.Command("sh", "-c", "...", ...)
+      - pattern-not: exec.Command("bash", "-c", "...", ...)
+      - pattern-not: exec.CommandContext($CTX, "sh", "-c", "...", ...)
+      - pattern-not: exec.CommandContext($CTX, "bash", "-c", "...", ...)
+
+  - id: grc-aoc04-java-command-injection
+    languages: [java]
+    severity: ERROR
+    message: "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution in Java via Runtime or ProcessBuilder. Sanitize input and pass arguments as discrete array elements."
+    metadata:
+      aoc: "AOC-04: Command Injection"
+      nist_control: "SI-4: Information System Monitoring"
+      cwe: "CWE-78: OS Command Injection"
+      owasp: "A03:2021 - Injection"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: Runtime.getRuntime().exec($CMD)
+          - pattern: Runtime.getRuntime().exec($CMD, ...)
+          - pattern: new ProcessBuilder($CMD)
+          - pattern: new ProcessBuilder($CMD, ...)
+      - pattern-not: Runtime.getRuntime().exec("...")
+      - pattern-not: new ProcessBuilder("...")
+
+  - id: grc-aoc04-javascript-command-injection
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "AOC-04 [NIST SP 800-53 SI-4]: Potential command injection in Node.js child_process.exec. Prefer child_process.execFile with parameter arrays."
+    metadata:
+      aoc: "AOC-04: Command Injection"
+      nist_control: "SI-4: Information System Monitoring"
+      cwe: "CWE-78: OS Command Injection"
+      owasp: "A03:2021 - Injection"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: child_process.exec($CMD, ...)
+          - pattern: child_process.execSync($CMD, ...)
+      - pattern-not: child_process.exec("...", ...)
+      - pattern-not: child_process.execSync("...", ...)
+
+  # ==============================================================================
+  # AOC-05: IMPROPER TLS (NIST SP 800-53 SI-17)
+  # ==============================================================================
+  - id: grc-aoc05-python-disabled-tls-verification
+    languages: [python]
+    severity: ERROR
+    message: "AOC-05 [NIST SP 800-53 SI-17]: TLS certificate verification is disabled (verify=False or unverified context). Enforce valid certificate verification."
+    metadata:
+      aoc: "AOC-05: Improper TLS"
+      nist_control: "SI-17: Fail in Known State"
+      cwe: "CWE-295: Improper Certificate Validation"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: requests.$METHOD(..., verify=False, ...)
+      - pattern: ssl._create_unverified_context(...)
+      - pattern: urllib3.disable_warnings(...)
+
+  - id: grc-aoc05-go-insecure-tls
+    languages: [go]
+    severity: ERROR
+    message: "AOC-05 [NIST SP 800-53 SI-17]: InsecureSkipVerify is set to true or deprecated TLS version specified in Go tls.Config. Enforce certificate validation and TLS >= 1.2."
+    metadata:
+      aoc: "AOC-05: Improper TLS"
+      nist_control: "SI-17: Fail in Known State"
+      cwe: "CWE-295: Improper Certificate Validation"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: "tls.Config{..., InsecureSkipVerify: true, ...}"
+      - pattern: "tls.Config{..., MinVersion: tls.VersionTLS10, ...}"
+      - pattern: "tls.Config{..., MinVersion: tls.VersionTLS11, ...}"
+
+  - id: grc-aoc05-java-insecure-trust-manager
+    languages: [java]
+    severity: ERROR
+    message: "AOC-05 [NIST SP 800-53 SI-17]: Insecure TrustManager or HostnameVerifier accepting all certificates detected in Java. Validate certificates with a trusted CA."
+    metadata:
+      aoc: "AOC-05: Improper TLS"
+      nist_control: "SI-17: Fail in Known State"
+      cwe: "CWE-295: Improper Certificate Validation"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: |
+          class $TM implements X509TrustManager {
+            ...
+            public void checkServerTrusted(X509Certificate[] $CERTS, String $AUTH) {}
+            ...
+          }
+      - pattern: HttpsURLConnection.setDefaultHostnameVerifier(($H, $S) -> true)
+      - pattern: |
+          new HostnameVerifier() {
+            public boolean verify(String $H, SSLSession $S) { return true; }
+          }
+
+  - id: grc-aoc05-javascript-disabled-tls-check
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "AOC-05 [NIST SP 800-53 SI-17]: TLS certificate validation disabled via rejectUnauthorized: false or NODE_TLS_REJECT_UNAUTHORIZED='0'."
+    metadata:
+      aoc: "AOC-05: Improper TLS"
+      nist_control: "SI-17: Fail in Known State"
+      cwe: "CWE-295: Improper Certificate Validation"
+      owasp: "A02:2021 - Cryptographic Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+      - pattern: process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+      - pattern: "({ ..., rejectUnauthorized: false, ... })"
+
+  # ==============================================================================
+  # AOC-06: SECRETS MANAGEMENT (NIST SP 800-53 SC-12)
+  # ==============================================================================
+  - id: grc-aoc06-generic-embedded-private-keys
+    languages: [python, go, java, javascript, typescript]
+    severity: ERROR
+    message: "AOC-06 [NIST SP 800-53 SC-12]: Embedded cryptographic private key found in source code. Do not commit private keys to version control."
+    metadata:
+      aoc: "AOC-06: Secrets Management"
+      nist_control: "SC-12: Cryptographic Key Establishment and Management"
+      cwe: "CWE-312: Cleartext Storage of Sensitive Information"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      confidence: HIGH
+    pattern-regex: "-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----"
+
+  # ==============================================================================
+  # AOC-09: CRYPTO DEPENDENCIES ON UNSUPPORTED LIBRARIES (NIST SP 800-53 SI-7)
+  # ==============================================================================
+  - id: grc-aoc09-python-deprecated-crypto-module
+    languages: [python]
+    severity: ERROR
+    message: "AOC-09 [NIST SP 800-53 SI-7]: Import of deprecated or vulnerable crypto library (md5, sha, pycrypto). Migrate to standard hashlib or pyca/cryptography."
+    metadata:
+      aoc: "AOC-09: Crypto Dependencies on Unsupported Libraries"
+      nist_control: "SI-7: Software, Firmware, and Information Integrity"
+      cwe: "CWE-1104: Use of Unmaintained Third Party Components"
+      confidence: HIGH
+    pattern-either:
+      - pattern: import md5
+      - pattern: import sha
+      - pattern: import Crypto.Cipher
+      - pattern: from Crypto.Cipher import ...
+
+  - id: grc-aoc09-go-deprecated-crypto-module
+    languages: [go]
+    severity: WARNING
+    message: "AOC-09 [NIST SP 800-53 SI-7]: Deprecated crypto algorithm package imported in Go. Migrate to standard crypto/sha256 or crypto/aes."
+    metadata:
+      aoc: "AOC-09: Crypto Dependencies on Unsupported Libraries"
+      nist_control: "SI-7: Software, Firmware, and Information Integrity"
+      cwe: "CWE-1104: Use of Unmaintained Third Party Components"
+      confidence: HIGH
+    pattern-either:
+      - pattern: import "golang.org/x/crypto/ripemd160"
+      - pattern: import "crypto/des"
+      - pattern: import "crypto/rc4"
+
+  - id: grc-aoc09-java-deprecated-crypto-provider
+    languages: [java]
+    severity: WARNING
+    message: "AOC-09 [NIST SP 800-53 SI-7]: Reference to proprietary or deprecated Sun/Oracle internal security provider. Use standard JCA/JCE providers."
+    metadata:
+      aoc: "AOC-09: Crypto Dependencies on Unsupported Libraries"
+      nist_control: "SI-7: Software, Firmware, and Information Integrity"
+      cwe: "CWE-1104: Use of Unmaintained Third Party Components"
+      confidence: HIGH
+    pattern-either:
+      - pattern: import sun.security.provider.$X;
+      - pattern: import sun.security.rsa.$X;
+
+  - id: grc-aoc09-javascript-deprecated-crypto-package
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "AOC-09 [NIST SP 800-53 SI-7]: Import of legacy, unmaintained crypto-js legacy algorithm packages. Migrate to Web Crypto API or Node.js native crypto."
+    metadata:
+      aoc: "AOC-09: Crypto Dependencies on Unsupported Libraries"
+      nist_control: "SI-7: Software, Firmware, and Information Integrity"
+      cwe: "CWE-1104: Use of Unmaintained Third Party Components"
+      confidence: HIGH
+    pattern-either:
+      - pattern: require("crypto-js/md5")
+      - pattern: require("crypto-js/rc4")
+      - pattern: require("crypto-js/sha1")
+      - pattern: import ... from "crypto-js/md5"
+      - pattern: import ... from "crypto-js/rc4"
+
+  # ==============================================================================
+  # AOC-10: CRITICAL SEVERITY FINDINGS (NIST SP 800-53 RA-5)
+  # ==============================================================================
+  - id: grc-aoc10-python-unsafe-deserialization
+    languages: [python]
+    severity: ERROR
+    message: "AOC-10 [NIST SP 800-53 RA-5]: Unsafe deserialization detected (pickle or unsafe yaml). Untrusted input leads to arbitrary code execution."
+    metadata:
+      aoc: "AOC-10: CRITICAL Severity Findings"
+      nist_control: "RA-5: Vulnerability Monitoring and Scanning"
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      owasp: "A08:2021 - Software and Data Integrity Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: pickle.loads(...)
+      - pattern: pickle.load(...)
+      - pattern: _pickle.loads(...)
+      - pattern: _pickle.load(...)
+      - pattern: yaml.load($X, Loader=yaml.Loader)
+      - pattern: yaml.unsafe_load(...)
+
+  - id: grc-aoc10-java-unsafe-deserialization
+    languages: [java]
+    severity: ERROR
+    message: "AOC-10 [NIST SP 800-53 RA-5]: Dangerous Java deserialization via ObjectInputStream. Untrusted streams allow remote code execution."
+    metadata:
+      aoc: "AOC-10: CRITICAL Severity Findings"
+      nist_control: "RA-5: Vulnerability Monitoring and Scanning"
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      owasp: "A08:2021 - Software and Data Integrity Failures"
+      confidence: HIGH
+    pattern-either:
+      - pattern: "($OBJ : ObjectInputStream).readObject(...)"
+      - pattern: "($OBJ : XMLDecoder).readObject(...)"
+
+  - id: grc-aoc10-javascript-dangerous-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "AOC-10 [NIST SP 800-53 RA-5]: Dynamic code execution via eval() or new Function(). May lead to remote code execution (RCE)."
+    metadata:
+      aoc: "AOC-10: CRITICAL Severity Findings"
+      nist_control: "RA-5: Vulnerability Monitoring and Scanning"
+      cwe: "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code"
+      owasp: "A03:2021 - Injection"
+      confidence: HIGH
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+
+  - id: grc-aoc10-go-unsafe-pointer
+    languages: [go]
+    severity: ERROR
+    message: "AOC-10 [NIST SP 800-53 RA-5]: Use of unsafe.Pointer for arbitrary memory casting. Bypasses Go type safety and can result in memory corruption or arbitrary execution."
+    metadata:
+      aoc: "AOC-10: CRITICAL Severity Findings"
+      nist_control: "RA-5: Vulnerability Monitoring and Scanning"
+      cwe: "CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer"
+      confidence: MEDIUM
+    pattern: unsafe.Pointer($X)
+
+  # ==============================================================================
+  # AOC-11: VIOLATION OF CATEGORY I STIGS (NIST SP 800-53 SI-2)
+  # ==============================================================================
+  - id: grc-aoc11-python-debug-exposed
+    languages: [python]
+    severity: ERROR
+    message: "AOC-11 [NIST SP 800-53 SI-2 / DISA STIG CAT I]: Framework debug mode bound to external interface (0.0.0.0). Debug execution must be disabled in production."
+    metadata:
+      aoc: "AOC-11: Violation of Category I STIGs"
+      nist_control: "SI-2: Flaw Remediation"
+      stig_severity: "CAT I"
+      cwe: "CWE-489: Active Debug Code"
+      confidence: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: $APP.run(..., host="0.0.0.0", ..., debug=True, ...)
+          - pattern: $APP.run(..., debug=True, ..., host="0.0.0.0", ...)
+
+  - id: grc-aoc11-go-plaintext-http-listener
+    languages: [go]
+    severity: ERROR
+    message: "AOC-11 [NIST SP 800-53 SI-2 / DISA STIG CAT I]: Unencrypted HTTP listener detected via http.ListenAndServe. Enforce TLS transmission using http.ListenAndServeTLS."
+    metadata:
+      aoc: "AOC-11: Violation of Category I STIGs"
+      nist_control: "SI-2: Flaw Remediation"
+      stig_severity: "CAT I"
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      confidence: HIGH
+    pattern: http.ListenAndServe($ADDR, $HANDLER)
+
+  - id: grc-aoc11-java-xxe-processing
+    languages: [java]
+    severity: ERROR
+    message: "AOC-11 [NIST SP 800-53 SI-2 / DISA STIG CAT I]: DocumentBuilderFactory instantiated without disabling external entity declarations (XXE). Disallow doctype declarations."
+    metadata:
+      aoc: "AOC-11: Violation of Category I STIGs"
+      nist_control: "SI-2: Flaw Remediation"
+      stig_severity: "CAT I"
+      cwe: "CWE-611: Improper Restriction of XML External Entity Reference"
+      owasp: "A05:2021 - Security Misconfiguration"
+      confidence: MEDIUM
+    patterns:
+      - pattern: DocumentBuilderFactory $DBF = DocumentBuilderFactory.newInstance();
+      - pattern-not-inside: |
+          ...
+          $DBF.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+          ...
+
+  - id: grc-aoc11-javascript-insecure-cookie-attributes
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "AOC-11 [NIST SP 800-53 SI-2 / DISA STIG CAT I]: Insecure session cookie attributes (secure: false or httpOnly: false). Cookies transmitting sensitive tokens must require HTTPS and HttpOnly."
+    metadata:
+      aoc: "AOC-11: Violation of Category I STIGs"
+      nist_control: "SI-2: Flaw Remediation"
+      stig_severity: "CAT I"
+      cwe: "CWE-614: Sensitive Cookie in HTTPS Session Without Secure Attribute"
+      confidence: HIGH
+    pattern-either:
+      - pattern: "({ cookie: { ..., secure: false, ... } })"
+      - pattern: "({ cookie: { ..., httpOnly: false, ... } })"
+      - pattern: "res.cookie($NAME, $VAL, { ..., secure: false, ... })"
+      - pattern: "res.cookie($NAME, $VAL, { ..., httpOnly: false, ... })"
+
+  # ==============================================================================
+  # AOC-140: ORGANIZATION SPECIFIC CONTROLS
+  # ==============================================================================
+  - id: grc-aoc140-python-stdout-credential-leak
+    languages: [python]
+    severity: WARNING
+    message: "AOC-140 [Organization-specific]: Potential cleartext credential or secret exposure to stdout or application logs. Sanitize logs to prevent credential leakage."
+    metadata:
+      aoc: "AOC-140: Organization Specific Controls"
+      nist_control: "Organization-specific"
+      cwe: "CWE-532: Insertion of Sensitive Information into Log File"
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: print(..., password, ...)
+      - pattern: print(..., secret, ...)
+      - pattern: print(..., auth_token, ...)
+      - pattern: logging.$LVL(..., password, ...)
+      - pattern: logging.$LVL(..., auth_token, ...)
+
+  - id: grc-aoc140-go-stdout-credential-leak
+    languages: [go]
+    severity: WARNING
+    message: "AOC-140 [Organization-specific]: Cleartext credential or password printed via fmt or log package in Go."
+    metadata:
+      aoc: "AOC-140: Organization Specific Controls"
+      nist_control: "Organization-specific"
+      cwe: "CWE-532: Insertion of Sensitive Information into Log File"
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: fmt.Println(..., password, ...)
+      - pattern: fmt.Printf($FMT, ..., password, ...)
+      - pattern: log.Println(..., password, ...)
+
+  - id: grc-aoc140-java-stdout-credential-leak
+    languages: [java]
+    severity: WARNING
+    message: "AOC-140 [Organization-specific]: Sensitive credential written to standard out or standard error in Java."
+    metadata:
+      aoc: "AOC-140: Organization Specific Controls"
+      nist_control: "Organization-specific"
+      cwe: "CWE-532: Insertion of Sensitive Information into Log File"
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: System.out.println(..., password, ...)
+      - pattern: System.err.println(..., password, ...)
+
+  - id: grc-aoc140-javascript-console-credential-leak
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "AOC-140 [Organization-specific]: Potential credential or secret logged to console in JavaScript. Strip sensitive tokens before logging."
+    metadata:
+      aoc: "AOC-140: Organization Specific Controls"
+      nist_control: "Organization-specific"
+      cwe: "CWE-532: Insertion of Sensitive Information into Log File"
+      confidence: MEDIUM
+    pattern-either:
+      - pattern: console.log(..., password, ...)
+      - pattern: console.info(..., token, ...)
+      - pattern: console.error(..., apiKey, ...)

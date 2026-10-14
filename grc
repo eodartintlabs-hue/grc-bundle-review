@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# grc - CLI wrapper for the GRC Bundle Review Pipeline
+# Allows executing: `grc bundle restore ...` directly as documented in the review workflow.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ "$#" -eq 0 ]]; then
+    echo "=========================================================="
+    echo "  GRC Bundle Review Pipeline CLI"
+    echo "=========================================================="
+    echo "Usage: grc <command> [arguments]"
+    echo ""
+    echo "Available Commands:"
+    echo "  bundle restore <file.bundle>   Extract & verify bundle into ephemeral workspace"
+    echo "  bundle verify  <file.bundle>   Cryptographic (SHA-256) and Git object validation"
+    echo "  bundle clean   --workspace <w> Teardown ephemeral workspace & wipe bundle"
+    echo "  sbom           --sbom <file>   Run DISA STIG / SRG SBOM analyzer"
+    echo "=========================================================="
+    exit 1
+fi
+
+SUBCOMMAND="$1"
+shift
+
+case "${SUBCOMMAND}" in
+    bundle)
+        python3 "${SCRIPT_DIR}/grc_bundle.py" "$@"
+        ;;
+    sbom)
+        python3 "${SCRIPT_DIR}/sbom_analyzer.py" "$@"
+        ;;
+    *)
+        echo "[ERROR] Unknown GRC pipeline command: ${SUBCOMMAND}"
+        echo "Run 'grc' without arguments to see available subcommands."
+        exit 1
+        ;;
+esac
