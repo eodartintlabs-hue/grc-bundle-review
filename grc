@@ -17,6 +17,7 @@ if [[ "$#" -eq 0 ]]; then
     echo "  bundle verify  <file.bundle>   Cryptographic (SHA-256) and Git object validation"
     echo "  bundle clean   --workspace <w> Teardown ephemeral workspace & wipe bundle"
     echo "  sbom           --sbom <file>   Run DISA STIG / SRG SBOM analyzer"
+    echo "  crypto         -w <workspace>  Scan cryptographic libraries & EOL versions"
     echo "=========================================================="
     exit 1
 fi
@@ -26,10 +27,13 @@ shift
 
 case "${SUBCOMMAND}" in
     bundle)
-        python3 "${SCRIPT_DIR}/grc_bundle.py" "$@"
+        python3 "${SCRIPT_DIR}/scripts/grc_bundle.py" "$@"
         ;;
     sbom)
-        python3 "${SCRIPT_DIR}/sbom_analyzer.py" "$@"
+        python3 "${SCRIPT_DIR}/scripts/sbom_analyzer.py" "$@"
+        ;;
+    crypto)
+        python3 "${SCRIPT_DIR}/scripts/crypto_lib_scan.py" "$@"
         ;;
     *)
         echo "[ERROR] Unknown GRC pipeline command: ${SUBCOMMAND}"

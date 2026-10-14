@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "catalog_metadata": {
+    "title": "Cryptographic Library Policy & EOL Database",
+    "version": "1.0.0",
+    "last_updated": "2026-10-14",
+    "target_frameworks": [
+      "DISA STIG Application Security and Development V5R1",
+      "NIST SP 800-53 Rev. 5 (SI-7, SC-12, SC-13, IA-7)",
+      "FedRAMP Cryptographic Module Standards"
+    ],
+    "description": "Authoritative policy baseline of cryptographic libraries, minimum supported versions, EOL schedules, and FIPS validation baselines for GRC bundle reviews."
+  },
+  "rules": {
+    "openssl": {
+      "display_name": "OpenSSL Cryptographic Library",
+      "ecosystems": ["system", "c_cpp", "deb", "rpm", "alpine"],
+      "patterns": ["^openssl$", "^libssl.*", "^libcrypto.*"],
+      "min_supported_version": "3.0.0",
+      "status": "ACTIVE",
+      "fips_capable": true,
+      "eol_versions": [
+        { "version": "1.1.1", "eol_date": "2023-09-11", "severity": "CRITICAL" },
+        { "version": "1.1.0", "eol_date": "2019-09-11", "severity": "CRITICAL" },
+        { "version": "1.0.2", "eol_date": "2019-12-31", "severity": "CRITICAL" },
+        { "version": "0.9.8", "eol_date": "2015-12-31", "severity": "CRITICAL" }
+      ],
+      "remediation": "Upgrade OpenSSL to supported 3.0.x LTS or 3.2.x+ branch. Ensure FIPS 140 provider is configured if required.",
+      "nist_controls": ["SI-7", "SC-12", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    },
+    "pycrypto": {
+      "display_name": "Python PyCrypto",
+      "ecosystems": ["pypi", "python"],
+      "patterns": ["^pycrypto$"],
+      "status": "DEPRECATED_UNMAINTAINED",
+      "severity": "CRITICAL",
+      "description": "PyCrypto has been unmaintained since 2013 and contains unpatched vulnerabilities.",
+      "remediation": "Migrate all cryptographic operations to 'cryptography' (pyca/cryptography) or 'pycryptodome'.",
+      "nist_controls": ["SI-7", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    },
+    "cryptography": {
+      "display_name": "PyCA Cryptography",
+      "ecosystems": ["pypi", "python"],
+      "patterns": ["^cryptography$"],
+      "min_supported_version": "41.0.0",
+      "status": "APPROVED",
+      "fips_capable": true,
+      "remediation": "Ensure version >= 41.0.0 to incorporate latest memory-safety improvements (Rust bindings).",
+      "nist_controls": ["SI-7", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    },
+    "bouncycastle": {
+      "display_name": "Bouncy Castle Crypto Provider",
+      "ecosystems": ["maven", "gradle", "java"],
+      "patterns": ["^bcprov-.*", "^bcpkix-.*", "^bcutil-.*", "^bouncycastle.*"],
+      "min_supported_version": "1.70",
+      "status": "ACTIVE",
+      "fips_capable": true,
+      "eol_versions": [
+        { "version": "<1.70", "eol_date": "2021-11-01", "severity": "HIGH" }
+      ],
+      "remediation": "Upgrade org.bouncycastle dependencies to >= 1.70 (or bc-fips 1.0.2+) to mitigate cryptographic side-channels.",
+      "nist_controls": ["SI-7", "SC-12", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    },
+    "crypto-js": {
+      "display_name": "Node.js crypto-js",
+      "ecosystems": ["npm", "yarn", "javascript", "typescript"],
+      "patterns": ["^crypto-js$"],
+      "status": "UNRECOMMENDED",
+      "severity": "MEDIUM",
+      "description": "crypto-js is a pure JavaScript library that lacks constant-time security and hardware acceleration.",
+      "remediation": "Migrate to native Node.js 'crypto' module or Web Cryptography API (SubtleCrypto).",
+      "nist_controls": ["SI-7", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    },
+    "node-forge": {
+      "display_name": "Node-Forge Cryptographic Provider",
+      "ecosystems": ["npm", "yarn", "javascript", "typescript"],
+      "patterns": ["^node-forge$"],
+      "min_supported_version": "1.3.1",
+      "status": "ACTIVE",
+      "remediation": "Ensure version >= 1.3.1 to avoid known ASN.1 parser and signature verification bypass vulnerabilities.",
+      "nist_controls": ["SI-7", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    },
+    "golang-x-crypto": {
+      "display_name": "Go Supplementary Cryptography Libraries",
+      "ecosystems": ["golang", "go"],
+      "patterns": ["^golang\\.org/x/crypto.*"],
+      "status": "APPROVED",
+      "description": "Go supplementary crypto packages. Deprecated subpackages (e.g. ripemd160, salsa20) are flagged individually.",
+      "remediation": "Review specific subpackage usage. Ensure standard crypto/aes and crypto/cipher are preferred.",
+      "nist_controls": ["SI-7", "SC-13"],
+      "aoc": "AOC-09: Crypto Dependencies on Unsupported Libraries"
+    }
+  }
+}
