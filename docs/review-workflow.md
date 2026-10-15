@@ -5,7 +5,7 @@
 ### Main Build Pipeline
 1. GitHub Release bundle is created with a tag (e.g., v1.0.0).
 2. Bundle is extracted into permanent storage for ingestion.
-3. Bundle is retrieved by customer.
+3. Bundle is retrieved by ingestor.
 
 ### GRC Bundle Review Process
 
