@@ -50,6 +50,7 @@ A specialized policy configuration containing **48 rules** to identify security 
 * **Weak Encryption Check**: Detect legacy ciphers (e.g., DES, RC4, MD5, SHA-1).
 * **Command Injection**: Detect unsanitized runtime shell execution vectors.
 * **Improper TLS**: Identify deprecated protocols (TLS 1.0/1.1) and disabled certificate checks.
+* **Lack of FIPS Mode**: Detect unvalidated cryptographic modules and missing FIPS mode flags.
 * **Custom AOCs**: Organization-specific security checks and guardrails.
 
 ### 3.2 Python Utilities & Git Integration

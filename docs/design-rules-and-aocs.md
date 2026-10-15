@@ -23,6 +23,7 @@
 | **09** | **Crypto Dependencies on Unsupported Libraries** | Identify end-of-life and unsupported libraries found in the application dependencies (e.g. OpenSSL 1.1.1).  | NIST SP 800-53-SI-7 |
 | **10** | **CRITICAL Severity Findings** | Critical vulnerabilities identified by automated tools that pose an immediate risk to the system. | NIST SP 800-53-RA-5 |
 | **11** | **Violation of Category I STIGs** | Detect configurations that violate Category I STIG requirements. Category I STIGs are considered critical and must be remediated immediately. | NIST SP 800-53-SI-2 |
+| **12** | **Lack of FIPS Mode** | Detect absence of FIPS mode enforcement flags, disabled kernel FIPS parameters, unvalidated cryptographic modules, or runtime configurations lacking FIPS 140-2/3 compliance. | NIST SP 800-53-SC-13 |
 | **140** | **Organization Specific Controls** | Custom organization-specific security checks and guardrails. These rules are not standardized and may vary depending on the organization's specific security requirements and compliance obligations. | Organization-specific |
 
 

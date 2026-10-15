@@ -24,6 +24,7 @@ flowchart LR
 ## Core Capabilities
 
 * **Cryptographic Provenance**: Enforces SHA-256 verification and `git bundle verify` before extraction, emitting immutable `bundle_provenance.json` records.
+* **EBS Snapshot Cold-Mount Engine**: Audits Amazon Machine Images (AMIs) out-of-band by cold-mounting root EBS snapshots read-only (`ro,noload,noexec,nosuid`), guaranteeing zero untrusted code execution and zero state mutation (`ami_provenance.json`).
 * **37-Rule Semgrep Policy Engine**: Scans Go, Java, Python, and JavaScript against **AOC 02–140** (NIST IA-2, SI-4, SI-16, SI-17, RA-5).
 * **Cryptographic Provider & EOL Scanner**: Statically audits dependencies against [`crypto_catalog.json`](rules/crypto_catalog.json) to flag unsupported/EOL libraries like OpenSSL 1.1.1 and PyCrypto (**AOC 09**).
 * **DISA STIG SBOM Applicability Engine**: Parses CycloneDX and SPDX SBOMs to generate STIG & SRG compliance matrices (**AOC 11**).
@@ -33,7 +34,9 @@ flowchart LR
 
 ## Quickstart
 
-Use the root CLI wrapper `./grc` to manage the complete bundle review lifecycle:
+Use the root CLI wrapper `./grc` to manage both Git release bundle and AMI review lifecycles:
+
+### Git Bundle Review Workflow
 
 ```bash
 # 1. Verify bundle cryptographic integrity
@@ -53,6 +56,25 @@ semgrep scan --config="rules/custom-baseline-ruleset.yaml" --json -o ./ephemeral
 
 # 6. Tear down ephemeral workspace post-review
 ./grc bundle clean --workspace ./ephemeral_workspace --delete-bundle release-v1.0.0.bundle
+```
+
+### AMI Review Workflow (EBS Snapshot Cold-Mount)
+
+```bash
+# 1. Verify AMI metadata, KMS encryption & root snapshot integrity
+./grc ami verify ami-0123456789abcdef0 --region us-east-1
+
+# 2. Cold-mount AMI snapshot into ephemeral read-only workspace
+./grc ami restore ami-0123456789abcdef0 --workspace ./ephemeral_ami_workspace --region us-east-1
+
+# 3. Scan cryptographic libraries on the cold-mounted rootfs
+./grc crypto --workspace ./ephemeral_ami_workspace/mnt --format json -o ./ephemeral_ami_workspace/crypto_findings.json
+
+# 4. Generate DISA STIG OS & package applicability matrix from Syft SBOM
+./grc sbom --sbom ./ephemeral_ami_workspace/ami_sbom.cdx.json --format markdown -o ./ephemeral_ami_workspace/stig_matrix.md
+
+# 5. Tear down ephemeral volume and audit mount
+./grc ami clean --workspace ./ephemeral_ami_workspace --region us-east-1
 ```
 
 ---
@@ -75,8 +97,9 @@ grc-bundle-review/
 ├── .gitignore                     # Ignores temporary workspaces and bundles
 │
 ├── docs/                          # Governance & architecture specifications
+│   ├── ami-review-workflow.md     # AMI EBS snapshot cold-mount audit specification
 │   ├── design-rules-and-aocs.md   # Core design principles and AOC matrix
-│   ├── review-workflow.md         # 5-stage review operational lifecycle
+│   ├── review-workflow.md         # 5-stage Git bundle review lifecycle
 │   └── workspace-layout.md        # Workstation baseline and tooling specs
 │
 ├── rules/                         # Declarative compliance policies
@@ -84,7 +107,8 @@ grc-bundle-review/
 │   └── crypto_catalog.json        # Cryptographic library EOL & FIPS catalog
 │
 └── scripts/                       # Automation engines
-    ├── grc_bundle.py              # Ingestion, restoration, and cleanup manager
+    ├── grc_bundle.py              # Git bundle ingestion, restoration, and cleanup manager
+    ├── grc_ami.py                 # AMI cold-mount restoration, verification, and cleanup
     ├── crypto_lib_scan.py         # Static crypto library auditor
     └── sbom_analyzer.py           # CycloneDX & SPDX to DISA STIG mapper
 ```

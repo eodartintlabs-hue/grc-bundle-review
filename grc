@@ -16,6 +16,9 @@ if [[ "$#" -eq 0 ]]; then
     echo "  bundle restore <file.bundle>   Extract & verify bundle into ephemeral workspace"
     echo "  bundle verify  <file.bundle>   Cryptographic (SHA-256) and Git object validation"
     echo "  bundle clean   --workspace <w> Teardown ephemeral workspace & wipe bundle"
+    echo "  ami restore    <ami-id>        Cold-mount AMI snapshot as read-only secondary volume"
+    echo "  ami verify     <ami-id>        Validate AMI metadata, KMS encryption, and root snapshot"
+    echo "  ami clean      --workspace <w> Teardown ephemeral volume & audit mount"
     echo "  sbom           --sbom <file>   Run DISA STIG / SRG SBOM analyzer"
     echo "  crypto         -w <workspace>  Scan cryptographic libraries & EOL versions"
     echo "=========================================================="
@@ -28,6 +31,9 @@ shift
 case "${SUBCOMMAND}" in
     bundle)
         python3 "${SCRIPT_DIR}/scripts/grc_bundle.py" "$@"
+        ;;
+    ami)
+        python3 "${SCRIPT_DIR}/scripts/grc_ami.py" "$@"
         ;;
     sbom)
         python3 "${SCRIPT_DIR}/scripts/sbom_analyzer.py" "$@"
