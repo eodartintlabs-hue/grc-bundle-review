@@ -1,5 +1,0 @@
-__pycache__/
-*.pyc
-ephemeral_workspace/
-*.bundle
-.DS_Store

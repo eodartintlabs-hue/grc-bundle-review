@@ -54,7 +54,10 @@ semgrep scan --config="rules/custom-baseline-ruleset.yaml" --json -o ./ephemeral
 # 5. Generate DISA STIG SBOM Applicability Matrix
 ./grc sbom --sbom ./ephemeral_workspace/bom.json --format markdown -o ./ephemeral_workspace/stig_matrix.md
 
-# 6. Tear down ephemeral workspace post-review
+# 6. Execute full containerized security suite (Semgrep, Gitleaks, Checkov, Syft, Grype, Trivy)
+./grc scan -w ./ephemeral_workspace
+
+# 7. Tear down ephemeral workspace post-review
 ./grc bundle clean --workspace ./ephemeral_workspace --delete-bundle release-v1.0.0.bundle
 ```
 
@@ -83,7 +86,8 @@ semgrep scan --config="rules/custom-baseline-ruleset.yaml" --json -o ./ephemeral
 
 A comprehensive, end-to-end verification test plan has been established to validate the pipeline using synthetic fixtures:
 
-👉 **[Read the Full Verification Test Plan (TESTING.md)](TESTING.md)**
+* 📘 **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](docs/test-dummies-guide.md)** — Step-by-step cheat sheet, automated evidence isolation guide, and copy-pasteable scan commands for synthetic test dummies (`aoc-02` through `aoc-12`).
+* 📋 **[Full Verification Test Plan (TESTING.md)](TESTING.md)** — Architectural test strategy, pre-flight environment checks, and compliance deliverable acceptance criteria.
 
 ---
 
@@ -96,10 +100,16 @@ grc-bundle-review/
 ├── grc                            # Root CLI dispatcher wrapper
 ├── .gitignore                     # Ignores temporary workspaces and bundles
 │
+├── docker/                        # Containerized scanning suite (100% local, $0)
+│   ├── Dockerfile.scanner         # Recipe bundling Semgrep, Checkov, Gitleaks, Syft, Grype, Trivy
+│   ├── scan_orchestrator.sh       # In-container automated scanning orchestrator
+│   └── README.md                  # Docker build and isolation documentation
+│
 ├── docs/                          # Governance & architecture specifications
 │   ├── ami-review-workflow.md     # AMI EBS snapshot cold-mount audit specification
 │   ├── design-rules-and-aocs.md   # Core design principles and AOC matrix
 │   ├── review-workflow.md         # 5-stage Git bundle review lifecycle
+│   ├── test-dummies-guide.md      # Master verification cheat sheet & test dummies guide
 │   └── workspace-layout.md        # Workstation baseline and tooling specs
 │
 ├── rules/                         # Declarative compliance policies

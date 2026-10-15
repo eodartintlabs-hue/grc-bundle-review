@@ -10,6 +10,10 @@
 
 This document outlines the end-to-end verification and testing procedures for the **GRC Bundle Review Pipeline**. It exercises the complete lifecycle of a software release bundle without requiring access to production systems or halting developer deployment pipelines.
 
+> [!TIP]
+> **Fast-Track Testing with Pre-Built Test Bundles**:  
+> If you are verifying the pipeline using the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository, refer to the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](docs/test-dummies-guide.md)** for an interactive cheat sheet and copy-pasteable scan commands for each AOC (`aoc-02` through `aoc-12`).
+
 ```mermaid
 flowchart TD
     S1["Stage 1: Pre-flight Verification"] --> S2["Stage 2: Synthetic Bundle Generation (/tmp)"]
@@ -74,7 +78,9 @@ chmod +x ./grc ./scripts/grc_bundle.py ./scripts/sbom_analyzer.py ./scripts/cryp
 
 ## 4. Stage 2: Synthetic Test Bundle Generation
 
-To safely test detection capabilities without risking proprietary source code, generate a synthetic test bundle in `/tmp` containing intentional policy violations:
+To safely test detection capabilities without risking proprietary source code, you can either:
+1. **Use Pre-Built Dummies (Recommended)**: Use the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository and follow the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](docs/test-dummies-guide.md)**.
+2. **Generate Manually in `/tmp`**: Follow the steps below to construct a synthetic scratch bundle from scratch:
 
 ```bash
 # 1. Create a temporary scratch project

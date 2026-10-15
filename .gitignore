@@ -1,0 +1,26 @@
+# Operating System Artifacts
+.DS_Store
+Thumbs.db
+*/.DS_Store
+
+# Ephemeral Audit Workspaces & Analysis Mounts
+ephemeral_*/
+ephemeral_workspace/
+ephemeral_test_workspace/
+ephemeral_mock_ami/
+
+# Release Bundles (never commit release bundles to the review engine repo)
+*.bundle
+
+# Python Cache & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Editor & IDE Settings
+.vscode/
+.idea/
+*.swp
+*~

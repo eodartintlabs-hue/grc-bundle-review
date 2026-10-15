@@ -6,6 +6,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Ensure Docker Desktop CLI locations on macOS are present in PATH
+export PATH="${HOME}/.docker/bin:/usr/local/bin:/opt/homebrew/bin:/Applications/Docker.app/Contents/Resources/bin:${PATH}"
+
 if [[ "$#" -eq 0 ]]; then
     echo "=========================================================="
     echo "  GRC Bundle Review Pipeline CLI"
@@ -21,6 +24,8 @@ if [[ "$#" -eq 0 ]]; then
     echo "  ami clean      --workspace <w> Teardown ephemeral volume & audit mount"
     echo "  sbom           --sbom <file>   Run DISA STIG / SRG SBOM analyzer"
     echo "  crypto         -w <workspace>  Scan cryptographic libraries & EOL versions"
+    echo "  scan           -w <w> [-e <e>] Execute containerized security suite (Docker)"
+    echo "  docker-build                   Build the local grc-scanner:local Docker image"
     echo "=========================================================="
     exit 1
 fi
@@ -40,6 +45,72 @@ case "${SUBCOMMAND}" in
         ;;
     crypto)
         python3 "${SCRIPT_DIR}/scripts/crypto_lib_scan.py" "$@"
+        ;;
+    docker-build)
+        echo "[*] Building local Docker image 'grc-scanner:local'..."
+        docker build -t grc-scanner:local -f "${SCRIPT_DIR}/docker/Dockerfile.scanner" "${SCRIPT_DIR}"
+        ;;
+    scan)
+        IMAGE_NAME="grc-scanner:local"
+        if ! docker info >/dev/null 2>&1; then
+            echo "[ERROR] Docker daemon is not running. Please start Docker for Mac."
+            exit 1
+        fi
+
+        if ! docker image inspect "${IMAGE_NAME}" >/dev/null 2>&1; then
+            echo "[*] Image '${IMAGE_NAME}' not found. Building now..."
+            docker build -t "${IMAGE_NAME}" -f "${SCRIPT_DIR}/docker/Dockerfile.scanner" "${SCRIPT_DIR}"
+        fi
+
+        WORKSPACE_PATH="./ephemeral_workspace"
+        EVIDENCE_PATH=""
+
+        while [[ "$#" -gt 0 ]]; do
+            case "$1" in
+                -w|--workspace)
+                    WORKSPACE_PATH="$2"
+                    shift 2
+                    ;;
+                -e|--evidence)
+                    EVIDENCE_PATH="$2"
+                    shift 2
+                    ;;
+                *)
+                    WORKSPACE_PATH="$1"
+                    shift
+                    ;;
+            esac
+        done
+
+        RESOLVED_WORKSPACE="$(cd "${WORKSPACE_PATH}" 2>/dev/null && pwd || echo "${WORKSPACE_PATH}")"
+
+        # Auto-namespace evidence directory by bundle name if provenance is present
+        if [[ -n "${EVIDENCE_PATH}" ]]; then
+            mkdir -p "${EVIDENCE_PATH}"
+            RESOLVED_EVIDENCE="$(cd "${EVIDENCE_PATH}" && pwd)"
+        elif [[ -f "${RESOLVED_WORKSPACE}/bundle_provenance.json" ]]; then
+            BUNDLE_SOURCE="$(grep -o '"bundle_source_path": *"[^"]*"' "${RESOLVED_WORKSPACE}/bundle_provenance.json" | cut -d'"' -f4 || true)"
+            if [[ -n "${BUNDLE_SOURCE}" ]]; then
+                BUNDLE_BASE="$(basename "${BUNDLE_SOURCE}" .bundle)"
+                RESOLVED_EVIDENCE="${SCRIPT_DIR}/evidence/${BUNDLE_BASE}"
+            else
+                RESOLVED_EVIDENCE="${SCRIPT_DIR}/evidence"
+            fi
+        else
+            RESOLVED_EVIDENCE="${SCRIPT_DIR}/evidence"
+        fi
+        mkdir -p "${RESOLVED_EVIDENCE}"
+
+        echo "[*] Target Workspace:   ${RESOLVED_WORKSPACE}"
+        echo "[*] Evidence Directory: ${RESOLVED_EVIDENCE}"
+        echo "[*] Executing isolated containerized scan..."
+        docker run --rm \
+            --network none \
+            -v "${RESOLVED_WORKSPACE}:/workspace:ro" \
+            -v "${SCRIPT_DIR}/rules:/rules:ro" \
+            -v "${RESOLVED_EVIDENCE}:/evidence:rw" \
+            "${IMAGE_NAME}" \
+            /usr/local/bin/scan_orchestrator.sh
         ;;
     *)
         echo "[ERROR] Unknown GRC pipeline command: ${SUBCOMMAND}"
