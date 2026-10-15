@@ -54,7 +54,8 @@ semgrep scan --config="rules/custom-baseline-ruleset.yaml" --json -o ./ephemeral
 # 5. Generate DISA STIG SBOM Applicability Matrix
 ./grc sbom --sbom ./ephemeral_workspace/bom.json --format markdown -o ./ephemeral_workspace/stig_matrix.md
 
-# 6. Execute full containerized security suite (Semgrep, Gitleaks, Checkov, Syft, Grype, Trivy)
+# 6. Execute full containerized security suite & synthesize Phase 4 compliance deliverables
+# (Automatically generates poam_data.md, controls.md, ruleset_validation.md, scr_scn_package.json, sha256sum)
 ./grc scan -w ./ephemeral_workspace
 
 # 7. Tear down ephemeral workspace post-review
@@ -119,6 +120,7 @@ grc-bundle-review/
 └── scripts/                       # Automation engines
     ├── grc_bundle.py              # Git bundle ingestion, restoration, and cleanup manager
     ├── grc_ami.py                 # AMI cold-mount restoration, verification, and cleanup
+    ├── grc_reporter.py            # Phase 4 compliance report & SCR/SCN package synthesizer
     ├── crypto_lib_scan.py         # Static crypto library auditor
     └── sbom_analyzer.py           # CycloneDX & SPDX to DISA STIG mapper
 ```

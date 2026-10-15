@@ -1,0 +1,159 @@
+# NIST SP 800-53 Rev. 5 Controls Traceability Matrix
+
+> **Classification / Use**: Internal Compliance & Security Audit Deliverable (FedRAMP High / DoD RMF / SCR-SCN)  
+> **Audit Target Identifier**: `aoc-03-legacy-crypto`  
+> **Evaluation Timestamp**: `2026-10-15 22:50:32 UTC`  
+
+---
+
+## 1. Compliance Status by Control Family
+
+| Control ID | Control Name | Control Family | DISA STIG Impact | Audit Findings Count | Compliance Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **AC-3** | Access Enforcement | Access Control (AC) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **AC-6** | Least Privilege | Access Control (AC) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **CM-6** | Configuration Settings | Configuration Management (CM) | `CAT II` | 0 | ✅ **COMPLIANT** |
+| **CM-8** | Information System Component Inventory | Configuration Management (CM) | `CAT II` | 0 | ✅ **COMPLIANT** |
+| **IA-2** | Identification and Authentication (Organizational Users) | Identification and Authentication (IA) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **IA-7** | Cryptographic Module Authentication | Identification and Authentication (IA) | `CAT II` | 0 | ✅ **COMPLIANT** |
+| **RA-5** | Vulnerability Monitoring and Scanning | Risk Assessment (RA) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SC-12** | Cryptographic Key Establishment and Management | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SC-13** | Cryptographic Protection (FIPS 140 Validation) | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SC-28** | Protection of Information at Rest | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SC-8** | Transmission Confidentiality and Integrity | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SI-10** | Information Input Validation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SI-16** | Memory Protection / Cryptographic Hash Integrity | System and Information Integrity (SI) | `CAT I` | 15 | ❌ **NON-COMPLIANT (15)** |
+| **SI-17** | Fail-Secure / Secure Communications Initiation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SI-2** | Flaw Remediation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SI-4** | Information System Monitoring | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SI-7** | Software, Firmware, and Information Integrity | System and Information Integrity (SI) | `CAT I` | 2 | ❌ **NON-COMPLIANT (2)** |
+
+---
+
+## 2. Detailed Control Breakdown & Evidence Mapping
+
+### AC-3: Access Enforcement — ✅ COMPLIANT
+* **Control Family**: Access Control (AC)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Enforce approved authorizations for logical access to information and system resources (e.g. security group ingress rules).
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### AC-6: Least Privilege — ✅ COMPLIANT
+* **Control Family**: Access Control (AC)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Employ the principle of least privilege, allowing only authorized accesses necessary for accomplishing assigned tasks (e.g., prohibiting public cloud buckets).
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### CM-6: Configuration Settings — ✅ COMPLIANT
+* **Control Family**: Configuration Management (CM)
+* **DISA STIG Baseline**: `CAT II`
+* **Control Objective**: Establish and document mandatory configuration settings for IT products using hardened baselines (DISA STIG / CIS).
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### CM-8: Information System Component Inventory — ✅ COMPLIANT
+* **Control Family**: Configuration Management (CM)
+* **DISA STIG Baseline**: `CAT II`
+* **Control Objective**: Develop and document an inventory of information system components (SBOM) detailing name, version, and license.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### IA-2: Identification and Authentication (Organizational Users) — ✅ COMPLIANT
+* **Control Family**: Identification and Authentication (IA)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Uniquely identify and authenticate organizational users (or processes acting on their behalf). Prohibits hardcoded static credentials, default passwords, and unmanaged API tokens.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### IA-7: Cryptographic Module Authentication — ✅ COMPLIANT
+* **Control Family**: Identification and Authentication (IA)
+* **DISA STIG Baseline**: `CAT II`
+* **Control Objective**: Authenticate to cryptographic modules using mechanisms meeting applicable federal laws, regulations, and standards.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### RA-5: Vulnerability Monitoring and Scanning — ✅ COMPLIANT
+* **Control Family**: Risk Assessment (RA)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Monitor and scan for vulnerabilities in the system and hosted applications, prioritizing remediation of critical CVEs.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SC-12: Cryptographic Key Establishment and Management — ✅ COMPLIANT
+* **Control Family**: System and Communications Protection (SC)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Establish and manage cryptographic keys in accordance with NIST SP 800-56A/B and applicable FIPS guidelines.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SC-13: Cryptographic Protection (FIPS 140 Validation) — ✅ COMPLIANT
+* **Control Family**: System and Communications Protection (SC)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Implement cryptographic modules validated under FIPS 140-2 / 140-3. Enforce OS kernel FIPS mode and validated security providers.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SC-28: Protection of Information at Rest — ✅ COMPLIANT
+* **Control Family**: System and Communications Protection (SC)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Protect the confidentiality and integrity of information at rest (e.g., EBS volume encryption, S3 SSE-KMS).
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SC-8: Transmission Confidentiality and Integrity — ✅ COMPLIANT
+* **Control Family**: System and Communications Protection (SC)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Protect the confidentiality and integrity of transmitted information using strong cryptography (TLS 1.2+ / 1.3).
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SI-10: Information Input Validation — ✅ COMPLIANT
+* **Control Family**: System and Information Integrity (SI)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Validate information inputs to syntax rules, character sets, and payload limits before runtime interpretation.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SI-16: Memory Protection / Cryptographic Hash Integrity — ❌ NON-COMPLIANT
+* **Control Family**: System and Information Integrity (SI)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Protect memory integrity and enforce strong cryptographic hash algorithms. Prohibits MD5, SHA-1, DES, and RC4.
+* **Evaluation Outcome**: Deficiencies detected out-of-band requiring remediation.
+
+| Finding ID | Source Engine | Rule / CVE ID | Affected Location | Severity |
+| :--- | :--- | :--- | :--- | :--- |
+| **POAM-001** | `Semgrep` | `rules.grc-aoc03-java-weak-hashing` | `src/LegacyEncryption.java:14` | **MEDIUM** |
+| **POAM-002** | `Semgrep` | `rules.grc-aoc03-java-weak-hashing` | `src/LegacyEncryption.java:15` | **MEDIUM** |
+| **POAM-003** | `Semgrep` | `rules.grc-aoc03-java-weak-ciphers` | `src/LegacyEncryption.java:17` | **HIGH** |
+| **POAM-004** | `Semgrep` | `rules.grc-aoc03-java-weak-ciphers` | `src/LegacyEncryption.java:18` | **HIGH** |
+| **POAM-007** | `Semgrep` | `rules.grc-aoc03-go-weak-hashing` | `src/cipher.go:13` | **MEDIUM** |
+| **POAM-008** | `Semgrep` | `rules.grc-aoc03-go-weak-hashing` | `src/cipher.go:17` | **MEDIUM** |
+| **POAM-009** | `Semgrep` | `rules.grc-aoc03-go-weak-ciphers` | `src/cipher.go:24` | **HIGH** |
+| **POAM-010** | `Semgrep` | `rules.grc-aoc03-go-weak-ciphers` | `src/cipher.go:29` | **HIGH** |
+| **POAM-011** | `Semgrep` | `rules.grc-aoc03-python-weak-hashing` | `src/crypto_service.py:12` | **MEDIUM** |
+| **POAM-012** | `Semgrep` | `rules.grc-aoc03-python-weak-hashing` | `src/crypto_service.py:13` | **MEDIUM** |
+| **POAM-013** | `Semgrep` | `rules.grc-aoc03-python-weak-ciphers` | `src/crypto_service.py:19` | **HIGH** |
+| **POAM-014** | `Semgrep` | `rules.grc-aoc03-python-weak-ciphers` | `src/crypto_service.py:24` | **HIGH** |
+| **POAM-015** | `Semgrep` | `rules.grc-aoc03-javascript-weak-hashing` | `src/hashing.js:5` | **MEDIUM** |
+| **POAM-016** | `Semgrep` | `rules.grc-aoc03-javascript-weak-hashing` | `src/hashing.js:6` | **MEDIUM** |
+| **POAM-017** | `Semgrep` | `rules.grc-aoc03-javascript-weak-ciphers` | `src/hashing.js:12` | **HIGH** |
+
+### SI-17: Fail-Secure / Secure Communications Initiation — ✅ COMPLIANT
+* **Control Family**: System and Information Integrity (SI)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Ensure the system fails to a secure state. Prohibits disabled TLS certificate validation and deprecated TLS 1.0/1.1 protocols.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SI-2: Flaw Remediation — ✅ COMPLIANT
+* **Control Family**: System and Information Integrity (SI)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Identify, report, and correct system flaws (vulnerabilities and CVEs) within defined remediation timeframes.
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SI-4: Information System Monitoring — ✅ COMPLIANT
+* **Control Family**: System and Information Integrity (SI)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Monitor system execution to detect attacks and indicators of potential compromise. Prohibits unsanitized runtime shell execution (command injection).
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+
+### SI-7: Software, Firmware, and Information Integrity — ❌ NON-COMPLIANT
+* **Control Family**: System and Information Integrity (SI)
+* **DISA STIG Baseline**: `CAT I`
+* **Control Objective**: Employ integrity verification tools to detect unauthorized changes and prohibit use of unsupported, unmaintained, or EOL libraries and providers.
+* **Evaluation Outcome**: Deficiencies detected out-of-band requiring remediation.
+
+| Finding ID | Source Engine | Rule / CVE ID | Affected Location | Severity |
+| :--- | :--- | :--- | :--- | :--- |
+| **POAM-005** | `Semgrep` | `rules.grc-aoc09-go-deprecated-crypto-module` | `src/cipher.go:3` | **MEDIUM** |
+| **POAM-006** | `Semgrep` | `rules.grc-aoc09-go-deprecated-crypto-module` | `src/cipher.go:3` | **MEDIUM** |
+

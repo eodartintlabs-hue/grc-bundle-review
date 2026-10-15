@@ -1,0 +1,47 @@
+{
+    "version": "1.181.0",
+    "results": [],
+    "errors": [
+        {
+            "code": 2,
+            "level": "error",
+            "type": "Rule parse error",
+            "rule_id": "rules.grc-aoc09-python-deprecated-crypto-module",
+            "message": "Rule parse error in rule rules.grc-aoc09-python-deprecated-crypto-module:\n Invalid pattern for Python: Stdlib.Parsing.Parse_error\n----- pattern -----\nfrom Crypto.Cipher import ...\n----- end pattern -----\n"
+        },
+        {
+            "code": 2,
+            "level": "error",
+            "type": "Rule parse error",
+            "rule_id": "rules.grc-aoc09-javascript-deprecated-crypto-package",
+            "message": "Rule parse error in rule rules.grc-aoc09-javascript-deprecated-crypto-package:\n Invalid pattern for JavaScript: Stdlib.Parsing.Parse_error\n----- pattern -----\nimport ... from \"crypto-js/md5\"\n----- end pattern -----\n"
+        },
+        {
+            "code": 2,
+            "level": "error",
+            "type": "Rule parse error",
+            "rule_id": "rules.grc-aoc10-java-unsafe-deserialization",
+            "message": "Rule parse error in rule rules.grc-aoc10-java-unsafe-deserialization:\n Invalid pattern for Java: Stdlib.Parsing.Parse_error\n----- pattern -----\n($OBJ : ObjectInputStream).readObject(...)\n----- end pattern -----\n"
+        }
+    ],
+    "paths": {
+        "scanned": []
+    },
+    "time": {
+        "rules": [],
+        "rules_parse_time": 0.0047719478607177734,
+        "profiling_times": {
+            "config_time": 0.18891096115112305,
+            "core_time": 0.14371109008789062,
+            "ignores_time": 6.341934204101562e-05,
+            "total_time": 0.3363978862762451
+        },
+        "fixpoint_timeouts": [],
+        "targets": [],
+        "total_bytes": 0,
+        "max_memory_bytes": 81487680
+    },
+    "engine_requested": "OSS",
+    "skipped_rules": [],
+    "profiling_results": []
+}

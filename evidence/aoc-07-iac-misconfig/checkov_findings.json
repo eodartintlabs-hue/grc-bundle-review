@@ -1,0 +1,3104 @@
+[
+    {
+        "check_type": "secrets",
+        "results": {
+            "passed_checks": [],
+            "failed_checks": [
+                {
+                    "check_id": "CKV_SECRET_6",
+                    "bc_check_id": null,
+                    "check_name": "Base64 High Entropy String",
+                    "check_result": {
+                        "result": "FAILED"
+                    },
+                    "code_block": [
+                        [
+                            11,
+                            "    ansible_ssh_pass: \"Static**********\"\n"
+                        ]
+                    ],
+                    "file_path": "/ansible/playbook.yml",
+                    "file_abs_path": "/workspace/ansible/playbook.yml",
+                    "repo_file_path": "/ansible/playbook.yml",
+                    "file_line_range": [
+                        11,
+                        12
+                    ],
+                    "resource": "c5012a876a4f516b230d4b0f1cdf6216a1b0f54b",
+                    "evaluations": null,
+                    "check_class": "",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": null,
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": null,
+                    "validation_status": "Unavailable",
+                    "added_commit_hash": "",
+                    "removed_commit_hash": "",
+                    "added_by": "",
+                    "removed_date": "",
+                    "added_date": ""
+                }
+            ],
+            "skipped_checks": [],
+            "parsing_errors": []
+        },
+        "summary": {
+            "passed": 0,
+            "failed": 1,
+            "skipped": 0,
+            "parsing_errors": 0,
+            "resource_count": 1,
+            "checkov_version": "3.3.29"
+        },
+        "url": "Add an api key '--bc-api-key <api-key>' to see more detailed insights via https://bridgecrew.cloud"
+    },
+    {
+        "check_type": "terraform",
+        "results": {
+            "passed_checks": [
+                {
+                    "check_id": "CKV_AWS_93",
+                    "bc_check_id": null,
+                    "check_name": "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": [
+                            "policy"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.S3ProtectAgainstPolicyLockout",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_375",
+                    "bc_check_id": null,
+                    "check_name": "Ensure AWS S3 bucket does not have global view ACL permissions enabled",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": []
+                    },
+                    "code_block": [
+                        [
+                            20,
+                            "resource \"aws_s3_bucket_acl\" \"insecure_acl\" {\n"
+                        ],
+                        [
+                            21,
+                            "  bucket = aws_s3_bucket.insecure_public_bucket.id\n"
+                        ],
+                        [
+                            22,
+                            "  acl    = \"public-read-write\"\n"
+                        ],
+                        [
+                            23,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        20,
+                        23
+                    ],
+                    "resource": "aws_s3_bucket_acl.insecure_acl",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.S3GlobalViewACL",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_277",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": []
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngressAny",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_23",
+                    "bc_check_id": null,
+                    "check_name": "Ensure every security group and rule has a description",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": [
+                            "description"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupRuleDescription",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_382",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": [
+                            "from_port",
+                            "to_port",
+                            "cidr_ipv4",
+                            "cidr_ipv6"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedEgressAny",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_260",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": []
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngress80",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_41",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no hard coded AWS access key and secret key exists in provider",
+                    "check_result": {
+                        "result": "PASSED",
+                        "evaluated_keys": []
+                    },
+                    "code_block": [
+                        [
+                            11,
+                            "provider \"aws\" {\n"
+                        ],
+                        [
+                            12,
+                            "  region = \"us-east-1\"\n"
+                        ],
+                        [
+                            13,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        11,
+                        13
+                    ],
+                    "resource": "aws.default",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.provider.aws.credentials",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_43",
+                    "bc_check_id": null,
+                    "check_name": "Ensure S3 Bucket does not allow access to all Authenticated users",
+                    "check_result": {
+                        "result": "PASSED",
+                        "entity": {
+                            "aws_s3_bucket_acl": {
+                                "insecure_acl": {
+                                    "__end_line__": 23,
+                                    "__start_line__": 20,
+                                    "acl": [
+                                        "public-read-write"
+                                    ],
+                                    "bucket": [
+                                        "aws_s3_bucket.insecure_public_bucket.id"
+                                    ],
+                                    "__address__": "aws_s3_bucket_acl.insecure_acl",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "access_control_policy/grant/*/grantee/uri"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            20,
+                            "resource \"aws_s3_bucket_acl\" \"insecure_acl\" {\n"
+                        ],
+                        [
+                            21,
+                            "  bucket = aws_s3_bucket.insecure_public_bucket.id\n"
+                        ],
+                        [
+                            22,
+                            "  acl    = \"public-read-write\"\n"
+                        ],
+                        [
+                            23,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        20,
+                        23
+                    ],
+                    "resource": "aws_s3_bucket_acl.insecure_acl",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_19",
+                    "bc_check_id": null,
+                    "check_name": "Ensure all data stored in the S3 bucket is securely encrypted at rest",
+                    "check_result": {
+                        "result": "PASSED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "rule/apply_server_side_encryption_by_default/sse_algorithm",
+                            "resource_type",
+                            "server_side_encryption_configuration/rule/apply_server_side_encryption_by_default/sse_algorithm"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_2",
+                    "bc_check_id": null,
+                    "check_name": "Ensure that only encrypted EBS volumes are attached to EC2 instances",
+                    "check_result": {
+                        "result": "PASSED",
+                        "entity": {
+                            "aws_ebs_volume": {
+                                "unencrypted_volume": {
+                                    "__end_line__": 56,
+                                    "__start_line__": 48,
+                                    "availability_zone": [
+                                        "us-east-1a"
+                                    ],
+                                    "encrypted": [
+                                        false
+                                    ],
+                                    "size": [
+                                        50
+                                    ],
+                                    "tags": [
+                                        {
+                                            "Name": "unencrypted-test-volume"
+                                        }
+                                    ],
+                                    "__address__": "aws_ebs_volume.unencrypted_volume",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "encrypted",
+                            "resource_type"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            48,
+                            "resource \"aws_ebs_volume\" \"unencrypted_volume\" {\n"
+                        ],
+                        [
+                            49,
+                            "  availability_zone = \"us-east-1a\"\n"
+                        ],
+                        [
+                            50,
+                            "  size              = 50\n"
+                        ],
+                        [
+                            51,
+                            "  encrypted         = false\n"
+                        ],
+                        [
+                            52,
+                            "\n"
+                        ],
+                        [
+                            53,
+                            "  tags = {\n"
+                        ],
+                        [
+                            54,
+                            "    Name = \"unencrypted-test-volume\"\n"
+                        ],
+                        [
+                            55,
+                            "  }\n"
+                        ],
+                        [
+                            56,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        48,
+                        56
+                    ],
+                    "resource": "aws_ebs_volume.unencrypted_volume",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": {
+                        "Name": "unencrypted-test-volume"
+                    },
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                }
+            ],
+            "failed_checks": [
+                {
+                    "check_id": "CKV_AWS_24",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "ingress/[0]/from_port",
+                            "ingress/[0]/to_port",
+                            "ingress/[0]/cidr_blocks",
+                            "ingress/[0]/ipv6_cidr_blocks"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngress22",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_25",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "ingress/[1]/from_port",
+                            "ingress/[1]/to_port",
+                            "ingress/[1]/cidr_blocks",
+                            "ingress/[1]/ipv6_cidr_blocks"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngress3389",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_189",
+                    "bc_check_id": null,
+                    "check_name": "Ensure EBS Volume is encrypted by KMS using a customer managed Key (CMK)",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "kms_key_id"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            48,
+                            "resource \"aws_ebs_volume\" \"unencrypted_volume\" {\n"
+                        ],
+                        [
+                            49,
+                            "  availability_zone = \"us-east-1a\"\n"
+                        ],
+                        [
+                            50,
+                            "  size              = 50\n"
+                        ],
+                        [
+                            51,
+                            "  encrypted         = false\n"
+                        ],
+                        [
+                            52,
+                            "\n"
+                        ],
+                        [
+                            53,
+                            "  tags = {\n"
+                        ],
+                        [
+                            54,
+                            "    Name = \"unencrypted-test-volume\"\n"
+                        ],
+                        [
+                            55,
+                            "  }\n"
+                        ],
+                        [
+                            56,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        48,
+                        56
+                    ],
+                    "resource": "aws_ebs_volume.unencrypted_volume",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.EBSVolumeEncryptedWithCMK",
+                    "fixed_definition": null,
+                    "entity_tags": {
+                        "Name": "unencrypted-test-volume"
+                    },
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_3",
+                    "bc_check_id": null,
+                    "check_name": "Ensure all data stored in the EBS is securely encrypted",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "encrypted"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            48,
+                            "resource \"aws_ebs_volume\" \"unencrypted_volume\" {\n"
+                        ],
+                        [
+                            49,
+                            "  availability_zone = \"us-east-1a\"\n"
+                        ],
+                        [
+                            50,
+                            "  size              = 50\n"
+                        ],
+                        [
+                            51,
+                            "  encrypted         = false\n"
+                        ],
+                        [
+                            52,
+                            "\n"
+                        ],
+                        [
+                            53,
+                            "  tags = {\n"
+                        ],
+                        [
+                            54,
+                            "    Name = \"unencrypted-test-volume\"\n"
+                        ],
+                        [
+                            55,
+                            "  }\n"
+                        ],
+                        [
+                            56,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        48,
+                        56
+                    ],
+                    "resource": "aws_ebs_volume.unencrypted_volume",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.EBSEncryption",
+                    "fixed_definition": null,
+                    "entity_tags": {
+                        "Name": "unencrypted-test-volume"
+                    },
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_289",
+                    "bc_check_id": null,
+                    "check_name": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy/Statement/[0]/Action"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMPermissionsManagement",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_290",
+                    "bc_check_id": null,
+                    "check_name": "Ensure IAM policies does not allow write access without constraints",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy/Statement/[0]/Action"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMWriteAccess",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_355",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy/Statement/[0]/Action"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMStarResourcePolicyDocument",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_63",
+                    "bc_check_id": null,
+                    "check_name": "Ensure no IAM policies documents allow \"*\" as a statement's actions",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy",
+                            "inline_policy"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMStarActionPolicyDocument",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_286",
+                    "bc_check_id": null,
+                    "check_name": "Ensure IAM policies does not allow privilege escalation",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy/Statement/[0]/Action"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMPrivilegeEscalation",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_287",
+                    "bc_check_id": null,
+                    "check_name": "Ensure IAM policies does not allow credentials exposure",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy/Statement/[0]/Action"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMCredentialsExposure",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_62",
+                    "bc_check_id": null,
+                    "check_name": "Ensure IAM policies that allow full \"*-*\" administrative privileges are not created",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy",
+                            "inline_policy"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMAdminPolicyDocument",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_288",
+                    "bc_check_id": null,
+                    "check_name": "Ensure IAM policies does not allow data exfiltration",
+                    "check_result": {
+                        "result": "FAILED",
+                        "evaluated_keys": [
+                            "policy/Statement/[0]/Action"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.terraform.checks.resource.aws.IAMDataExfiltration",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_57",
+                    "bc_check_id": null,
+                    "check_name": "S3 Bucket has an ACL defined which allows public WRITE access.",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "access_control_policy/grant/*/permission",
+                            "access_control_policy",
+                            "access_control_policy/grant/*/grantee/uri",
+                            "acl",
+                            "resource_type",
+                            "access_control_policy/grant"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": {
+                        "code_block": [
+                            [
+                                20,
+                                "resource \"aws_s3_bucket_acl\" \"insecure_acl\" {\n"
+                            ],
+                            [
+                                21,
+                                "  bucket = aws_s3_bucket.insecure_public_bucket.id\n"
+                            ],
+                            [
+                                22,
+                                "  acl    = \"public-read-write\"\n"
+                            ],
+                            [
+                                23,
+                                "}\n"
+                            ]
+                        ],
+                        "file_path": "/terraform/main.tf",
+                        "file_line_range": [
+                            20,
+                            23
+                        ],
+                        "resource": "aws_s3_bucket_acl.insecure_acl",
+                        "entity_tags": {},
+                        "evaluations": null,
+                        "file_abs_path": "/workspace/terraform/main.tf",
+                        "resource_address": null
+                    },
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_62",
+                    "bc_check_id": null,
+                    "check_name": "Ensure S3 buckets should have event notifications enabled",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "resource_type"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_5",
+                    "bc_check_id": null,
+                    "check_name": "Ensure that Security Groups are attached to another resource",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_security_group": {
+                                "open_management_sg": {
+                                    "__end_line__": 45,
+                                    "__start_line__": 26,
+                                    "description": [
+                                        "Insecure security group permitting all incoming traffic"
+                                    ],
+                                    "ingress": [
+                                        {
+                                            "cidr_blocks": [
+                                                [
+                                                    "0.0.0.0/0"
+                                                ]
+                                            ],
+                                            "description": [
+                                                "SSH from anywhere"
+                                            ],
+                                            "from_port": [
+                                                22
+                                            ],
+                                            "protocol": [
+                                                "tcp"
+                                            ],
+                                            "to_port": [
+                                                22
+                                            ]
+                                        },
+                                        {
+                                            "cidr_blocks": [
+                                                [
+                                                    "0.0.0.0/0"
+                                                ]
+                                            ],
+                                            "description": [
+                                                "RDP from anywhere"
+                                            ],
+                                            "from_port": [
+                                                3389
+                                            ],
+                                            "protocol": [
+                                                "tcp"
+                                            ],
+                                            "to_port": [
+                                                3389
+                                            ]
+                                        }
+                                    ],
+                                    "name": [
+                                        "open-management-sg"
+                                    ],
+                                    "__address__": "aws_security_group.open_management_sg",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "resource_type",
+                            "networking"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            26,
+                            "resource \"aws_security_group\" \"open_management_sg\" {\n"
+                        ],
+                        [
+                            27,
+                            "  name        = \"open-management-sg\"\n"
+                        ],
+                        [
+                            28,
+                            "  description = \"Insecure security group permitting all incoming traffic\"\n"
+                        ],
+                        [
+                            29,
+                            "\n"
+                        ],
+                        [
+                            30,
+                            "  ingress {\n"
+                        ],
+                        [
+                            31,
+                            "    description = \"SSH from anywhere\"\n"
+                        ],
+                        [
+                            32,
+                            "    from_port   = 22\n"
+                        ],
+                        [
+                            33,
+                            "    to_port     = 22\n"
+                        ],
+                        [
+                            34,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            35,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            36,
+                            "  }\n"
+                        ],
+                        [
+                            37,
+                            "\n"
+                        ],
+                        [
+                            38,
+                            "  ingress {\n"
+                        ],
+                        [
+                            39,
+                            "    description = \"RDP from anywhere\"\n"
+                        ],
+                        [
+                            40,
+                            "    from_port   = 3389\n"
+                        ],
+                        [
+                            41,
+                            "    to_port     = 3389\n"
+                        ],
+                        [
+                            42,
+                            "    protocol    = \"tcp\"\n"
+                        ],
+                        [
+                            43,
+                            "    cidr_blocks = [\"0.0.0.0/0\"]\n"
+                        ],
+                        [
+                            44,
+                            "  }\n"
+                        ],
+                        [
+                            45,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        26,
+                        45
+                    ],
+                    "resource": "aws_security_group.open_management_sg",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_20",
+                    "bc_check_id": null,
+                    "check_name": "S3 Bucket has an ACL defined which allows public READ access.",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "acl",
+                            "resource_type",
+                            "access_control_policy/grant/*/grantee/uri",
+                            "access_control_policy/grant",
+                            "access_control_policy"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": {
+                        "code_block": [
+                            [
+                                20,
+                                "resource \"aws_s3_bucket_acl\" \"insecure_acl\" {\n"
+                            ],
+                            [
+                                21,
+                                "  bucket = aws_s3_bucket.insecure_public_bucket.id\n"
+                            ],
+                            [
+                                22,
+                                "  acl    = \"public-read-write\"\n"
+                            ],
+                            [
+                                23,
+                                "}\n"
+                            ]
+                        ],
+                        "file_path": "/terraform/main.tf",
+                        "file_line_range": [
+                            20,
+                            23
+                        ],
+                        "resource": "aws_s3_bucket_acl.insecure_acl",
+                        "entity_tags": {},
+                        "evaluations": null,
+                        "file_abs_path": "/workspace/terraform/main.tf",
+                        "resource_address": null
+                    },
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_61",
+                    "bc_check_id": null,
+                    "check_name": "Ensure that an S3 bucket has a lifecycle configuration",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "lifecycle_rule",
+                            "resource_type"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_144",
+                    "bc_check_id": null,
+                    "check_name": "Ensure that S3 bucket has cross-region replication enabled",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "rule/*/status",
+                            "resource_type",
+                            "replication_configuration/rules/*/status"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_18",
+                    "bc_check_id": null,
+                    "check_name": "Ensure the S3 bucket has access logging enabled",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "logging",
+                            "resource_type"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_6",
+                    "bc_check_id": null,
+                    "check_name": "Ensure that S3 bucket has a Public Access block",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "block_public_acls",
+                            "resource_type",
+                            "block_public_policy"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_21",
+                    "bc_check_id": null,
+                    "check_name": "Ensure all data stored in the S3 bucket have versioning enabled",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "versioning_configuration/status",
+                            "resource_type",
+                            "versioning/enabled"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV_AWS_145",
+                    "bc_check_id": null,
+                    "check_name": "Ensure that S3 buckets are encrypted with KMS by default",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_s3_bucket": {
+                                "insecure_public_bucket": {
+                                    "__end_line__": 18,
+                                    "__start_line__": 16,
+                                    "bucket": [
+                                        "synthetic-insecure-public-bucket-dummy"
+                                    ],
+                                    "__address__": "aws_s3_bucket.insecure_public_bucket",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "rule/apply_server_side_encryption_by_default/sse_algorithm",
+                            "resource_type",
+                            "server_side_encryption_configuration/rule/apply_server_side_encryption_by_default/sse_algorithm"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            16,
+                            "resource \"aws_s3_bucket\" \"insecure_public_bucket\" {\n"
+                        ],
+                        [
+                            17,
+                            "  bucket = \"synthetic-insecure-public-bucket-dummy\"\n"
+                        ],
+                        [
+                            18,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        16,
+                        18
+                    ],
+                    "resource": "aws_s3_bucket.insecure_public_bucket",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                },
+                {
+                    "check_id": "CKV2_AWS_40",
+                    "bc_check_id": null,
+                    "check_name": "Ensure AWS IAM policy does not allow full IAM privileges",
+                    "check_result": {
+                        "result": "FAILED",
+                        "entity": {
+                            "aws_iam_policy": {
+                                "wildcard_admin_policy": {
+                                    "__end_line__": 73,
+                                    "__start_line__": 59,
+                                    "description": [
+                                        "Excessive privilege policy violating least privilege AC-6"
+                                    ],
+                                    "name": [
+                                        "wildcard-admin-policy"
+                                    ],
+                                    "policy": [
+                                        {
+                                            "Version": "2012-10-17",
+                                            "Statement": [
+                                                {
+                                                    "Effect": "Allow",
+                                                    "Action": "*",
+                                                    "Resource": "*"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "__address__": "aws_iam_policy.wildcard_admin_policy",
+                                    "__provider_address__": "aws.default"
+                                }
+                            }
+                        },
+                        "evaluated_keys": [
+                            "policy/Statement[?(@/Effect == Allow)]/Action[*]",
+                            "statement[?(@/effect == Allow)]/actions[*]",
+                            "inline_policy/Statement[?(@/Effect == Allow)]/Action[*]"
+                        ]
+                    },
+                    "code_block": [
+                        [
+                            59,
+                            "resource \"aws_iam_policy\" \"wildcard_admin_policy\" {\n"
+                        ],
+                        [
+                            60,
+                            "  name        = \"wildcard-admin-policy\"\n"
+                        ],
+                        [
+                            61,
+                            "  description = \"Excessive privilege policy violating least privilege AC-6\"\n"
+                        ],
+                        [
+                            62,
+                            "\n"
+                        ],
+                        [
+                            63,
+                            "  policy = jsonencode({\n"
+                        ],
+                        [
+                            64,
+                            "    Version = \"2012-10-17\"\n"
+                        ],
+                        [
+                            65,
+                            "    Statement = [\n"
+                        ],
+                        [
+                            66,
+                            "      {\n"
+                        ],
+                        [
+                            67,
+                            "        Effect   = \"Allow\"\n"
+                        ],
+                        [
+                            68,
+                            "        Action   = \"*\"\n"
+                        ],
+                        [
+                            69,
+                            "        Resource = \"*\"\n"
+                        ],
+                        [
+                            70,
+                            "      }\n"
+                        ],
+                        [
+                            71,
+                            "    ]\n"
+                        ],
+                        [
+                            72,
+                            "  })\n"
+                        ],
+                        [
+                            73,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/terraform/main.tf",
+                    "file_abs_path": "/workspace/terraform/main.tf",
+                    "repo_file_path": "/terraform/main.tf",
+                    "file_line_range": [
+                        59,
+                        73
+                    ],
+                    "resource": "aws_iam_policy.wildcard_admin_policy",
+                    "evaluations": null,
+                    "check_class": "checkov.common.graph.checks_infra.base_check",
+                    "fixed_definition": null,
+                    "entity_tags": null,
+                    "caller_file_path": null,
+                    "caller_file_line_range": null,
+                    "resource_address": null,
+                    "severity": null,
+                    "bc_category": null,
+                    "benchmarks": {},
+                    "description": null,
+                    "short_description": null,
+                    "vulnerability_details": null,
+                    "connected_node": null,
+                    "guideline": null,
+                    "details": [],
+                    "check_len": null,
+                    "definition_context_file_path": "/workspace/terraform/main.tf"
+                }
+            ],
+            "skipped_checks": [],
+            "parsing_errors": []
+        },
+        "summary": {
+            "passed": 10,
+            "failed": 23,
+            "skipped": 0,
+            "parsing_errors": 0,
+            "resource_count": 5,
+            "checkov_version": "3.3.29"
+        },
+        "url": "Add an api key '--bc-api-key <api-key>' to see more detailed insights via https://bridgecrew.cloud"
+    }
+]

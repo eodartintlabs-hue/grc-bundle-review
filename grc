@@ -21,10 +21,10 @@ if [[ "$#" -eq 0 ]]; then
     echo "  bundle clean   --workspace <w> Teardown ephemeral workspace & wipe bundle"
     echo "  ami restore    <ami-id>        Cold-mount AMI snapshot as read-only secondary volume"
     echo "  ami verify     <ami-id>        Validate AMI metadata, KMS encryption, and root snapshot"
-    echo "  ami clean      --workspace <w> Teardown ephemeral volume & audit mount"
     echo "  sbom           --sbom <file>   Run DISA STIG / SRG SBOM analyzer"
     echo "  crypto         -w <workspace>  Scan cryptographic libraries & EOL versions"
     echo "  scan           -w <w> [-e <e>] Execute containerized security suite (Docker)"
+    echo "  report         -e <evidence>   Synthesize Phase 4 SCR/SCN package & POA&M deliverables"
     echo "  docker-build                   Build the local grc-scanner:local Docker image"
     echo "=========================================================="
     exit 1
@@ -45,6 +45,9 @@ case "${SUBCOMMAND}" in
         ;;
     crypto)
         python3 "${SCRIPT_DIR}/scripts/crypto_lib_scan.py" "$@"
+        ;;
+    report)
+        python3 "${SCRIPT_DIR}/scripts/grc_reporter.py" "$@"
         ;;
     docker-build)
         echo "[*] Building local Docker image 'grc-scanner:local'..."
@@ -111,6 +114,13 @@ case "${SUBCOMMAND}" in
             -v "${RESOLVED_EVIDENCE}:/evidence:rw" \
             "${IMAGE_NAME}" \
             /usr/local/bin/scan_orchestrator.sh
+
+        echo ""
+        echo "[*] Synthesizing Phase 4 Compliance Package (POA&M, Controls, Ruleset Log, Checksums)..."
+        python3 "${SCRIPT_DIR}/scripts/grc_reporter.py" \
+            --evidence "${RESOLVED_EVIDENCE}" \
+            --workspace "${RESOLVED_WORKSPACE}" \
+            --ruleset "${SCRIPT_DIR}/rules/custom-baseline-ruleset.yaml"
         ;;
     *)
         echo "[ERROR] Unknown GRC pipeline command: ${SUBCOMMAND}"

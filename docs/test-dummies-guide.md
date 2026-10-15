@@ -67,24 +67,27 @@ To prevent audit work papers and scan findings from cross-contaminating across t
 ```text
 evidence/
 ├── aoc-02-weak-passwords/         <-- 16 hardcoded password/token findings across 4 languages
-│   ├── bundle_provenance.json
-│   ├── semgrep_findings.json
-│   ├── checkov_findings.json
-│   └── sbom.cdx.json
+│   ├── bundle_provenance.json     # Ingestion & verification session record
+│   ├── semgrep_findings.json      # Raw AST scanner output
+│   ├── checkov_findings.json      # Raw IaC scanner output
+│   ├── sbom.cdx.json              # CycloneDX system bill of materials
+│   ├── poam_data.md               # Synthesized Plan of Action & Milestones (FedRAMP High)
+│   ├── controls.md                # NIST SP 800-53 Rev. 5 Traceability Matrix
+│   ├── ruleset_validation.md      # Itemized 37-rule Semgrep baseline log
+│   ├── scr_scn_package.json       # Consolidated machine-readable SCR/SCN payload
+│   └── sha256sum                  # Cryptographic evidence seal
 │
 ├── aoc-03-legacy-crypto/          <-- MD5, SHA-1, DES, RC4, AES/ECB violations
-│   ├── semgrep_findings.json
-│   └── sbom.cdx.json
-│
-├── aoc-04-command-injection/      <-- os.system, subprocess, exec.Command violations
+│   ├── poam_data.md & controls.md
 │   └── semgrep_findings.json
 │
 ├── aoc-07-iac-misconfig/          <-- Open S3 buckets, 0.0.0.0/0 SSH, unencrypted EBS
+│   ├── poam_data.md & controls.md
 │   └── checkov_findings.json
 │
 └── aoc-10-critical-cves/          <-- Log4Shell, Spring4Shell CVSS 9.8+ vulnerabilities
-    ├── grype_findings.json
-    └── trivy_findings.json
+    ├── poam_data.md & controls.md
+    └── grype_findings.json
 ```
 
 > [!TIP]
@@ -273,14 +276,24 @@ cat ./ephemeral_mock_ami/ami_provenance.json | jq .
 
 ## 6. Auditor Evidence Deliverables & `jq` Inspection Cheat Sheet
 
+### Phase 3: Raw Engine Findings & Manifests
 | Deliverable File | Producing Engine | Control Mapping | Auditor Inspection One-Liner (`jq`) |
 | :--- | :--- | :--- | :--- |
 | **`bundle_provenance.json`** | `grc_bundle.py` | NIST CM-8<br>DoD Provenance | `cat bundle_provenance.json \| jq '{id: .bundle_identifier, sha: .bundle_sha256, files: .total_files}'` |
 | **`semgrep_findings.json`** | Semgrep | NIST IA-2, SI-4,<br>SI-16, SI-17 | `cat semgrep_findings.json \| jq -r '.results[] \| "\(.extra.metadata.aoc) \| \(.path):\(.start.line) \| \(.extra.message)"'` |
-| **`checkov_findings.json`** | Checkov | NIST AC-6, CM-6<br>FedRAMP IaC | `cat checkov_findings.json \| jq '.results.failed_checks[] \| {check: .check_name, resource: .resource}'` |
+| **`checkov_findings.json`** | Checkov | NIST AC-6, CM-6<br>FedRAMP IaC | `cat checkov_findings.json \| jq '.[].results.failed_checks[] \| {check: .check_name, resource: .resource}'` |
 | **`sbom.cdx.json`** | Syft | NIST CM-8, SI-7<br>CycloneDX | `cat sbom.cdx.json \| jq '.components[] \| {name: .name, version: .version, type: .type}'` |
 | **`grype_findings.json`** | Grype | NIST RA-5, SI-2<br>POA&M Ingestion | `cat grype_findings.json \| jq -r '.matches[] \| "\(.vulnerability.severity) \| \(.vulnerability.id) \| \(.artifact.name):\(.artifact.version)"'` |
 | **`crypto_findings.json`** | `crypto_lib_scan.py` | NIST SI-7, SC-13<br>AOC-09 | `cat crypto_findings.json \| jq '.findings[] \| {library: .library_name, version: .detected_version, status: .compliance_status}'` |
+
+### Phase 4: SCR/SCN Compliance Packages (Synthesized by `grc_reporter.py`)
+| Deliverable File | Producing Engine | Format | FedRAMP / DoD Compliance Purpose |
+| :--- | :--- | :--- | :--- |
+| **`poam_data.md`** | `grc_reporter.py` | Markdown | **Plan of Action & Milestones**: Itemizes all findings with SLAs (30d CAT I, 60d CAT II, 90d CAT III), remediation steps, and target completion dates. |
+| **`controls.md`** | `grc_reporter.py` | Markdown | **NIST SP 800-53 Rev. 5 Traceability Matrix**: Rollup and itemized breakdown across AC, IA, SC, SI, CM, and RA control families. |
+| **`ruleset_validation.md`** | `grc_reporter.py` | Markdown | **37-Rule Baseline Validation Audit Log**: Itemized audit log showing which Semgrep baseline rules triggered vs. passed clean. |
+| **`scr_scn_package.json`** | `grc_reporter.py` | JSON | **Consolidated SCR/SCN Payload**: Machine-readable evidence package for automated ingestion into ServiceNow, Jira, or DoD eMASS. |
+| **`sha256sum`** | `grc_reporter.py` | Text | **Cryptographic Evidence Seal**: SHA-256 hash manifest verifying the immutability of all deliverables in the evidence folder. |
 
 ---
 

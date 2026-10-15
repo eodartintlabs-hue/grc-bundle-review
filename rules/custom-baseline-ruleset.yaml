@@ -418,7 +418,8 @@ rules:
       - pattern: import md5
       - pattern: import sha
       - pattern: import Crypto.Cipher
-      - pattern: from Crypto.Cipher import ...
+      - pattern: from Crypto.Cipher import $X
+      - pattern: from Crypto import $X
 
   - id: grc-aoc09-go-deprecated-crypto-module
     languages: [go]
@@ -460,8 +461,10 @@ rules:
       - pattern: require("crypto-js/md5")
       - pattern: require("crypto-js/rc4")
       - pattern: require("crypto-js/sha1")
-      - pattern: import ... from "crypto-js/md5"
-      - pattern: import ... from "crypto-js/rc4"
+      - pattern: import $X from "crypto-js/md5"
+      - pattern: import $X from "crypto-js/rc4"
+      - pattern: import * as $X from "crypto-js/md5"
+      - pattern: import * as $X from "crypto-js/rc4"
 
   # ==============================================================================
   # AOC-10: CRITICAL SEVERITY FINDINGS (NIST SP 800-53 RA-5)
@@ -495,8 +498,10 @@ rules:
       owasp: "A08:2021 - Software and Data Integrity Failures"
       confidence: HIGH
     pattern-either:
-      - pattern: "($OBJ : ObjectInputStream).readObject(...)"
-      - pattern: "($OBJ : XMLDecoder).readObject(...)"
+      - pattern: ((ObjectInputStream) $OBJ).readObject(...)
+      - pattern: ((XMLDecoder) $OBJ).readObject(...)
+      - pattern: (ObjectInputStream $OBJ).readObject(...)
+      - pattern: (XMLDecoder $OBJ).readObject(...)
 
   - id: grc-aoc10-javascript-dangerous-eval
     languages: [javascript, typescript]
