@@ -9,11 +9,36 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Ensure Docker Desktop CLI locations on macOS are present in PATH
 export PATH="${HOME}/.docker/bin:/usr/local/bin:/opt/homebrew/bin:/Applications/Docker.app/Contents/Resources/bin:${PATH}"
 
+print_grcfetch() {
+    local P="\033[38;5;135m"   # Purple ASCII art (matches VHS neofetch style)
+    local M="\033[1;95m"       # Bright Magenta title
+    local G="\033[1;32m"       # Bright Green keys
+    local W="\033[0;37m"       # White values
+    local D="\033[38;5;240m"   # Dim divider
+    local R="\033[0m"          # Reset
+
+    echo -e ""
+    echo -e "  ${P}        .--.          .--.          .--.        ${R}"
+    echo -e "  ${P}  ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp,   ${M}eodartintlabs-hue/grc-bundle-reviewer${R}"
+    echo -e "  ${P} {GGG'     \`G# {GGG     \`GGG {GGG'     \`G#    ${D}-------------------------------------${R}"
+    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG             ${G}App:${W} GRC Bundle Reviewer v1.0.0${R}"
+    echo -e "  ${P} 'GGG   ,p#GG# @GGG#**#GGG\"  'GGG             ${G}OS:${W} Darwin ARM64 / Linux Bookworm${R}"
+    echo -e "  ${P}  GGG   \"\"\`GGG @GGG   \`GGG,   GGG             ${G}Model:${W} Out-of-Band (OOB) / Fail-Open${R}"
+    echo -e "  ${P} ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ${G}Isolation:${W} Air-Gapped (--network none, :ro)${R}"
+    echo -e "  ${P}  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG\"    ${G}Scanners:${W} (7) Semgrep, Gitleaks, Checkov,${R}"
+    echo -e "  ${P}   \`@GGGG###G# @GGG     \`GGG   \`@GGGG###G\"    ${W}              Syft, Grype, Trivy, OpenSCAP${R}"
+    echo -e "  ${P}     \`\"%N>\"\`    \`\"%NW\" \`\"%NW\"    \`\"%N>\"\`      ${G}Ruleset:${W} 37 AST Rules (AOC 02–140)${R}"
+    echo -e "  ${P}                                              ${G}Frameworks:${W} DISA STIG, NIST 800-53 R5, FedRAMP${R}"
+    echo -e "  ${P}                                              ${G}Output:${W} POA&M, Controls, SCR/SCN, SHA-256${R}"
+    echo -e ""
+    echo -e "                                                \033[40m   \033[41m   \033[42m   \033[43m   \033[44m   \033[45m   \033[46m   \033[47m   ${R}"
+    echo -e "                                                \033[100m   \033[101m   \033[102m   \033[103m   \033[104m   \033[105m   \033[106m   \033[107m   ${R}"
+    echo -e ""
+}
+
 if [[ "$#" -eq 0 ]]; then
-    echo "=========================================================="
-    echo "  GRC Bundle Review Pipeline CLI"
-    echo "=========================================================="
-    echo "Usage: grc <command> [arguments]"
+    print_grcfetch
+    echo "Usage: ./grc <command> [arguments]"
     echo ""
     echo "Available Commands:"
     echo "  bundle restore <file.bundle>   Extract & verify bundle into ephemeral workspace"
@@ -21,11 +46,13 @@ if [[ "$#" -eq 0 ]]; then
     echo "  bundle clean   --workspace <w> Teardown ephemeral workspace & wipe bundle"
     echo "  ami restore    <ami-id>        Cold-mount AMI snapshot as read-only secondary volume"
     echo "  ami verify     <ami-id>        Validate AMI metadata, KMS encryption, and root snapshot"
+    echo "  ami clean      --workspace <w> Teardown ephemeral volume & audit mount"
     echo "  sbom           --sbom <file>   Run DISA STIG / SRG SBOM analyzer"
     echo "  crypto         -w <workspace>  Scan cryptographic libraries & EOL versions"
     echo "  scan           -w <w> [-e <e>] Execute containerized security suite (Docker)"
     echo "  report         -e <evidence>   Synthesize Phase 4 SCR/SCN package & POA&M deliverables"
     echo "  docker-build                   Build the local grc-scanner:local Docker image"
+    echo "  fetch | info                   Display the GRC Bundle Reviewer neofetch banner"
     echo "=========================================================="
     exit 1
 fi
@@ -34,6 +61,9 @@ SUBCOMMAND="$1"
 shift
 
 case "${SUBCOMMAND}" in
+    fetch|info|--version|-v)
+        print_grcfetch
+        ;;
     bundle)
         python3 "${SCRIPT_DIR}/scripts/grc_bundle.py" "$@"
         ;;

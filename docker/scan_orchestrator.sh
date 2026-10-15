@@ -24,8 +24,9 @@ echo "=========================================================="
 echo ""
 echo "[*] [1/6] Running Semgrep SAST against custom baseline ruleset..."
 if [[ -f "${RULES_DIR}/custom-baseline-ruleset.yaml" ]]; then
-    semgrep scan \
+    SEMGREP_SEND_METRICS=off semgrep scan \
         --config="${RULES_DIR}/custom-baseline-ruleset.yaml" \
+        --metrics=off \
         --json \
         --output="${EVIDENCE_DIR}/semgrep_findings.json" \
         "${WORKSPACE_DIR}" || true
@@ -50,7 +51,8 @@ echo "    -> Gitleaks findings saved to: ${EVIDENCE_DIR}/gitleaks_findings.json"
 # ------------------------------------------------------------------------------
 echo ""
 echo "[*] [3/6] Running Checkov IaC security analysis..."
-checkov -d "${WORKSPACE_DIR}" \
+BC_SKIP_MAPPING=TRUE checkov -d "${WORKSPACE_DIR}" \
+    --skip-download \
     --output json \
     --output-file-path "${EVIDENCE_DIR}" \
     --soft-fail || true
@@ -64,7 +66,7 @@ echo "    -> Checkov findings saved to: ${EVIDENCE_DIR}/checkov_findings.json"
 # ------------------------------------------------------------------------------
 echo ""
 echo "[*] [4/6] Generating CycloneDX SBOM via Syft..."
-syft dir:"${WORKSPACE_DIR}" \
+SYFT_CHECK_FOR_APP_UPDATE=false syft dir:"${WORKSPACE_DIR}" \
     -o cyclonedx-json="${EVIDENCE_DIR}/sbom.cdx.json" || true
 echo "    -> CycloneDX SBOM generated at: ${EVIDENCE_DIR}/sbom.cdx.json"
 
@@ -74,7 +76,7 @@ echo "    -> CycloneDX SBOM generated at: ${EVIDENCE_DIR}/sbom.cdx.json"
 echo ""
 echo "[*] [5/6] Scanning SBOM for CVE vulnerabilities via Grype..."
 if [[ -f "${EVIDENCE_DIR}/sbom.cdx.json" ]]; then
-    grype sbom:"${EVIDENCE_DIR}/sbom.cdx.json" \
+    GRYPE_DB_AUTO_UPDATE=false GRYPE_CHECK_FOR_APP_UPDATE=false grype sbom:"${EVIDENCE_DIR}/sbom.cdx.json" \
         -o json > "${EVIDENCE_DIR}/grype_findings.json" || true
     echo "    -> Grype CVE findings saved to: ${EVIDENCE_DIR}/grype_findings.json"
 fi
@@ -85,6 +87,8 @@ fi
 echo ""
 echo "[*] [6/6] Executing Trivy filesystem evaluation..."
 trivy fs "${WORKSPACE_DIR}" \
+    --offline-scan \
+    --skip-db-update \
     --format json \
     --output "${EVIDENCE_DIR}/trivy_findings.json" \
     --quiet || true

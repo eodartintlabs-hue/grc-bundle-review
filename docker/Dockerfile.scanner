@@ -23,6 +23,12 @@ LABEL version="1.0.0"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/usr/local/bin:$PATH"
+# Air-gap & telemetry suppression environment controls
+ENV SEMGREP_SEND_METRICS=off
+ENV BC_SKIP_MAPPING=TRUE
+ENV SYFT_CHECK_FOR_APP_UPDATE=false
+ENV GRYPE_CHECK_FOR_APP_UPDATE=false
+ENV GRYPE_DB_AUTO_UPDATE=false
 
 # ------------------------------------------------------------------------------
 # 1. System Dependencies & OpenSCAP
@@ -60,11 +66,13 @@ RUN ARCH=$(dpkg --print-architecture) \
 # Syft (SBOM Generation)
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
-# Grype (CVE Vulnerability Scanning)
-RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+# Grype (CVE Vulnerability Scanning) + Pre-cache Vulnerability DB for --network none
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin \
+    && GRYPE_DB_AUTO_UPDATE=true grype db update
 
-# Trivy (Comprehensive Security Scanner)
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+# Trivy (Comprehensive Security Scanner) + Pre-cache Vulnerability DB for --network none
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin \
+    && trivy image --download-db-only
 
 # ------------------------------------------------------------------------------
 # 4. Verification Check: Confirm All Scanners Are Present and Executable
