@@ -5,6 +5,7 @@
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="grc-bundle%20Use%20Case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 

@@ -5,6 +5,7 @@
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="grc-bundle%20Use%20Case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
@@ -199,6 +200,8 @@ The root `./grc` dispatcher provides a unified interface across all pipeline sta
 
 ### 8.1 Streamlined 2-Step Git Bundle Review (Recommended)
 
+> 💡 **Detailed Step-by-Step Scenario**: See **[`grc-bundle Use Case.md`](grc-bundle%20Use%20Case.md)** for a complete end-to-end audit walkthrough featuring sample terminal command sessions, `bundle_provenance.json` inspections, and tampered-bundle rejection handling.
+
 ```bash
 # Step 1: Restore the release bundle into an isolated, read-only ephemeral workspace
 ./grc bundle restore /path/to/release-v1.0.0.bundle \
@@ -241,6 +244,7 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 
 * 🏛️ **[System Architecture & Technology Stack (`ARCHITECTURE.md`)](ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
+* 📑 **[End-to-End Bundle Review Walkthrough (`grc-bundle Use Case.md`)](grc-bundle%20Use%20Case.md)** — Complete step-by-step audit walkthrough with terminal sessions for all 5 phases, manifest inspections, and negative-testing abort handling.
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`TESTING.md`)](TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
 
@@ -254,6 +258,7 @@ grc-bundle-review/
 ├── ARCHITECTURE.md                   # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
 ├── TESTING.md                        # End-to-end audit verification test plan
+├── grc-bundle Use Case.md            # Complete 5-phase review walkthrough with sample terminal outputs
 ├── grc                               # Root CLI dispatcher wrapper
 ├── .gitignore                        # Protects against committing ephemeral workspaces and bundles
 │
