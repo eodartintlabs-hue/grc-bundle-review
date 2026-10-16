@@ -229,6 +229,7 @@ ls -la evidence/release-v1.0.0/
 
 In high-assurance compliance automation, a scanner that outputs zero findings is untrusted until proven capable of failing. This pipeline is paired with the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository containing 8 pre-compiled synthetic release bundles (`aoc-02` through `aoc-12`) and flawed AMI fixtures engineered to trigger every control in the pipeline:
 
+* 🍔 **[Full-Stack "Hamburger" Architecture (`TECHSTACK.md`)](TECHSTACK.md)** — 8-layer visual stack diagram from GitHub & AWS inputs down to Docker isolation, macOS, and Apple Silicon (M5 Pro) hardware.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`TESTING.md`)](TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
@@ -240,6 +241,7 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 ```text
 grc-bundle-review/
 ├── README.md                         # Master project overview, architecture, and CLI reference
+├── TECHSTACK.md                      # 8-layer "Hamburger" tech stack diagram & hardware/software specs
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
 ├── TESTING.md                        # End-to-end audit verification test plan
 ├── grc                               # Root CLI dispatcher wrapper
