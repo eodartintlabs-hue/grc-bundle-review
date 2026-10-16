@@ -3,6 +3,7 @@
 <p align="center">
   <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
@@ -278,6 +279,7 @@ ls -la evidence/release-v1.0.0/
 In high-assurance compliance automation, a scanner that outputs zero findings is untrusted until proven capable of failing. This pipeline is paired with the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository containing 8 pre-compiled synthetic release bundles (`aoc-02` through `aoc-12`) and flawed AMI fixtures engineered to trigger every control in the pipeline:
 
 * 🏛️ **[System Architecture & Technology Stack (`ARCHITECTURE.md`)](ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
+* 🔄 **[Pipeline Data Flow & Telemetry Lineage (`DATAFLOW.md`)](DATAFLOW.md)** — Visual data-flow architecture (`docs/assets/data-flow.svg`), trust boundary isolation zones, SBOM-to-CVE fan-out, and master artifact I/O lineage matrix.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
 * ⚖️ **[Federal & DoD Regulatory Governance Matrix (`GOVERNANCE.md`)](GOVERNANCE.md)** — Comprehensive statutory traceability matrix linking pipeline workflows and test dummies to NIST SP 800-53 R5, SSDF (800-218), C-SCRM (800-161), FIPS 140-3, DoDI 8510.01 (RMF), CC SRG (IL4–IL6), DISA STIGs, and EO 14028.
 * 📑 **[End-to-End Bundle Review Walkthrough (`grc-bundle Use Case.md`)](grc-bundle%20Use%20Case.md)** — Complete step-by-step audit walkthrough with terminal sessions for all 5 phases, manifest inspections, and negative-testing abort handling.
@@ -292,6 +294,7 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 grc-bundle-review/
 ├── README.md                         # Master project overview, lifecycle, and CLI reference
 ├── ARCHITECTURE.md                   # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
+├── DATAFLOW.md                       # End-to-end data flow, trust boundaries, and artifact lineage matrix
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
 ├── GOVERNANCE.md                     # Federal & DoD compliance matrix (NIST 800-53/218/161, DoDI 8510.01, STIGs)
 ├── TESTING.md                        # End-to-end audit verification test plan
@@ -306,7 +309,8 @@ grc-bundle-review/
 │
 ├── docs/                             # Governance & architecture specifications
 │   ├── assets/
-│   │   └── tech-stack.svg            # Layered Technology Stack presentation graphic
+│   │   ├── data-flow.svg             # Dark-mode Pipeline Data Flow presentation graphic
+│   │   └── tech-stack.svg            # Layered Technology Stack infographic
 │   ├── ami-review-workflow.md        # AMI EBS snapshot cold-mount audit specification & schema
 │   ├── design-rules-and-aocs.md      # Core design principles and AOC 01–140 traceability matrix
 │   ├── review-workflow.md            # 5-stage Git bundle review & SCR/SCN lifecycle

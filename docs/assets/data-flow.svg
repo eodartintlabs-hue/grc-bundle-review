@@ -1,0 +1,304 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="100%" height="100%">
+  <defs>
+    <!-- Dark Mode Canvas Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070a12"/>
+      <stop offset="50%" stop-color="#0c1220"/>
+      <stop offset="100%" stop-color="#080c16"/>
+    </linearGradient>
+
+    <!-- Card Surface Gradient (Dark Mode) -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#162032"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+
+    <!-- Core Application Horizontal Gradient (Emerald -> Cyan -> Royal Blue -> Violet) -->
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="32%" stop-color="#06b6d4"/>
+      <stop offset="68%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+
+    <!-- Soft Dark Drop Shadows -->
+    <filter id="cardShadow" x="-8%" y="-8%" width="116%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+
+    <filter id="barShadow" x="-4%" y="-12%" width="108%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0284c7" flood-opacity="0.28"/>
+    </filter>
+
+    <!-- Arrow Markers Matching Reference Slide -->
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#f97316"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrowSlate" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- ===================================================================== -->
+  <!-- BACKGROUND CANVAS (DARK MODE)                                         -->
+  <!-- ===================================================================== -->
+  <rect width="1200" height="760" rx="14" fill="url(#bgGrad)"/>
+  <rect width="1196" height="756" x="2" y="2" rx="13" fill="none" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- ===================================================================== -->
+  <!-- HEADER: PIPELINE DATA FLOW                                            -->
+  <!-- ===================================================================== -->
+  <rect x="75" y="40" width="110" height="5" rx="2.5" fill="#38bdf8"/>
+  <text x="75" y="90" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="36" font-weight="800" fill="#e2e8f0" letter-spacing="0.8">
+    PIPELINE <tspan fill="#38bdf8">DATA FLOW</tspan>
+  </text>
+
+  <!-- ===================================================================== -->
+  <!-- TOP ROW: 4 DATA STREAM DOMAINS (NO ICONS, CLEAN TYPOGRAPHY)           -->
+  <!-- ===================================================================== -->
+  <rect x="75" y="118" width="1050" height="132" rx="18" fill="#0f172a" stroke="#334155" stroke-width="1.5" stroke-dasharray="5,5"/>
+
+  <!-- Top Card 1: Ingest & Provenance -->
+  <g transform="translate(95, 138)">
+    <rect width="235" height="92" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="18" width="4" height="56" rx="2" fill="#38bdf8"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      Ingest &amp; <tspan font-weight="600" fill="#38bdf8">Provenance</tspan>
+    </text>
+    <text x="20" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      SHA-256 Digest &amp; KMS CMEK
+    </text>
+    <text x="20" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Read-Only Mount (0444 / ro)
+    </text>
+    <text x="20" y="82" font-family="ui-monospace, monospace" font-size="9.5" font-weight="600" fill="#38bdf8">
+      bundle / ami_provenance.json
+    </text>
+  </g>
+
+  <!-- Top Card 2: SAST & Secrets Stream -->
+  <g transform="translate(353, 138)">
+    <rect width="235" height="92" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="18" width="4" height="56" rx="2" fill="#06b6d4"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      SAST &amp; <tspan font-weight="600" fill="#22d3ee">Secrets</tspan>
+    </text>
+    <text x="20" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Semgrep (37 AOC AST Rules)
+    </text>
+    <text x="20" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Gitleaks Entropy Credentials
+    </text>
+    <text x="20" y="82" font-family="ui-monospace, monospace" font-size="9.5" font-weight="600" fill="#22d3ee">
+      semgrep &amp; gitleaks JSON
+    </text>
+  </g>
+
+  <!-- Top Card 3: IaC & Crypto Stream -->
+  <g transform="translate(611, 138)">
+    <rect width="235" height="92" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="18" width="4" height="56" rx="2" fill="#3b82f6"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      IaC &amp; <tspan font-weight="600" fill="#60a5fa">Crypto Audit</tspan>
+    </text>
+    <text x="20" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Checkov TF / K8s / Docker
+    </text>
+    <text x="20" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      EOL &amp; FIPS 140-3 Catalog
+    </text>
+    <text x="20" y="82" font-family="ui-monospace, monospace" font-size="9.5" font-weight="600" fill="#60a5fa">
+      checkov &amp; crypto_lib JSON
+    </text>
+  </g>
+
+  <!-- Top Card 4: SBOM, CVE & STIG Stream -->
+  <g transform="translate(869, 138)">
+    <rect width="235" height="92" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="18" width="4" height="56" rx="2" fill="#8b5cf6"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      SBOM, <tspan font-weight="600" fill="#c084fc">CVE &amp; STIG</tspan>
+    </text>
+    <text x="20" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Syft CycloneDX · Grype/Trivy
+    </text>
+    <text x="20" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      OpenSCAP &amp; DISA STIG Map
+    </text>
+    <text x="20" y="82" font-family="ui-monospace, monospace" font-size="9.5" font-weight="600" fill="#c084fc">
+      sbom.cdx &amp; cve_report JSON
+    </text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- ARROWS: TOP STREAM CARDS <-> CORE DATA BUS                            -->
+  <!-- ===================================================================== -->
+  <!-- Pair 1 -->
+  <line x1="204" y1="252" x2="204" y2="294" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrowCyan)"/>
+  <line x1="220" y1="298" x2="220" y2="256" stroke="#3b82f6" stroke-width="2.2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Pair 2 -->
+  <line x1="462" y1="252" x2="462" y2="294" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrowCyan)"/>
+  <line x1="478" y1="298" x2="478" y2="256" stroke="#3b82f6" stroke-width="2.2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Pair 3 -->
+  <line x1="720" y1="252" x2="720" y2="294" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrowCyan)"/>
+  <line x1="736" y1="298" x2="736" y2="256" stroke="#3b82f6" stroke-width="2.2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Pair 4 -->
+  <line x1="978" y1="252" x2="978" y2="294" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrowCyan)"/>
+  <line x1="994" y1="298" x2="994" y2="256" stroke="#3b82f6" stroke-width="2.2" marker-end="url(#arrowBlue)"/>
+
+  <!-- ===================================================================== -->
+  <!-- MIDDLE BAR: GRC REVIEW BUNDLE APPLICATION & EPHEMERAL WORKSPACE       -->
+  <!-- ===================================================================== -->
+  <g transform="translate(105, 304)">
+    <rect width="990" height="68" rx="12" fill="url(#coreGrad)" filter="url(#barShadow)"/>
+    <text x="45" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="0.6">
+      GRC BUNDLE REVIEWER
+    </text>
+    <line x1="360" y1="34" x2="430" y2="34" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.65"/>
+    <text x="450" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#ffffff" letter-spacing="0.3">
+      Ephemeral Workspace  –  ./grc App  –  Read-Only (0444)
+    </text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- ARROWS: CORE DATA BUS <-> MIDDLE ORCHESTRATION & SYNTHESIS            -->
+  <!-- ===================================================================== -->
+  <!-- Left Pair (Cyan Down, Orange Up) -->
+  <line x1="312" y1="374" x2="312" y2="416" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrowCyan)"/>
+  <line x1="328" y1="420" x2="328" y2="378" stroke="#f97316" stroke-width="2.2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Right Pair (Cyan Down, Emerald Up) -->
+  <line x1="852" y1="374" x2="852" y2="416" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrowCyan)"/>
+  <line x1="868" y1="420" x2="868" y2="378" stroke="#10b981" stroke-width="2.2" marker-end="url(#arrowGreen)"/>
+
+  <!-- ===================================================================== -->
+  <!-- MIDDLE ROW: DOCKER CONTAINERS & GRC REPORTER ENGINE (NO ICONS)        -->
+  <!-- ===================================================================== -->
+
+  <!-- Left Middle Card: Docker & Containers -->
+  <g transform="translate(185, 424)">
+    <rect width="270" height="86" rx="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="16" width="4" height="54" rx="2" fill="#f97316"/>
+    <text x="22" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      DOCKER <tspan font-weight="500" fill="#fb923c">- Containers</tspan>
+    </text>
+    <text x="22" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      grc-scanner:local Runtime
+    </text>
+    <text x="22" y="68" font-family="ui-monospace, monospace" font-size="10" font-weight="600" fill="#fdba74">
+      Air-Gapped (--network none)
+    </text>
+  </g>
+
+  <!-- Right Middle Card: GRC Reporter Engine -->
+  <g transform="translate(715, 424)">
+    <rect width="290" height="86" rx="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="16" width="4" height="54" rx="2" fill="#10b981"/>
+    <text x="22" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      GRC Reporter <tspan font-weight="500" fill="#34d399">- Engine</tspan>
+    </text>
+    <text x="22" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Phase 4 Compliance Synthesizer
+    </text>
+    <text x="22" y="68" font-family="ui-monospace, monospace" font-size="10" font-weight="600" fill="#6ee7b7">
+      scripts/grc_reporter.py
+    </text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- BRANCHED CONNECTOR LINES TO BOTTOM DELIVERABLES ROW                   -->
+  <!-- ===================================================================== -->
+  <!-- Stem Down from Left & Right Middle Cards into Shared Distribution Bus -->
+  <line x1="320" y1="510" x2="320" y2="534" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="860" y1="510" x2="860" y2="534" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Horizontal Bar -->
+  <line x1="255" y1="534" x2="860" y2="534" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Left Branch Arrow Down -->
+  <line x1="255" y1="534" x2="255" y2="558" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+  <!-- Right Branch Arrow Down -->
+  <line x1="785" y1="534" x2="785" y2="558" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <!-- ===================================================================== -->
+  <!-- BOTTOM ROW: LOCAL STORAGE & OS + MARKDOWN & JSON POA&M REPORTS        -->
+  <!-- ===================================================================== -->
+
+  <!-- Bottom Left Card: Local Storage & OS -->
+  <g transform="translate(120, 566)">
+    <rect width="275" height="106" rx="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="18" width="4" height="70" rx="2" fill="#38bdf8"/>
+    <text x="22" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      LOCAL STORAGE &amp; OS
+    </text>
+    <text x="22" y="52" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" fill="#cbd5e1">
+      macOS Golden Gate (Darwin)
+    </text>
+    <text x="22" y="70" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#94a3b8">
+      Local NVMe Host File System
+    </text>
+    <text x="22" y="88" font-family="ui-monospace, monospace" font-size="10" font-weight="600" fill="#38bdf8">
+      evidence/&lt;bundle&gt;/ Storage
+    </text>
+  </g>
+
+  <!-- Bottom Right Dashed Container: Phase 4 Sealed Deliverables -->
+  <rect x="520" y="562" width="560" height="114" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- Bottom Right Sub-Card 1: Human-Readable Markdown Work Papers -->
+  <g transform="translate(538, 576)">
+    <rect width="252" height="86" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="16" width="4" height="54" rx="2" fill="#10b981"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      Markdown <tspan font-weight="500" fill="#34d399">- Work Papers</tspan>
+    </text>
+    <text x="20" y="50" font-family="ui-monospace, monospace" font-size="10.5" font-weight="600" fill="#cbd5e1">
+      poam_data.md (30/90/180d)
+    </text>
+    <text x="20" y="68" font-family="ui-monospace, monospace" font-size="10" font-weight="500" fill="#94a3b8">
+      controls.md · ruleset_val.md
+    </text>
+  </g>
+
+  <!-- Bottom Right Sub-Card 2: POA&Ms & JSON Formatted Reports -->
+  <g transform="translate(810, 576)">
+    <rect width="252" height="86" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.2" filter="url(#cardShadow)"/>
+    <rect x="0" y="16" width="4" height="54" rx="2" fill="#8b5cf6"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#f8fafc">
+      POA&amp;Ms <tspan font-weight="500" fill="#c084fc">- JSON Reports</tspan>
+    </text>
+    <text x="20" y="50" font-family="ui-monospace, monospace" font-size="10.5" font-weight="600" fill="#cbd5e1">
+      scr_scn_package.json
+    </text>
+    <text x="20" y="68" font-family="ui-monospace, monospace" font-size="10" font-weight="500" fill="#94a3b8">
+      Normalized JSON POA&amp;M Data
+    </text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER: SLIDE-STYLE BAR                                               -->
+  <!-- ===================================================================== -->
+  <text x="75" y="724" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#64748b" letter-spacing="0.8">
+    GRC<tspan fill="#38bdf8">PIPELINE</tspan>
+  </text>
+  <line x1="175" y1="720" x2="565" y2="720" stroke="#1e293b" stroke-width="1.5"/>
+  <circle cx="600" cy="720" r="12" fill="#0284c7"/>
+  <text x="600" y="724" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">
+    1
+  </text>
+  <line x1="635" y1="720" x2="945" y2="720" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="1125" y="724" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#38bdf8" text-anchor="end" letter-spacing="0.5">
+    EODARTINTLABS-HUE
+  </text>
+</svg>

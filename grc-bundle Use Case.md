@@ -3,6 +3,7 @@
 <p align="center">
   <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
