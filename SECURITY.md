@@ -1,5 +1,13 @@
 # Security Policy & Architecture Assurance (`SECURITY.md`)
 
+<p align="center">
+  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+</p>
+
 > **Classification**: Internal DevSecOps & Security Compliance Specification  
 > **Target Frameworks**: NIST SP 800-53 Rev. 5 (`SC-7`, `SC-8`, `SC-13`, `SI-3`, `SI-7`, `CM-6`, `CM-7`), DISA STIG, FedRAMP High  
 > **Isolation Posture**: Air-Gapped Runtime Execution (`--network none`), Read-Only Mounts, Zero Untrusted Code Execution  

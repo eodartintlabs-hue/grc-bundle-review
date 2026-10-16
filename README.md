@@ -1,5 +1,13 @@
 # GRC Bundle Reviewer (`grc-bundle-review`)
 
+<p align="center">
+  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+</p>
+
 ```text
 > grcfetch
         .--.          .--.          .--.
@@ -36,7 +44,7 @@
 6. [Phase 4 Compliance Deliverables & SCR/SCN Package](#6-phase-4-compliance-deliverables--scrscn-package)
 7. [CLI Command Reference (`./grc`)](#7-cli-command-reference-grc)
 8. [Quickstart Workflows](#8-quickstart-workflows)
-9. [Negative Testing & Verification](#9-negative-testing--verification)
+9. [Security Assurance, Negative Testing & Verification](#9-security-assurance-negative-testing--verification)
 10. [Repository Structure & Documentation Index](#10-repository-structure--documentation-index)
 
 ---
@@ -46,6 +54,8 @@
 The **GRC Bundle & AMI Review Pipeline** is an automated, cryptographic verification and static security analysis framework engineered to audit **Git software release bundles (`.bundle`)** and **Amazon Machine Images (`AMI`)** out-of-band. 
 
 Designed for high-assurance federal and defense environments (**FedRAMP High**, **DISA STIG**, **DoD RMF**), the pipeline guarantees deep compliance verification and automated **Security Change Request / Security Change Notification (SCR/SCN)** evidence generation without gating or slowing down developer CI/CD velocity.
+
+> 🏛️ **Explore the Visual Technology Stack**: View our Layered System Architecture diagram and detailed technology stack breakdown in **[`ARCHITECTURE.md`](ARCHITECTURE.md)**.
 
 ---
 
@@ -229,7 +239,7 @@ ls -la evidence/release-v1.0.0/
 
 In high-assurance compliance automation, a scanner that outputs zero findings is untrusted until proven capable of failing. This pipeline is paired with the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository containing 8 pre-compiled synthetic release bundles (`aoc-02` through `aoc-12`) and flawed AMI fixtures engineered to trigger every control in the pipeline:
 
-* 🍔 **[Full-Stack "Hamburger" Architecture (`TECHSTACK.md`)](TECHSTACK.md)** — 8-layer visual stack diagram from GitHub & AWS inputs down to Docker isolation, macOS, and Apple Silicon (M5 Pro) hardware.
+* 🏛️ **[System Architecture & Technology Stack (`ARCHITECTURE.md`)](ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`TESTING.md`)](TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
@@ -240,8 +250,8 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 
 ```text
 grc-bundle-review/
-├── README.md                         # Master project overview, architecture, and CLI reference
-├── TECHSTACK.md                      # 8-layer "Hamburger" tech stack diagram & hardware/software specs
+├── README.md                         # Master project overview, lifecycle, and CLI reference
+├── ARCHITECTURE.md                   # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
 ├── TESTING.md                        # End-to-end audit verification test plan
 ├── grc                               # Root CLI dispatcher wrapper
@@ -253,6 +263,8 @@ grc-bundle-review/
 │   └── README.md                     # Container architecture, --network none isolation, and usage guide
 │
 ├── docs/                             # Governance & architecture specifications
+│   ├── assets/
+│   │   └── tech-stack.svg            # Layered Technology Stack presentation graphic
 │   ├── ami-review-workflow.md        # AMI EBS snapshot cold-mount audit specification & schema
 │   ├── design-rules-and-aocs.md      # Core design principles and AOC 01–140 traceability matrix
 │   ├── review-workflow.md            # 5-stage Git bundle review & SCR/SCN lifecycle
