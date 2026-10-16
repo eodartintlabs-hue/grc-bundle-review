@@ -4,6 +4,7 @@
   <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
   <a href="grc-bundle%20Use%20Case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
@@ -244,6 +245,7 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 
 * 🏛️ **[System Architecture & Technology Stack (`ARCHITECTURE.md`)](ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
+* ⚖️ **[Federal & DoD Regulatory Governance Matrix (`GOVERNANCE.md`)](GOVERNANCE.md)** — Comprehensive statutory traceability matrix linking pipeline workflows and test dummies to NIST SP 800-53 R5, SSDF (800-218), C-SCRM (800-161), FIPS 140-3, DoDI 8510.01 (RMF), CC SRG (IL4–IL6), DISA STIGs, and EO 14028.
 * 📑 **[End-to-End Bundle Review Walkthrough (`grc-bundle Use Case.md`)](grc-bundle%20Use%20Case.md)** — Complete step-by-step audit walkthrough with terminal sessions for all 5 phases, manifest inspections, and negative-testing abort handling.
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`TESTING.md`)](TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
@@ -257,6 +259,7 @@ grc-bundle-review/
 ├── README.md                         # Master project overview, lifecycle, and CLI reference
 ├── ARCHITECTURE.md                   # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
+├── GOVERNANCE.md                     # Federal & DoD compliance matrix (NIST 800-53/218/161, DoDI 8510.01, STIGs)
 ├── TESTING.md                        # End-to-end audit verification test plan
 ├── grc-bundle Use Case.md            # Complete 5-phase review walkthrough with sample terminal outputs
 ├── grc                               # Root CLI dispatcher wrapper

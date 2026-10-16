@@ -1,257 +1,621 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 920" width="100%" height="100%">
   <defs>
-    <!-- Soft Card Drop Shadow -->
-    <filter id="cardShadow" x="-8%" y="-8%" width="116%" height="124%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.05"/>
-    </filter>
-
-    <!-- Core Bar Drop Shadow -->
-    <filter id="barShadow" x="-4%" y="-10%" width="108%" height="130%">
-      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1e3a8a" flood-opacity="0.18"/>
-    </filter>
-
-    <!-- Core Application Horizontal Gradient (Green -> Cyan -> Royal -> Purple) -->
-    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#10b981"/>
-      <stop offset="32%" stop-color="#14b8a6"/>
-      <stop offset="68%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070a12"/>
+      <stop offset="50%" stop-color="#0c1220"/>
+      <stop offset="100%" stop-color="#060911"/>
     </linearGradient>
 
-    <!-- Arrow Markers -->
-    <marker id="arrowCyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#00a8e8"/>
-    </marker>
-    <marker id="arrowBlue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#0066cc"/>
-    </marker>
-    <marker id="arrowOrange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#f97316"/>
-    </marker>
-    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#10b981"/>
-    </marker>
-    <marker id="arrowSlate" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#334155"/>
+    <!-- Header Accent Gradient -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+
+    <!-- Card Background Gradients -->
+    <linearGradient id="pillarLeftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0e172a"/>
+      <stop offset="100%" stop-color="#090e1a"/>
+    </linearGradient>
+
+    <linearGradient id="pillarRightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0e1b2e"/>
+      <stop offset="100%" stop-color="#08101d"/>
+    </linearGradient>
+
+    <linearGradient id="gitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+
+    <linearGradient id="dockerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+
+    <linearGradient id="macosGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <linearGradient id="macbookGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+
+    <linearGradient id="neonPurple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+
+    <linearGradient id="engineItemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#131e33"/>
+      <stop offset="100%" stop-color="#172540"/>
+    </linearGradient>
+
+    <linearGradient id="scannerItemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#121e36"/>
+      <stop offset="100%" stop-color="#152442"/>
+    </linearGradient>
+
+    <!-- Glow & Shadow Filters -->
+    <filter id="glowCyan" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#38bdf8" flood-opacity="0.25"/>
+    </filter>
+
+    <filter id="glowOrange" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#f97316" flood-opacity="0.3"/>
+    </filter>
+
+    <filter id="glowDocker" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#0284c7" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="boxShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Dot Pattern for High-Tech Infographic Canvas -->
+    <pattern id="gridDots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#1e293b" opacity="0.4"/>
+    </pattern>
+
+    <!-- Marker Arrow -->
+    <marker id="arrowUp" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 10 L 5 0 L 10 10 z" fill="#38bdf8"/>
     </marker>
   </defs>
 
-  <!-- Background Canvas -->
-  <rect width="1200" height="740" rx="12" fill="#ffffff"/>
+  <!-- ===================================================================== -->
+  <!-- 1. BACKGROUND CANVAS                                                  -->
+  <!-- ===================================================================== -->
+  <rect width="1200" height="920" rx="16" fill="url(#bgGrad)"/>
+  <rect width="1200" height="920" rx="16" fill="url(#gridDots)"/>
+  <rect width="1196" height="916" x="2" y="2" rx="15" fill="none" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- Top Accent Ambient Glows -->
+  <circle cx="200" cy="80" r="160" fill="#38bdf8" opacity="0.04" filter="blur(60px)"/>
+  <circle cx="1000" cy="80" r="160" fill="#a855f7" opacity="0.04" filter="blur(60px)"/>
 
   <!-- ===================================================================== -->
-  <!-- HEADER: TECHNOLOGY STACK                                              -->
+  <!-- 2. HEADER: INFOGRAPHIC TITLE & SCOPE                                  -->
   <!-- ===================================================================== -->
-  <rect x="75" y="42" width="110" height="5" rx="2.5" fill="#00a8e8"/>
-  <text x="75" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="36" font-weight="800" fill="#4b5563" letter-spacing="0.5">
-    TECHNOLOGY <tspan fill="#00a8e8">STACK</tspan>
-  </text>
-
-  <!-- ===================================================================== -->
-  <!-- TOP ROW: CONTAINERIZED SECURITY ENGINES & POLICY BASELINES            -->
-  <!-- ===================================================================== -->
-  <rect x="75" y="120" width="1050" height="128" rx="18" fill="#f3f4f6" stroke="#c5c9d0" stroke-width="1.5" stroke-dasharray="4,4"/>
-
-  <!-- Card 1: Semgrep & Gitleaks (SAST + Secrets) -->
-  <g transform="translate(95, 140)">
-    <rect width="235" height="88" rx="12" fill="#ffffff" filter="url(#cardShadow)"/>
-    <circle cx="44" cy="44" r="26" fill="#00a8e8"/>
-    <!-- Shield + Code Icon -->
-    <path d="M44 26 L58 32 V43 C58 52 52 58 44 62 C36 58 30 52 30 43 V32 Z" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <path d="M41 40 L37 44 L41 48 M47 40 L51 44 L47 48" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="82" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#374151">SAST &amp; Secrets</text>
-    <text x="82" y="57" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#6b7280">Semgrep • Gitleaks</text>
-    <text x="82" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="600" fill="#00a8e8">37 AOC AST Rules</text>
-  </g>
-
-  <!-- Card 2: Checkov & Cloud IaC -->
-  <g transform="translate(352, 140)">
-    <rect width="235" height="88" rx="12" fill="#ffffff" filter="url(#cardShadow)"/>
-    <circle cx="44" cy="44" r="26" fill="#00a8e8"/>
-    <!-- Cloud / IaC Search Icon -->
-    <rect x="31" y="31" width="26" height="22" rx="3" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <line x1="31" y1="37" x2="57" y2="37" stroke="#ffffff" stroke-width="2"/>
-    <circle cx="46" cy="45" r="4" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <line x1="49" y1="48" x2="53" y2="52" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-    <text x="82" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#374151">IaC &amp; Cloud</text>
-    <text x="82" y="57" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#6b7280">Checkov • Terraform</text>
-    <text x="82" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="600" fill="#00a8e8">AMI EBS Cold-Mount</text>
-  </g>
-
-  <!-- Card 3: SBOM & CVE Scanners -->
-  <g transform="translate(610, 140)">
-    <rect width="235" height="88" rx="12" fill="#ffffff" filter="url(#cardShadow)"/>
-    <circle cx="44" cy="44" r="26" fill="#00a8e8"/>
-    <!-- SBOM Layers / Bars Icon -->
-    <path d="M32 52 H56 M35 52 V40 M41 52 V34 M47 52 V38 M53 52 V31" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
-    <ellipse cx="44" cy="52" rx="14" ry="4" fill="none" stroke="#ffffff" stroke-width="1.8"/>
-    <text x="82" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#374151">SBOM &amp; CVE</text>
-    <text x="82" y="57" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#6b7280">Syft • Grype • Trivy</text>
-    <text x="82" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="600" fill="#00a8e8">CycloneDX &amp; SPDX</text>
-  </g>
-
-  <!-- Card 4: STIG & Crypto Engine -->
-  <g transform="translate(868, 140)">
-    <rect width="235" height="88" rx="12" fill="#ffffff" filter="url(#cardShadow)"/>
-    <circle cx="44" cy="44" r="26" fill="#00a8e8"/>
-    <!-- Crypto Lock & Nodes Icon -->
-    <rect x="37" y="42" width="14" height="12" rx="2" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <path d="M40 42 V37 C40 34.5 48 34.5 48 37 V42" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <circle cx="32" cy="34" r="2" fill="#ffffff"/>
-    <circle cx="56" cy="34" r="2" fill="#ffffff"/>
-    <circle cx="32" cy="52" r="2" fill="#ffffff"/>
-    <circle cx="56" cy="52" r="2" fill="#ffffff"/>
-    <text x="82" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#374151">STIG &amp; Crypto</text>
-    <text x="82" y="57" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#6b7280">OpenSCAP • FIPS 140</text>
-    <text x="82" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="600" fill="#00a8e8">DISA STIG &amp; EOL</text>
-  </g>
-
-  <!-- ===================================================================== -->
-  <!-- TOP BIDIRECTIONAL ARROWS (SCANNERS <-> CORE APPLICATION)              -->
-  <!-- ===================================================================== -->
-  <!-- Pair 1 -->
-  <line x1="204" y1="248" x2="204" y2="288" stroke="#00a8e8" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
-  <line x1="220" y1="294" x2="220" y2="254" stroke="#0066cc" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowBlue)"/>
-
-  <!-- Pair 2 -->
-  <line x1="462" y1="248" x2="462" y2="288" stroke="#00a8e8" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
-  <line x1="478" y1="294" x2="478" y2="254" stroke="#0066cc" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowBlue)"/>
-
-  <!-- Pair 3 -->
-  <line x1="720" y1="248" x2="720" y2="288" stroke="#00a8e8" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
-  <line x1="736" y1="294" x2="736" y2="254" stroke="#0066cc" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowBlue)"/>
-
-  <!-- Pair 4 -->
-  <line x1="978" y1="248" x2="978" y2="288" stroke="#00a8e8" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
-  <line x1="994" y1="294" x2="994" y2="254" stroke="#0066cc" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowBlue)"/>
-
-  <!-- ===================================================================== -->
-  <!-- CENTER GRADIENT BAR: CORE APPLICATION                                 -->
-  <!-- ===================================================================== -->
-  <g transform="translate(115, 296)">
-    <rect width="970" height="66" rx="12" fill="url(#coreGrad)" filter="url(#barShadow)"/>
-    <text x="105" y="41" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="23" font-weight="800" fill="#ffffff" letter-spacing="0.8">
-      GRC BUNDLE REVIEWER
+  <g transform="translate(60, 28)">
+    <!-- Top Category Pill -->
+    <rect x="0" y="0" width="460" height="22" rx="11" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+    <circle cx="12" cy="11" r="4" fill="#38bdf8"/>
+    <text x="24" y="15" font-family="system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" fill="#38bdf8" letter-spacing="1.2">
+      GRC BUNDLE REVIEWER · SYSTEM ARCHITECTURE &amp; TECH STACK
     </text>
-    <line x1="415" y1="33" x2="495" y2="33" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.7"/>
-    <text x="515" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16.5" font-weight="500" fill="#ffffff">
-      Python 3.11 – Bash CLI – Docker Air-Gap – Debian Bookworm
+
+    <!-- Main Infographic Title -->
+    <text x="0" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="800" fill="#ffffff" letter-spacing="0.5">
+      TECHNOLOGY STACK <tspan fill="url(#headerGrad)">INFOGRAPHIC</tspan>
+    </text>
+    <text x="0" y="76" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#94a3b8">
+      Layered Hardware, OS, Container Isolation, and Security Scanners · Out-of-Band &amp; Air-Gapped (--network none)
+    </text>
+
+    <!-- Status Badges Right -->
+    <g transform="translate(740, 16)">
+      <rect x="0" y="0" width="165" height="26" rx="6" fill="#132338" stroke="#0ea5e9" stroke-width="1"/>
+      <text x="82" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="0.5">
+        AIR-GAPPED (--network none)
+      </text>
+
+      <rect x="175" y="0" width="165" height="26" rx="6" fill="#1e1833" stroke="#a855f7" stroke-width="1"/>
+      <text x="257" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#c084fc" text-anchor="middle" letter-spacing="0.5">
+        FEDRAMP HIGH &amp; DISA STIG
+      </text>
+    </g>
+  </g>
+
+  <!-- Horizontal Divider Rule -->
+  <line x1="60" y1="120" x2="1140" y2="120" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- ===================================================================== -->
+  <!-- 3. TOP LEVEL: TWO PILLARS (CUSTOM ENGINES vs CONTAINERIZED SCANNERS) -->
+  <!-- ===================================================================== -->
+
+  <!-- ===================================================================== -->
+  <!-- LEFT PILLAR: CUSTOM COMPLIANCE ENGINES (Sitting above Local Git)      -->
+  <!-- ===================================================================== -->
+  <g transform="translate(60, 136)">
+    <!-- Container Frame -->
+    <rect width="520" height="476" rx="14" fill="url(#pillarLeftGrad)" stroke="#1e293b" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="520" height="5" rx="2.5" fill="url(#neonCyan)"/>
+
+    <!-- Pillar Header: Custom Compliance Engines -->
+    <g transform="translate(20, 18)">
+      <rect x="0" y="0" width="140" height="20" rx="5" fill="#0c4a6e" stroke="#38bdf8" stroke-width="0.8"/>
+      <text x="70" y="14" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" fill="#7dd3fc" text-anchor="middle" letter-spacing="0.8">
+        CUSTOM-MADE TOOLS
+      </text>
+
+      <text x="0" y="44" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#ffffff" letter-spacing="0.3">
+        Custom Compliance Engines
+      </text>
+      <text x="0" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" fill="#94a3b8">
+        100% Python 3 Standard Library · Zero Host Dependencies · Dispatched by ./grc
+      </text>
+    </g>
+
+    <!-- Inner Engines Stack (with small engine tags on top) -->
+    <g transform="translate(20, 92)">
+
+      <!-- Engine 1: grc_bundle -->
+      <g transform="translate(0, 0)">
+        <rect width="480" height="66" rx="8" fill="url(#engineItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="66" rx="2" fill="#38bdf8"/>
+        <!-- Small Engine Tag on top -->
+        <rect x="14" y="8" width="105" height="17" rx="4" fill="#075985"/>
+        <text x="66" y="20" font-family="ui-monospace, monospace" font-size="9.5" font-weight="800" fill="#e0f2fe" text-anchor="middle">
+          grc_bundle
+        </text>
+        <text x="128" y="20" font-family="ui-monospace, monospace" font-size="9.5" fill="#64748b">
+          scripts/grc_bundle.py
+        </text>
+        <!-- Purpose & Deliverable -->
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#e2e8f0">
+          Cryptographic Ingestion &amp; Ephemeral Restore
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">
+          SHA-256 pre-check, git bundle verify, chmod 0444 lock → <tspan fill="#38bdf8" font-weight="600">bundle_provenance.json</tspan>
+        </text>
+      </g>
+
+      <!-- Engine 2: grc_ami -->
+      <g transform="translate(0, 74)">
+        <rect width="480" height="66" rx="8" fill="url(#engineItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="66" rx="2" fill="#0ea5e9"/>
+        <!-- Small Engine Tag on top -->
+        <rect x="14" y="8" width="105" height="17" rx="4" fill="#0369a1"/>
+        <text x="66" y="20" font-family="ui-monospace, monospace" font-size="9.5" font-weight="800" fill="#e0f2fe" text-anchor="middle">
+          grc_ami
+        </text>
+        <text x="128" y="20" font-family="ui-monospace, monospace" font-size="9.5" fill="#64748b">
+          scripts/grc_ami.py
+        </text>
+        <!-- Purpose & Deliverable -->
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#e2e8f0">
+          EBS Snapshot Cold-Mount &amp; KMS CMEK Gate
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">
+          KMS key encryption verification &amp; read-only cold-mount → <tspan fill="#38bdf8" font-weight="600">ami_provenance.json</tspan>
+        </text>
+      </g>
+
+      <!-- Engine 3: crypto_lib_scan -->
+      <g transform="translate(0, 148)">
+        <rect width="480" height="66" rx="8" fill="url(#engineItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="66" rx="2" fill="#6366f1"/>
+        <!-- Small Engine Tag on top -->
+        <rect x="14" y="8" width="125" height="17" rx="4" fill="#3730a3"/>
+        <text x="76" y="20" font-family="ui-monospace, monospace" font-size="9.5" font-weight="800" fill="#e0e7ff" text-anchor="middle">
+          crypto_lib_scan
+        </text>
+        <text x="148" y="20" font-family="ui-monospace, monospace" font-size="9.5" fill="#64748b">
+          scripts/crypto_lib_scan.py
+        </text>
+        <!-- Purpose & Deliverable -->
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#e2e8f0">
+          EOL Cryptography &amp; FIPS 140-3 Module Auditor
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">
+          Scans manifests &amp; AST against rules/crypto_catalog.json → <tspan fill="#818cf8" font-weight="600">crypto_lib_findings.json</tspan>
+        </text>
+      </g>
+
+      <!-- Engine 4: sbom_analyzer -->
+      <g transform="translate(0, 222)">
+        <rect width="480" height="66" rx="8" fill="url(#engineItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="66" rx="2" fill="#8b5cf6"/>
+        <!-- Small Engine Tag on top -->
+        <rect x="14" y="8" width="125" height="17" rx="4" fill="#4c1d95"/>
+        <text x="76" y="20" font-family="ui-monospace, monospace" font-size="9.5" font-weight="800" fill="#ede9fe" text-anchor="middle">
+          sbom_analyzer
+        </text>
+        <text x="148" y="20" font-family="ui-monospace, monospace" font-size="9.5" fill="#64748b">
+          scripts/sbom_analyzer.py
+        </text>
+        <!-- Purpose & Deliverable -->
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#e2e8f0">
+          DISA STIG &amp; DoD Cloud SRG Applicability Mapper
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">
+          Correlates CycloneDX/SPDX components to DoD STIGs → <tspan fill="#a78bfa" font-weight="600">stig_applicability_report.json</tspan>
+        </text>
+      </g>
+
+      <!-- Engine 5: grc_reporter -->
+      <g transform="translate(0, 296)">
+        <rect width="480" height="74" rx="8" fill="#13233c" stroke="#38bdf8" stroke-width="1.2"/>
+        <rect x="0" y="0" width="4" height="74" rx="2" fill="#38bdf8"/>
+        <!-- Small Engine Tag on top -->
+        <rect x="14" y="8" width="115" height="17" rx="4" fill="#0284c7"/>
+        <text x="71" y="20" font-family="ui-monospace, monospace" font-size="9.5" font-weight="800" fill="#ffffff" text-anchor="middle">
+          grc_reporter
+        </text>
+        <text x="138" y="20" font-family="ui-monospace, monospace" font-size="9.5" fill="#7dd3fc">
+          scripts/grc_reporter.py · PHASE 4 SYNTHESIZER
+        </text>
+        <!-- Purpose & Deliverable -->
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff">
+          Compliance Deliverables &amp; SCR/SCN Package Engine
+        </text>
+        <text x="14" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">
+          FedRAMP SLA POA&amp;M, NIST 800-53 Matrix, eMASS JSON &amp; SHA-256 seal
+        </text>
+        <text x="14" y="70" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#38bdf8">
+          poam_data.md · controls.md · ruleset_validation.md · scr_scn_package.json
+        </text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- RIGHT PILLAR: CONTAINERIZED SCANNERS (Sitting on top of Docker)      -->
+  <!-- ===================================================================== -->
+  <g transform="translate(620, 136)">
+    <!-- Container Frame -->
+    <rect width="520" height="476" rx="14" fill="url(#pillarRightGrad)" stroke="#1e293b" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="520" height="5" rx="2.5" fill="url(#dockerGrad)"/>
+
+    <!-- Pillar Header: Containerized Scanning Suite -->
+    <g transform="translate(20, 18)">
+      <rect x="0" y="0" width="170" height="20" rx="5" fill="#0369a1" stroke="#38bdf8" stroke-width="0.8"/>
+      <text x="85" y="14" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" fill="#e0f2fe" text-anchor="middle" letter-spacing="0.8">
+        CONTAINERIZED SCANNERS
+      </text>
+
+      <text x="0" y="44" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#ffffff" letter-spacing="0.3">
+        Third-Party Security Scanners
+      </text>
+      <text x="0" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" fill="#94a3b8">
+        All bundled inside grc-scanner:local · Air-gapped (--network none) · Isolated
+      </text>
+    </g>
+
+    <!-- 6 Scanners Grid (2 Columns x 3 Rows) on top of Docker -->
+    <g transform="translate(20, 84)">
+
+      <!-- Scanner 1: Semgrep -->
+      <g transform="translate(0, 0)">
+        <rect width="232" height="92" rx="8" fill="url(#scannerItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="92" rx="2" fill="#38bdf8"/>
+        <text x="14" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#38bdf8">
+          Semgrep
+        </text>
+        <rect x="145" y="12" width="75" height="15" rx="3" fill="#0c4a6e"/>
+        <text x="182" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="700" fill="#7dd3fc" text-anchor="middle">
+          AST SAST
+        </text>
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#e2e8f0">
+          37 Custom Baseline Rules
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#94a3b8">
+          AOC 02–140 syntax tree audit across Go, Python, Java, JS
+        </text>
+        <text x="14" y="78" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#38bdf8">
+          → semgrep_findings.json
+        </text>
+      </g>
+
+      <!-- Scanner 2: Gitleaks -->
+      <g transform="translate(248, 0)">
+        <rect width="232" height="92" rx="8" fill="url(#scannerItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="92" rx="2" fill="#f43f5e"/>
+        <text x="14" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#fb7185">
+          Gitleaks
+        </text>
+        <rect x="140" y="12" width="80" height="15" rx="3" fill="#4c0519"/>
+        <text x="180" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="700" fill="#fda4af" text-anchor="middle">
+          SECRETS SCAN
+        </text>
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#e2e8f0">
+          High-Entropy Credentials
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#94a3b8">
+          Detects AWS tokens, RSA private keys, and hardcoded secrets
+        </text>
+        <text x="14" y="78" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#fb7185">
+          → gitleaks_report.json
+        </text>
+      </g>
+
+      <!-- Scanner 3: Checkov -->
+      <g transform="translate(0, 102)">
+        <rect width="232" height="92" rx="8" fill="url(#scannerItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="92" rx="2" fill="#a855f7"/>
+        <text x="14" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#c084fc">
+          Checkov
+        </text>
+        <rect x="145" y="12" width="75" height="15" rx="3" fill="#3b0764"/>
+        <text x="182" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="700" fill="#d8b4fe" text-anchor="middle">
+          IaC POLICY
+        </text>
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#e2e8f0">
+          Infrastructure Compliance
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#94a3b8">
+          Audits Terraform, Kubernetes, Dockerfile &amp; CloudFormation
+        </text>
+        <text x="14" y="78" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#c084fc">
+          → checkov_findings.json
+        </text>
+      </g>
+
+      <!-- Scanner 4: Syft -->
+      <g transform="translate(248, 102)">
+        <rect width="232" height="92" rx="8" fill="url(#scannerItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="92" rx="2" fill="#10b981"/>
+        <text x="14" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#34d399">
+          Syft
+        </text>
+        <rect x="140" y="12" width="80" height="15" rx="3" fill="#064e3b"/>
+        <text x="180" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="700" fill="#6ee7b7" text-anchor="middle">
+          SBOM ENGINE
+        </text>
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#e2e8f0">
+          Software Bill of Materials
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#94a3b8">
+          CycloneDX JSON indexing packages, libraries &amp; PURLs
+        </text>
+        <text x="14" y="78" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#34d399">
+          → sbom.cdx.json
+        </text>
+      </g>
+
+      <!-- Scanner 5: Grype -->
+      <g transform="translate(0, 204)">
+        <rect width="232" height="92" rx="8" fill="url(#scannerItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="92" rx="2" fill="#f59e0b"/>
+        <text x="14" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#fbbf24">
+          Grype
+        </text>
+        <rect x="145" y="12" width="75" height="15" rx="3" fill="#451a03"/>
+        <text x="182" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="700" fill="#fde68a" text-anchor="middle">
+          CVE SCANNER
+        </text>
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#e2e8f0">
+          Offline SBOM Matching
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#94a3b8">
+          Correlates SBOM packages against pre-cached CVE DBs
+        </text>
+        <text x="14" y="78" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#fbbf24">
+          → grype_cve_report.json
+        </text>
+      </g>
+
+      <!-- Scanner 6: Trivy -->
+      <g transform="translate(248, 204)">
+        <rect width="232" height="92" rx="8" fill="url(#scannerItemGrad)" stroke="#1e293b" stroke-width="1"/>
+        <rect x="0" y="0" width="4" height="92" rx="2" fill="#06b6d4"/>
+        <text x="14" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#22d3ee">
+          Trivy
+        </text>
+        <rect x="140" y="12" width="80" height="15" rx="3" fill="#164e63"/>
+        <text x="180" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="8" font-weight="700" fill="#a5f3fc" text-anchor="middle">
+          FILESYSTEM AUDIT
+        </text>
+        <text x="14" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#e2e8f0">
+          Package &amp; Config CVEs
+        </text>
+        <text x="14" y="56" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" fill="#94a3b8">
+          Secondary offline validation of repository dependencies
+        </text>
+        <text x="14" y="78" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#22d3ee">
+          → trivy_cve_report.json
+        </text>
+      </g>
+
+      <!-- In-Container Banner note -->
+      <g transform="translate(0, 306)">
+        <rect width="480" height="64" rx="8" fill="#0d1b2a" stroke="#0ea5e9" stroke-width="1" stroke-dasharray="4,3"/>
+        <circle cx="28" cy="32" r="14" fill="#0369a1"/>
+        <path d="M 22 32 L 26 36 L 34 27" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        <text x="52" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700" fill="#e0f2fe">
+          All 6 Scanners Live Inside the grc-scanner:local Docker Image
+        </text>
+        <text x="52" y="44" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#94a3b8">
+          Pre-cached CVE databases · 0 host package pollution · --network none kernel sandbox
+        </text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 4. MIDDLE LEVEL: LOCAL GIT & DOCKER (Side by Side)                    -->
+  <!-- ===================================================================== -->
+
+  <!-- Left: LOCAL GIT (Directly beneath Custom Compliance Engines) -->
+  <g transform="translate(60, 626)">
+    <rect width="520" height="74" rx="10" fill="#15131e" stroke="#ea580c" stroke-width="1.8" filter="url(#glowOrange)"/>
+    <!-- Git Icon & Badge -->
+    <g transform="translate(20, 16)">
+      <circle cx="21" cy="21" r="20" fill="url(#gitGrad)"/>
+      <!-- Git Branch Icon -->
+      <circle cx="16" cy="14" r="3" fill="#ffffff"/>
+      <circle cx="16" cy="28" r="3" fill="#ffffff"/>
+      <circle cx="26" cy="21" r="3" fill="#ffffff"/>
+      <line x1="16" y1="17" x2="16" y2="25" stroke="#ffffff" stroke-width="2"/>
+      <path d="M 16 21 Q 21 21 23 21" stroke="#ffffff" stroke-width="2" fill="none"/>
+
+      <text x="52" y="18" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="800" fill="#ffffff" letter-spacing="0.3">
+        Local Git
+      </text>
+      <rect x="138" y="5" width="85" height="17" rx="4" fill="#431407"/>
+      <text x="180" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="700" fill="#fdba74" text-anchor="middle">
+        OPEN-SOURCE
+      </text>
+      <text x="52" y="34" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#fdba74">
+        Cryptographic Bundle Ingestion · git bundle verify · Ref Extraction &amp; Detached HEAD
+      </text>
+    </g>
+  </g>
+
+  <!-- Right: DOCKER (Directly beneath the 6 Containerized Scanners) -->
+  <g transform="translate(620, 626)">
+    <rect width="520" height="74" rx="10" fill="#0d1b2e" stroke="#0284c7" stroke-width="1.8" filter="url(#glowDocker)"/>
+    <!-- Docker Icon & Badge -->
+    <g transform="translate(20, 16)">
+      <circle cx="21" cy="21" r="20" fill="url(#dockerGrad)"/>
+      <!-- Docker Whale Glyph -->
+      <rect x="10" y="19" width="3" height="3" fill="#ffffff"/>
+      <rect x="14" y="19" width="3" height="3" fill="#ffffff"/>
+      <rect x="18" y="19" width="3" height="3" fill="#ffffff"/>
+      <rect x="14" y="15" width="3" height="3" fill="#ffffff"/>
+      <rect x="18" y="15" width="3" height="3" fill="#ffffff"/>
+      <path d="M 8 23 C 10 27, 28 27, 32 23 C 33 22, 34 23, 34 23" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <text x="52" y="18" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="800" fill="#ffffff" letter-spacing="0.3">
+        Docker
+      </text>
+      <rect x="122" y="5" width="135" height="17" rx="4" fill="#082f49"/>
+      <text x="189" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="700" fill="#7dd3fc" text-anchor="middle">
+        CONTAINER RUNTIME
+      </text>
+      <text x="52" y="34" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#7dd3fc">
+        grc-scanner:local · Linux 6.x MicroVM · --network none (Air-Gap) · /workspace:ro
+      </text>
+    </g>
+  </g>
+
+  <!-- Visual Vertical Connector Conduits (Infographic Bridges) -->
+  <g stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6">
+    <!-- From Engines to Local Git -->
+    <line x1="320" y1="612" x2="320" y2="626"/>
+    <!-- From Scanners to Docker -->
+    <line x1="880" y1="612" x2="880" y2="626"/>
+    <!-- From Local Git to macOS -->
+    <line x1="320" y1="700" x2="320" y2="714"/>
+    <!-- From Docker to macOS -->
+    <line x1="880" y1="700" x2="880" y2="714"/>
+    <!-- From macOS to MacBook Pro -->
+    <line x1="600" y1="786" x2="600" y2="798"/>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 5. PLATFORM LEVEL: macOS Golden Gate                                  -->
+  <!-- ===================================================================== -->
+  <g transform="translate(60, 714)">
+    <rect width="1080" height="72" rx="12" fill="url(#macosGrad)" stroke="#475569" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="1080" height="3" rx="1.5" fill="url(#neonPurple)"/>
+
+    <g transform="translate(24, 16)">
+      <!-- Apple Logo Icon -->
+      <circle cx="20" cy="20" r="18" fill="#0f172a" stroke="#64748b" stroke-width="1"/>
+      <path d="M 20 12 C 21 10, 23 9, 23 9 C 23 9, 22 11, 21 12 C 20 13, 19 12, 20 12 Z 
+               M 16 16 C 18 16, 19 17, 21 17 C 23 17, 24 16, 25 16 C 26 16, 28 17, 28 20 C 28 23, 26 26, 24 28 C 23 29, 22 29, 21 29 C 19 29, 18 29, 17 28 C 15 26, 13 23, 13 19 C 13 17, 15 16, 16 16 Z" 
+            fill="#e2e8f0"/>
+
+      <!-- Text: macOS Golden Gate -->
+      <text x="52" y="19" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#ffffff" letter-spacing="0.4">
+        macOS Golden Gate
+      </text>
+      <rect x="250" y="5" width="160" height="18" rx="4" fill="#0f172a" stroke="#818cf8" stroke-width="0.8"/>
+      <text x="330" y="17" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="700" fill="#c7d2fe" text-anchor="middle" letter-spacing="0.5">
+        HOST OPERATING SYSTEM
+      </text>
+
+      <text x="52" y="37" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" fill="#cbd5e1">
+        Darwin Kernel Supervisor · POSIX Read-Only ACL Enforcement (chmod 0444) · Hypervisor MicroVM Primitives
+      </text>
+    </g>
+
+    <!-- OS Features Pill Right -->
+    <g transform="translate(860, 22)">
+      <rect x="0" y="0" width="195" height="28" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1"/>
+      <circle cx="14" cy="14" r="4" fill="#34d399"/>
+      <text x="26" y="18" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#e2e8f0">
+        ZERO UNTRUSTED EXECUTION
+      </text>
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- 6. FOUNDATION LEVEL: MacBook Pro | 48GB RAM | M5 Pro                  -->
+  <!-- ===================================================================== -->
+  <g transform="translate(60, 798)">
+    <rect width="1080" height="76" rx="12" fill="url(#macbookGrad)" stroke="#38bdf8" stroke-width="1.8" filter="url(#glowCyan)"/>
+
+    <g transform="translate(24, 18)">
+      <!-- Silicon Chip Icon -->
+      <rect x="2" y="2" width="36" height="36" rx="6" fill="#070d18" stroke="#38bdf8" stroke-width="1.2"/>
+      <rect x="10" y="10" width="20" height="20" rx="3" fill="#0284c7"/>
+      <text x="20" y="24" font-family="ui-monospace, monospace" font-size="9" font-weight="900" fill="#ffffff" text-anchor="middle">
+        M5
+      </text>
+
+      <!-- Pin Lines on Chip -->
+      <line x1="8" y1="2" x2="8" y2="0" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="16" y1="2" x2="16" y2="0" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="24" y1="2" x2="24" y2="0" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="32" y1="2" x2="32" y2="0" stroke="#38bdf8" stroke-width="1.5"/>
+
+      <!-- Primary Hardware String Requested by User -->
+      <text x="52" y="22" font-family="system-ui, -apple-system, sans-serif" font-size="21" font-weight="900" fill="#ffffff" letter-spacing="0.5">
+        MacBook Pro | 48GB RAM | M5 Pro
+      </text>
+
+      <rect x="420" y="6" width="135" height="20" rx="4" fill="#082f49" stroke="#38bdf8" stroke-width="0.8"/>
+      <text x="487" y="19" font-family="system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="800" fill="#7dd3fc" text-anchor="middle" letter-spacing="0.5">
+        BARE METAL SILICON
+      </text>
+
+      <text x="52" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="500" fill="#94a3b8">
+        Hardware-Accelerated ARM64 Engine · Unified Memory Architecture (UMA) · Local $0 Cloud Execution
+      </text>
+    </g>
+
+    <!-- Right Side Perf Badge -->
+    <g transform="translate(860, 24)">
+      <rect x="0" y="0" width="195" height="28" rx="6" fill="#0c1e33" stroke="#38bdf8" stroke-width="1"/>
+      <circle cx="14" cy="14" r="4" fill="#38bdf8"/>
+      <text x="26" y="18" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#38bdf8">
+        8–15s COMPLETE RUNTIME
+      </text>
+    </g>
+  </g>
+
+  <!-- Bottom Brand Footer -->
+  <g transform="translate(60, 892)">
+    <text x="0" y="12" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#475569">
+      EODARTINTLABS-HUE · GRC BUNDLE &amp; AMI REVIEW PIPELINE · INTERNAL DEVSECOPS SPECIFICATION
+    </text>
+    <text x="1080" y="12" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#38bdf8" text-anchor="end">
+      NIST SP 800-53 R5 · DISA ASD STIG · OMB M-22-18
     </text>
   </g>
-
-  <!-- ===================================================================== -->
-  <!-- MIDDLE BIDIRECTIONAL ARROWS                                           -->
-  <!-- ===================================================================== -->
-  <!-- Left Middle Pair -->
-  <line x1="305" y1="362" x2="305" y2="402" stroke="#00a8e8" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
-  <line x1="322" y1="408" x2="322" y2="368" stroke="#f97316" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowOrange)"/>
-
-  <!-- Right Middle Pair -->
-  <line x1="875" y1="362" x2="875" y2="402" stroke="#00a8e8" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowCyan)"/>
-  <line x1="892" y1="408" x2="892" y2="368" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arrowGreen)"/>
-
-  <!-- ===================================================================== -->
-  <!-- MIDDLE ROW: ISOLATION RUNTIME & PHASE 4 COMPLIANCE SYNTHESIS          -->
-  <!-- ===================================================================== -->
-  <!-- Left Middle Card: Container Isolation & Ingestion Gateway -->
-  <g transform="translate(185, 412)">
-    <rect width="285" height="90" rx="12" fill="#ffffff" filter="url(#cardShadow)"/>
-    <circle cx="46" cy="45" r="26" fill="#9b87c7"/>
-    <!-- Twin Gears Icon -->
-    <circle cx="40" cy="40" r="7" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-dasharray="4,2"/>
-    <circle cx="52" cy="51" r="6" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,2"/>
-    <circle cx="40" cy="40" r="2.5" fill="#ffffff"/>
-    <circle cx="52" cy="51" r="2" fill="#ffffff"/>
-    <text x="84" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#374151">Isolation &amp; Ingestion</text>
-    <text x="84" y="56" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#4b5563">--network none • /workspace:ro</text>
-    <text x="84" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" fill="#6b7280">grc_bundle.py • grc_ami.py (0444)</text>
-  </g>
-
-  <!-- Right Middle Card: Phase 4 SCR/SCN & Compliance Reporting -->
-  <g transform="translate(730, 412)">
-    <rect width="310" height="90" rx="12" fill="#ffffff" filter="url(#cardShadow)"/>
-    <circle cx="46" cy="45" r="26" fill="#22c55e"/>
-    <!-- Dashboard & Compliance Document Icon -->
-    <rect x="33" y="33" width="26" height="22" rx="2.5" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <line x1="37" y1="40" x2="48" y2="40" stroke="#ffffff" stroke-width="2"/>
-    <line x1="37" y1="45" x2="54" y2="45" stroke="#ffffff" stroke-width="2"/>
-    <line x1="37" y1="50" x2="45" y2="50" stroke="#ffffff" stroke-width="2"/>
-    <circle cx="53" cy="39" r="2.5" fill="#ffffff"/>
-    <text x="84" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#374151">SCR/SCN &amp; POA&amp;M Engine</text>
-    <text x="84" y="56" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#4b5563">poam_data.md • controls.md</text>
-    <text x="84" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" fill="#6b7280">NIST 800-53 R5 • FedRAMP • SHA-256</text>
-  </g>
-
-  <!-- ===================================================================== -->
-  <!-- ORTHOGONAL BRANCHING CONNECTOR TO BOTTOM ROW                          -->
-  <!-- ===================================================================== -->
-  <line x1="327" y1="502" x2="327" y2="532" stroke="#334155" stroke-width="2.2"/>
-  <line x1="885" y1="502" x2="885" y2="532" stroke="#334155" stroke-width="2.2"/>
-  <line x1="270" y1="532" x2="885" y2="532" stroke="#334155" stroke-width="2.2"/>
-  <line x1="270" y1="532" x2="270" y2="556" stroke="#334155" stroke-width="2.2" marker-end="url(#arrowSlate)"/>
-  <line x1="775" y1="532" x2="775" y2="556" stroke="#334155" stroke-width="2.2" marker-end="url(#arrowSlate)"/>
-
-  <!-- ===================================================================== -->
-  <!-- BOTTOM ROW: APPLE SILICON WORKSTATION & GIT / GITHUB ECOSYSTEM        -->
-  <!-- ===================================================================== -->
-
-  <!-- Bottom-Left Card: Workstation Hardware, OS & IDE -->
-  <g transform="translate(115, 562)">
-    <rect width="335" height="106" rx="14" fill="#ffffff" filter="url(#cardShadow)"/>
-    <!-- Blue Hexagon Badge -->
-    <polygon points="52,24 76,38 76,66 52,80 28,66 28,38" fill="#00a8e8"/>
-    <!-- Desktop / MacBook Monitor Icon -->
-    <rect x="38" y="40" width="28" height="18" rx="2" fill="none" stroke="#ffffff" stroke-width="2.2"/>
-    <line x1="46" y1="63" x2="58" y2="63" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
-    <line x1="52" y1="58" x2="52" y2="63" stroke="#ffffff" stroke-width="2.2"/>
-    <text x="94" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#1f2937">WORKSTATION</text>
-    <text x="94" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#374151">MacBook Pro – Apple Silicon M5 Pro</text>
-    <text x="94" y="76" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#4b5563">macOS ARM64 – Docker Desktop</text>
-    <text x="94" y="93" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#00a8e8">Google Antigravity IDE • Zsh • jq</text>
-  </g>
-
-  <!-- Bottom-Right Dashed Container: Local Git & GitHub Repositories -->
-  <rect x="505" y="562" width="585" height="106" rx="14" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,4"/>
-
-  <!-- Sub-Card 1: Local Git & Release Bundles -->
-  <g transform="translate(522, 575)">
-    <rect width="265" height="80" rx="10" fill="#ffffff" filter="url(#cardShadow)"/>
-    <!-- Blue Hexagon Badge -->
-    <polygon points="42,15 62,26 62,50 42,61 22,50 22,26" fill="#00a8e8"/>
-    <!-- Git Branch / Bundle Icon -->
-    <circle cx="36" cy="30" r="3" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <circle cx="36" cy="46" r="3" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <circle cx="49" cy="36" r="3" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <path d="M36 33 V43 M36 38 C42 38 49 38 49 39" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <text x="76" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15.5" font-weight="800" fill="#1f2937">Local Git <tspan font-weight="500" fill="#4b5563">- v2.30+</tspan></text>
-    <text x="76" y="56" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#6b7280">.bundle Verify &amp; Clone</text>
-  </g>
-
-  <!-- Sub-Card 2: GitHub Cloud & Test Dummies -->
-  <g transform="translate(808, 575)">
-    <rect width="265" height="80" rx="10" fill="#ffffff" filter="url(#cardShadow)"/>
-    <!-- Blue Hexagon Badge -->
-    <polygon points="42,15 62,26 62,50 42,61 22,50 22,26" fill="#00a8e8"/>
-    <!-- Repository / Cloud Octo Node Icon -->
-    <path d="M33 44 C33 36 37 31 42 31 C47 31 51 36 51 44" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="42" cy="37" r="4" fill="#ffffff"/>
-    <path d="M35 47 H49" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
-    <text x="76" y="37" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15.5" font-weight="800" fill="#1f2937">GitHub <tspan font-weight="500" fill="#4b5563">- Repos</tspan></text>
-    <text x="76" y="56" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#6b7280">grc-bundle-review &amp; dummies</text>
-  </g>
-
-  <!-- ===================================================================== -->
-  <!-- FOOTER BAR                                                            -->
-  <!-- ===================================================================== -->
-  <text x="75" y="712" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#6b7280" letter-spacing="0.8">
-    GRC<tspan fill="#00a8e8">PIPELINE</tspan>
-  </text>
-  <line x1="175" y1="708" x2="575" y2="708" stroke="#00a8e8" stroke-width="1" stroke-opacity="0.5"/>
-  <circle cx="600" cy="708" r="10" fill="#00a8e8"/>
-  <text x="600" y="712" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#ffffff">1</text>
-  <line x1="625" y1="708" x2="985" y2="708" stroke="#00a8e8" stroke-width="1" stroke-opacity="0.5"/>
-  <text x="1125" y="712" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#00a8e8" letter-spacing="0.5">
-    EODARTINTLABS-HUE
-  </text>
 </svg>

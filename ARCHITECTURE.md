@@ -4,6 +4,7 @@
   <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
   <a href="grc-bundle%20Use%20Case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
@@ -45,9 +46,9 @@ The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & C
 
 ### 2.1 Bare Metal & Hardware Layer
 
-#### MacBook Pro / Apple Silicon (M-Series SoC)
+#### MacBook Pro | 48GB RAM | M5 Pro
 * **Classification**: `[Bare Metal]`
-* **General Purpose**: Serves as the high-assurance auditor host workstation. The unified memory architecture (UMA) and high-performance ARM64 cores deliver local, hardware-accelerated processing capable of running 7 parallel static analysis engines simultaneously without thermal throttling or remote compute offloading.
+* **General Purpose**: Serves as the high-assurance auditor host workstation. The unified memory architecture (UMA, 48GB Unified RAM) and high-performance M5 Pro ARM64 cores deliver local, hardware-accelerated processing capable of running 7 parallel static analysis engines simultaneously without thermal throttling or remote compute offloading.
 * **Item Produced**: Provides the physical compute, hardware cryptographic acceleration (AES-NI / ARMv8 crypto extensions), and memory buses that execute all ephemeral review containers and Python scripts in 8–15 seconds per bundle.
 * **Individual Cost**: **$1,999 – $3,499** (one-time physical hardware acquisition; $0 per-scan operational cost).
 
@@ -55,7 +56,7 @@ The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & C
 
 ### 2.2 Operating System & Virtualization Layer
 
-#### macOS (Darwin)
+#### macOS Golden Gate
 * **Classification**: `[Third-Party Software]`
 * **General Purpose**: The host operating system running directly on Apple Silicon. It provides kernel-level process isolation, secure user keychain access, POSIX filesystem ACLs (`chmod 0444` write-locks), and the runtime environment for the primary `./grc` dispatcher.
 * **Item Produced**: Host system kernel primitives, read-only filesystem mounts, and POSIX signals coordinating the auditor's local command-line environment.
@@ -206,8 +207,8 @@ The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & C
 
 | Component | Classification | General Purpose | Primary Item / Artifact Produced | Cost |
 | :--- | :--- | :--- | :--- | :--- |
-| **MacBook Pro (Apple Silicon)** | `[Bare Metal]` | Auditor hardware host & compute foundation | ARM64 hardware execution & memory bandwidth | $1,999 – $3,499 (one-time) |
-| **macOS (Darwin)** | `[Third-Party Software]` | Host operating system & process supervisor | POSIX filesystem permissions & process control | $0 (bundled) |
+| **MacBook Pro \| 48GB RAM \| M5 Pro** | `[Bare Metal]` | Auditor hardware host & compute foundation | ARM64 hardware execution & memory bandwidth | $1,999 – $3,499 (one-time) |
+| **macOS Golden Gate** | `[Third-Party Software]` | Host operating system & process supervisor | POSIX filesystem permissions & process control | $0 (bundled) |
 | **Linux Virtual Machine** | `[Open-Source Tools]` | Container virtualization layer | Linux kernel namespaces & cgroups | $0 |
 | **Docker Engine** | `[Open-Source Tools]` | Container runtime & air-gap enforcement | `grc-scanner:local` image & `--network none` sandbox | $0 |
 | **Local Git** | `[Open-Source Tools]` | Cryptographic bundle verification & extraction | Verified ref trees & `git bundle verify` | $0 |
