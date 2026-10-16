@@ -64,40 +64,74 @@ Designed for high-assurance federal and defense environments (**FedRAMP High**, 
 ## 2. End-to-End Architecture & 5-Phase Lifecycle
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'darkMode': true,
+    'background': '#070a12',
+    'primaryColor': '#0f172a',
+    'primaryTextColor': '#f8fafc',
+    'primaryBorderColor': '#38bdf8',
+    'lineColor': '#38bdf8',
+    'secondaryColor': '#1e1b4b',
+    'tertiaryColor': '#0c4a6e',
+    'mainBkg': '#0f172a',
+    'nodeBorder': '#38bdf8',
+    'clusterBkg': '#0b0f19',
+    'clusterBorder': '#1e293b',
+    'defaultLinkColor': '#38bdf8',
+    'fontFamily': 'system-ui, -apple-system, sans-serif'
+  }
+}}%%
 flowchart TD
-    subgraph Phase1["Phase 1: Pull & Verify (Cryptographic Gate)"]
-        Bundle["Git Release Bundle (.bundle)"] --> VerifyB["grc bundle verify\n(SHA-256 & git bundle verify)"]
-        AMI["Amazon Machine Image (ami-xxx)"] --> VerifyA["grc ami verify\n(KMS CMEK & Snapshot Integrity)"]
+    classDef inputNode fill:#0c192e,stroke:#0284c7,stroke-width:1.5px,color:#f0f9ff;
+    classDef verifyNode fill:#072740,stroke:#38bdf8,stroke-width:1.5px,color:#ffffff;
+    classDef restoreNode fill:#0d1c38,stroke:#3b82f6,stroke-width:1.5px,color:#ffffff;
+    classDef airgapNode fill:#1a0f37,stroke:#a855f7,stroke-width:2px,color:#ffffff;
+    classDef scannerNode fill:#101a30,stroke:#64748b,stroke-width:1.2px,color:#e2e8f0;
+    classDef reportNode fill:#042f2e,stroke:#14b8a6,stroke-width:2px,color:#ffffff;
+    classDef deliverableNode fill:#062319,stroke:#10b981,stroke-width:1.5px,color:#dcfce7;
+    classDef cleanNode fill:#220a14,stroke:#f43f5e,stroke-width:1.8px,color:#ffe4e6;
+
+    subgraph Phase1["<b>PHASE 1: PULL &amp; VERIFY</b> (Cryptographic Gate)"]
+        Bundle["📦 Git Release Bundle (.bundle)"]:::inputNode --> VerifyB["🔍 grc bundle verify<br/><i>SHA-256 Digest &amp; git bundle verify</i>"]:::verifyNode
+        AMI["🛡️ Amazon Machine Image (ami-xxx)"]:::inputNode --> VerifyA["🔐 grc ami verify<br/><i>KMS CMEK Key &amp; Snapshot Integrity</i>"]:::verifyNode
     end
 
-    subgraph Phase2["Phase 2: Ephemeral Restore (Zero Execution)"]
-        VerifyB --> RestoreB["grc bundle restore\nRead-Only Lock (chmod 0444)\nbundle_provenance.json"]
-        VerifyA --> RestoreA["grc ami restore (Cold-Mount)\nmount -o ro,noload,noexec,nosuid\nami_provenance.json"]
+    subgraph Phase2["<b>PHASE 2: EPHEMERAL RESTORE</b> (Zero Untrusted Execution)"]
+        VerifyB --> RestoreB["📁 grc bundle restore<br/><i>Read-Only (chmod 0444) · bundle_provenance.json</i>"]:::restoreNode
+        VerifyA --> RestoreA["❄️ grc ami restore (Cold-Mount)<br/><i>mount -o ro,noload,noexec · ami_provenance.json</i>"]:::restoreNode
     end
 
-    subgraph Phase3["Phase 3: Isolated Multi-Engine Analysis (grc-scanner:local)"]
-        RestoreB & RestoreA --> Workspace["/workspace:ro (Air-Gapped --network none)"]
-        Workspace --> Semgrep["Semgrep (37 AOC Rules)"]
-        Workspace --> Gitleaks["Gitleaks (Secrets)"]
-        Workspace --> Checkov["Checkov (IaC Hardening)"]
-        Workspace --> Syft["Syft (CycloneDX SBOM)"]
-        Syft --> GrypeTrivy["Grype & Trivy (CVEs)"]
-        Syft --> STIGMap["sbom_analyzer.py (DISA STIG)"]
-        Workspace --> CryptoScan["crypto_lib_scan.py (EOL & FIPS)"]
+    subgraph Phase3["<b>PHASE 3: ISOLATED MULTI-ENGINE ANALYSIS</b> (grc-scanner:local)"]
+        RestoreB & RestoreA --> Workspace["🔒 /workspace:ro<br/><b>AIR-GAPPED (--network none)</b>"]:::airgapNode
+        Workspace --> Semgrep["⚡ Semgrep (37 AOC AST Rules)"]:::scannerNode
+        Workspace --> Gitleaks["🔑 Gitleaks (Entropy Secrets &amp; Keys)"]:::scannerNode
+        Workspace --> Checkov["🏗️ Checkov (IaC Terraform / K8s / Docker)"]:::scannerNode
+        Workspace --> Syft["📋 Syft (CycloneDX &amp; SPDX SBOM)"]:::scannerNode
+        Syft --> GrypeTrivy["🎯 Grype &amp; Trivy (Offline CVE Matcher)"]:::scannerNode
+        Syft --> STIGMap["🏛️ sbom_analyzer.py (DISA STIG Mapper)"]:::scannerNode
+        Workspace --> CryptoScan["🔐 crypto_lib_scan.py (EOL &amp; FIPS 140-3)"]:::scannerNode
     end
 
-    subgraph Phase4["Phase 4: SCR/SCN Package Synthesis (grc_reporter.py)"]
-        Semgrep & Gitleaks & Checkov & GrypeTrivy & STIGMap & CryptoScan --> Reporter["grc report\n(Normalized Aggregation)"]
-        Reporter --> POAM["poam_data.md\n(FedRAMP SLA POA&M)"]
-        Reporter --> Controls["controls.md\n(NIST 800-53 Matrix)"]
-        Reporter --> RulesetLog["ruleset_validation.md\n(37-Rule Audit Log)"]
-        Reporter --> SCR["scr_scn_package.json\n(eMASS / GRC Payload)"]
-        Reporter --> Seal["sha256sum\n(Cryptographic Seal)"]
+    subgraph Phase4["<b>PHASE 4: SCR/SCN PACKAGE SYNTHESIS</b> (grc_reporter.py)"]
+        Semgrep & Gitleaks & Checkov & GrypeTrivy & STIGMap & CryptoScan --> Reporter["⚙️ grc report (grc_reporter.py)<br/><b>Normalized SCR/SCN Compliance Synthesis</b>"]:::reportNode
+        Reporter --> POAM["📊 poam_data.md<br/><i>FedRAMP High SLA POA&amp;M</i>"]:::deliverableNode
+        Reporter --> Controls["📑 controls.md<br/><i>NIST SP 800-53 R5 Matrix</i>"]:::deliverableNode
+        Reporter --> RulesetLog["📜 ruleset_validation.md<br/><i>37-Rule Baseline Audit Log</i>"]:::deliverableNode
+        Reporter --> SCR["🤖 scr_scn_package.json<br/><i>eMASS / GRC Machine Payload</i>"]:::deliverableNode
+        Reporter --> Seal["🔏 sha256sum<br/><i>Cryptographic Evidence Seal</i>"]:::deliverableNode
     end
 
-    subgraph Phase5["Phase 5: Ephemeral Teardown (Clean)"]
-        POAM & Controls & RulesetLog & SCR & Seal --> Clean["grc bundle clean / grc ami clean\n(Purge Workspace & Detach Volumes)"]
+    subgraph Phase5["<b>PHASE 5: EPHEMERAL TEARDOWN</b> (Pristine Hygiene)"]
+        POAM & Controls & RulesetLog & SCR & Seal --> Clean["🧹 grc bundle clean / grc ami clean<br/><b>Purge Ephemeral Workspace &amp; Detach Volumes</b>"]:::cleanNode
     end
+
+    style Phase1 fill:#051326,stroke:#0284c7,stroke-width:1.5px,color:#38bdf8
+    style Phase2 fill:#081430,stroke:#3b82f6,stroke-width:1.5px,color:#60a5fa
+    style Phase3 fill:#110c26,stroke:#8b5cf6,stroke-width:1.5px,color:#c084fc
+    style Phase4 fill:#041c16,stroke:#10b981,stroke-width:1.5px,color:#34d399
+    style Phase5 fill:#1c0812,stroke:#f43f5e,stroke-width:1.5px,color:#fb7185
 ```
 
 ---
