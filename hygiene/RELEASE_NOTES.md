@@ -31,9 +31,28 @@ All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired 
 
 ---
 
+## 🐛 `v1.0.4` — Yokosuka (Patch 4: Unified 9-Engine Scan Fix & Independent Engine Dispatch)
+**Release Date**: October 18, 2026  
+**Tag**: `v1.0.4`  
+**Type**: Bug Fix & CLI Enhancement (`Bug Fix`)
+
+### Highlights & Changes
+* **Bug Fix — Automatic `crypto_lib_scan.py` & `sbom_analyzer.py` Execution in `./grc scan`**:
+  * Fixed an orchestration omission where running `./grc scan` executed the 7 containerized scanners and immediately ran `grc_reporter.py` without first invoking `scripts/crypto_lib_scan.py` (`crypto_findings.json`) and `scripts/sbom_analyzer.py` (`stig_matrix.md` and `stig_applicability.json`).
+  * Full scans (`./grc scan` / `./grc scan --all`) now execute all **9 compliance engines** end-to-end before synthesizing Phase 4 deliverables (`poam_data.md`, `controls.md`, `ruleset_validation.md`, `scr_scn_package.json`, `sha256sum`).
+* **Independent Compliance Engine Selection (`--engine <name>` / `--<engine>`)**:
+  * Updated [`./grc`](../grc) and [`docker/scan_orchestrator.sh`](../docker/scan_orchestrator.sh) so auditors can invoke the full suite (`all` / `--all`) or any individual compliance engine independently:
+    * Containerized engines: `semgrep`, `gitleaks`, `checkov`, `syft`, `grype` (auto-runs `syft` if `sbom.cdx.json` is missing), `trivy`, `oscap`.
+    * Host Python engines: `crypto` (`crypto_lib_scan.py`) and `sbom` (`sbom_analyzer.py`, auto-generating `sbom.cdx.json` via `syft` if missing).
+  * Added `--no-report` flag to optionally skip Phase 4 report synthesis when running targeted single-engine checks, and `--help` (`./grc scan --help`) for CLI reference.
+* **Provenance Chain-of-Custody Preservation**:
+  * Both [`./grc`](../grc) and [`docker/scan_orchestrator.sh`](../docker/scan_orchestrator.sh) now automatically copy `bundle_provenance.json` and `ami_provenance.json` from the ephemeral workspace into the target `evidence/` directory across all scan modes.
+
+---
+
 ## 🩹 `v1.0.3` — Yokosuka (Patch 3: Production vs. Demo Evidence Segregation & Ledger Refinement)
 **Release Date**: October 18, 2026  
-**Tag**: `v1.0.3`  
+**Tag**: `v1.0.3` (`48a43ff`)  
 **Type**: Patch Release (Evidence Vault Hygiene & Patch Ledger)
 
 ### Highlights & Changes

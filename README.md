@@ -19,12 +19,12 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,    eodartintlabs-hue/grc-bundle-reviewer
  {GGG'     `G# {GGG     `GGG {GGG'     `G#     -------------------------------------
- @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.3 (Yokosuka)
+ @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.4 (Yokosuka)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG              OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG              Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#     Isolation: Air-Gapped (--network none, :ro)
-  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG"     Scanners: (7) Semgrep, Gitleaks, Checkov,
-   `@GGGG###G# @GGG     `GGG   `@GGGG###G"                   Syft, Grype, Trivy, OpenSCAP
+  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG"     Engines: (9) Semgrep, Gitleaks, Checkov, Syft,
+   `@GGGG###G# @GGG     `GGG   `@GGGG###G"                  Grype, Trivy, OpenSCAP, Crypto, SBOM
      `"%N>"`    `"%NW" `"%NW"    `"%N>"`       Ruleset: 37 AST Rules (AOC 02–140)
                                                Frameworks: DISA STIG, NIST 800-53 R5, FedRAMP
                                                Deliverables: POA&M, Controls, SCR/SCN, SHA-256
@@ -227,10 +227,10 @@ The root `./grc` dispatcher provides a unified interface across all pipeline sta
 | **`ami verify`** | `./grc ami verify <ami-id> [--region <r>] [--mock]` | Validates AMI availability, root EBS snapshot integrity, and KMS CMK encryption compliance. |
 | **`ami restore`** | `./grc ami restore <ami-id> -w <dir> [--worker-id <id>] [--mock]` | Cold-mounts AMI root snapshot read-only (`ro,noload,noexec,nosuid`), resolves OS STIG, and writes `ami_provenance.json`. |
 | **`ami clean`** | `./grc ami clean -w <dir> [--mock]` | Unmounts cold-mounted filesystem, detaches/deletes ephemeral EBS volume, and wipes workspace. |
-| **`scan`** | `./grc scan -w <workspace> [-e <evidence_dir>]` | Runs the isolated `grc-scanner:local` container suite **and** automatically synthesizes all Phase 4 deliverables. |
+| **`scan`** | `./grc scan [--all \| --engine <name>] -w <workspace> [-e <evidence_dir>] [--no-report]` | Runs all **9 compliance engines** (`all` / `--all`, default: Semgrep, Gitleaks, Checkov, Syft, Grype, Trivy, OpenSCAP, `crypto_lib_scan.py`, and `sbom_analyzer.py`) **or** any individual engine (`semgrep`, `gitleaks`, `checkov`, `syft`, `grype`, `trivy`, `oscap`, `crypto`, `sbom`) and automatically synthesizes Phase 4 deliverables. |
 | **`report`** | `./grc report -e <evidence_dir> [-w <workspace>]` | Synthesizes or refreshes `poam_data.md`, `controls.md`, `ruleset_validation.md`, `scr_scn_package.json`, and `sha256sum`. |
-| **`crypto`** | `./grc crypto -w <workspace> --format json -o <out.json>` | Runs the static cryptographic library and EOL dependency scanner. |
-| **`sbom`** | `./grc sbom --sbom <sbom.json> --format markdown -o <stig_matrix.md>` | Maps CycloneDX / SPDX SBOM components to DISA STIGs and DoD SRGs. |
+| **`crypto`** | `./grc crypto -w <workspace> --format json -o <out.json>` | Direct CLI wrapper for the static cryptographic library and EOL dependency scanner. |
+| **`sbom`** | `./grc sbom --sbom <sbom.json> --format markdown -o <stig_matrix.md>` | Direct CLI wrapper mapping CycloneDX / SPDX SBOM components to DISA STIGs and DoD SRGs. |
 | **`docker-build`** | `./grc docker-build` | Builds or rebuilds the local `grc-scanner:local` Docker image from `docker/Dockerfile.scanner`. |
 
 ---

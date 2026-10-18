@@ -63,9 +63,11 @@ cat ./ephemeral_workspace/bundle_provenance.json
 
 ### Phases 3 & 4: Air-Gapped Scan, Crypto Audit & SCR/SCN Report Synthesis
 ```bash
-./grc scan -w ./ephemeral_workspace -e testing/demo-evidence/aoc-09-eol-libraries
-./grc crypto -w ./ephemeral_workspace --format json -o testing/demo-evidence/aoc-09-eol-libraries/crypto_findings.json
-./grc report -e testing/demo-evidence/aoc-09-eol-libraries -w ./ephemeral_workspace
+# Run all 9 compliance engines (including crypto_lib_scan.py & sbom_analyzer.py) + Phase 4 report synthesis:
+./grc scan --all -w ./ephemeral_workspace -e testing/demo-evidence/aoc-09-eol-libraries
+
+# (Optional) Or invoke just the Crypto compliance engine independently:
+# ./grc scan --engine crypto -w ./ephemeral_workspace -e testing/demo-evidence/aoc-09-eol-libraries
 ```
 
 ### Inspect AOC-09 Deliverables
