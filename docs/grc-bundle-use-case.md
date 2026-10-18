@@ -1,14 +1,14 @@
-# End-to-End Git Bundle Review Scenario (`grc-bundle Use Case.md`)
+# End-to-End Git Bundle Review Scenario (`docs/grc-bundle-use-case.md`)
 
 <p align="center">
-  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
-  <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
-  <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
-  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
-  <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
-  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="grc-bundle%20Use%20Case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
-  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="../DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
+  <a href="../TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Classification**: Internal DevSecOps & Security Compliance Walkthrough  
@@ -100,7 +100,7 @@ In **Phase 2**, the analyst unpacks the verified bundle into an isolated `epheme
 
 ### Step 3: Inspecting the Generated Audit Manifest (`bundle_provenance.json`)
 
-The restore engine automatically emits [`bundle_provenance.json`](docs/workspace-layout.md) at the root of `ephemeral_workspace/`. This manifest captures immutable cryptographic chain-of-custody metadata:
+The restore engine automatically emits [`bundle_provenance.json`](workspace-layout.md) at the root of `ephemeral_workspace/`. This manifest captures immutable cryptographic chain-of-custody metadata:
 
 ```bash
 cat ./ephemeral_workspace/bundle_provenance.json | jq .
@@ -194,7 +194,7 @@ In **Phase 3**, the analyst triggers the containerized scanning suite via `./grc
 
 ### Step 5: Synthesizing Phase 4 Compliance Deliverables (`Phase 4: Report`)
 
-With raw telemetry captured in `./evidence/auth-service-v1.2.0`, the pipeline executes [`scripts/grc_reporter.py`](scripts/grc_reporter.py) (automatically at the end of `./grc scan` or manually via `./grc report`). 
+With raw telemetry captured in `./evidence/auth-service-v1.2.0`, the pipeline executes [`scripts/grc_reporter.py`](../scripts/grc_reporter.py) (automatically at the end of `./grc scan` or manually via `./grc report`). 
 
 The reporting engine normalizes findings across all engines, calculates FedRAMP High SLA remediation windows, evaluates full NIST SP 800-53 Rev. 5 control coverage, validates the 37-rule AST baseline, and seals all deliverables with SHA-256 hashes:
 
@@ -271,7 +271,7 @@ cat ./evidence/auth-service-v1.2.0/poam_data.md | head -n 25
 
 ### Step 6: Post-Audit Ephemeral Teardown (`Phase 5: Clean`)
 
-To uphold the core zero-persistence hygiene principle ([`docs/design-rules-and-aocs.md`](docs/design-rules-and-aocs.md)), the analyst tears down the ephemeral workspace and safely purges the release bundle once deliverables are archived:
+To uphold the core zero-persistence hygiene principle ([`docs/design-rules-and-aocs.md`](design-rules-and-aocs.md)), the analyst tears down the ephemeral workspace and safely purges the release bundle once deliverables are archived:
 
 ```bash
 ./grc bundle clean \

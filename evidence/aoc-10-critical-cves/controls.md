@@ -1,8 +1,8 @@
 # NIST SP 800-53 Rev. 5 Controls Traceability Matrix
 
 > **Classification / Use**: Internal Compliance & Security Audit Deliverable (FedRAMP High / DoD RMF / SCR-SCN)  
-> **Audit Target Identifier**: `aoc-03-legacy-crypto`  
-> **Evaluation Timestamp**: `2026-10-15 22:50:32 UTC`  
+> **Audit Target Identifier**: `dccc0b56a62dea31b1290d22898a9731089ca67b3e1721760544e1900298e94c`  
+> **Evaluation Timestamp**: `2026-10-16 19:05:49 UTC`  
 
 ---
 
@@ -22,11 +22,11 @@
 | **SC-28** | Protection of Information at Rest | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SC-8** | Transmission Confidentiality and Integrity | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SI-10** | Information Input Validation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
-| **SI-16** | Memory Protection / Cryptographic Hash Integrity | System and Information Integrity (SI) | `CAT I` | 15 | ❌ **NON-COMPLIANT (15)** |
+| **SI-16** | Memory Protection / Cryptographic Hash Integrity | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SI-17** | Fail-Secure / Secure Communications Initiation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SI-2** | Flaw Remediation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SI-4** | Information System Monitoring | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
-| **SI-7** | Software, Firmware, and Information Integrity | System and Information Integrity (SI) | `CAT I` | 2 | ❌ **NON-COMPLIANT (2)** |
+| **SI-7** | Software, Firmware, and Information Integrity | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 
 ---
 
@@ -104,29 +104,11 @@
 * **Control Objective**: Validate information inputs to syntax rules, character sets, and payload limits before runtime interpretation.
 * **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 
-### SI-16: Memory Protection / Cryptographic Hash Integrity — ❌ NON-COMPLIANT
+### SI-16: Memory Protection / Cryptographic Hash Integrity — ✅ COMPLIANT
 * **Control Family**: System and Information Integrity (SI)
 * **DISA STIG Baseline**: `CAT I`
 * **Control Objective**: Protect memory integrity and enforce strong cryptographic hash algorithms. Prohibits MD5, SHA-1, DES, and RC4.
-* **Evaluation Outcome**: Deficiencies detected out-of-band requiring remediation.
-
-| Finding ID | Source Engine | Rule / CVE ID | Affected Location | Severity |
-| :--- | :--- | :--- | :--- | :--- |
-| **POAM-001** | `Semgrep` | `rules.grc-aoc03-java-weak-hashing` | `src/LegacyEncryption.java:14` | **MEDIUM** |
-| **POAM-002** | `Semgrep` | `rules.grc-aoc03-java-weak-hashing` | `src/LegacyEncryption.java:15` | **MEDIUM** |
-| **POAM-003** | `Semgrep` | `rules.grc-aoc03-java-weak-ciphers` | `src/LegacyEncryption.java:17` | **HIGH** |
-| **POAM-004** | `Semgrep` | `rules.grc-aoc03-java-weak-ciphers` | `src/LegacyEncryption.java:18` | **HIGH** |
-| **POAM-007** | `Semgrep` | `rules.grc-aoc03-go-weak-hashing` | `src/cipher.go:13` | **MEDIUM** |
-| **POAM-008** | `Semgrep` | `rules.grc-aoc03-go-weak-hashing` | `src/cipher.go:17` | **MEDIUM** |
-| **POAM-009** | `Semgrep` | `rules.grc-aoc03-go-weak-ciphers` | `src/cipher.go:24` | **HIGH** |
-| **POAM-010** | `Semgrep` | `rules.grc-aoc03-go-weak-ciphers` | `src/cipher.go:29` | **HIGH** |
-| **POAM-011** | `Semgrep` | `rules.grc-aoc03-python-weak-hashing` | `src/crypto_service.py:12` | **MEDIUM** |
-| **POAM-012** | `Semgrep` | `rules.grc-aoc03-python-weak-hashing` | `src/crypto_service.py:13` | **MEDIUM** |
-| **POAM-013** | `Semgrep` | `rules.grc-aoc03-python-weak-ciphers` | `src/crypto_service.py:19` | **HIGH** |
-| **POAM-014** | `Semgrep` | `rules.grc-aoc03-python-weak-ciphers` | `src/crypto_service.py:24` | **HIGH** |
-| **POAM-015** | `Semgrep` | `rules.grc-aoc03-javascript-weak-hashing` | `src/hashing.js:5` | **MEDIUM** |
-| **POAM-016** | `Semgrep` | `rules.grc-aoc03-javascript-weak-hashing` | `src/hashing.js:6` | **MEDIUM** |
-| **POAM-017** | `Semgrep` | `rules.grc-aoc03-javascript-weak-ciphers` | `src/hashing.js:12` | **HIGH** |
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 
 ### SI-17: Fail-Secure / Secure Communications Initiation — ✅ COMPLIANT
 * **Control Family**: System and Information Integrity (SI)
@@ -146,14 +128,9 @@
 * **Control Objective**: Monitor system execution to detect attacks and indicators of potential compromise. Prohibits unsanitized runtime shell execution (command injection).
 * **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 
-### SI-7: Software, Firmware, and Information Integrity — ❌ NON-COMPLIANT
+### SI-7: Software, Firmware, and Information Integrity — ✅ COMPLIANT
 * **Control Family**: System and Information Integrity (SI)
 * **DISA STIG Baseline**: `CAT I`
 * **Control Objective**: Employ integrity verification tools to detect unauthorized changes and prohibit use of unsupported, unmaintained, or EOL libraries and providers.
-* **Evaluation Outcome**: Deficiencies detected out-of-band requiring remediation.
-
-| Finding ID | Source Engine | Rule / CVE ID | Affected Location | Severity |
-| :--- | :--- | :--- | :--- | :--- |
-| **POAM-005** | `Semgrep` | `rules.grc-aoc09-go-deprecated-crypto-module` | `src/cipher.go:3` | **MEDIUM** |
-| **POAM-006** | `Semgrep` | `rules.grc-aoc09-go-deprecated-crypto-module` | `src/cipher.go:3` | **MEDIUM** |
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 

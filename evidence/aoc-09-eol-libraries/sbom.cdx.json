@@ -1,0 +1,360 @@
+{
+    "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.7",
+    "serialNumber": "urn:uuid:76139d98-c133-4574-b796-ff7e44c8a3a7",
+    "version": 1,
+    "metadata": {
+        "timestamp": "2026-10-16T17:17:01Z",
+        "tools": {
+            "components": [
+                {
+                    "type": "application",
+                    "author": "anchore",
+                    "name": "syft",
+                    "version": "1.54.1"
+                }
+            ]
+        },
+        "component": {
+            "bom-ref": "8dcbd803f369ec9f",
+            "type": "file",
+            "name": "/workspace"
+        }
+    },
+    "components": [
+        {
+            "bom-ref": "pkg:maven/com.grc.dummies/aoc-09-eol-libraries@1.0.0?package-id=0233b4256cc63e2d",
+            "type": "library",
+            "name": "aoc-09-eol-libraries",
+            "version": "1.0.0",
+            "cpe": "cpe:2.3:a:aoc-09-eol-libraries:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*",
+            "purl": "pkg:maven/com.grc.dummies/aoc-09-eol-libraries@1.0.0",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "java-pom-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "java"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09-eol-libraries:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09_eol_libraries:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09_eol_libraries:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:com.grc.dummies:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:com.grc.dummies:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09-eol:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09-eol:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09_eol:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09_eol:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09-eol-libraries:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09_eol_libraries:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:dummies:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:dummies:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:grc:aoc-09-eol-libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:grc:aoc_09_eol_libraries:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:com.grc.dummies:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09-eol:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09_eol:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:dummies:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-09:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_09:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:grc:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/pom.xml"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:maven/org.bouncycastle/bcprov-jdk15on@1.60?package-id=cbd270df4bf0e7f4",
+            "type": "library",
+            "group": "org.bouncycastle",
+            "name": "bcprov-jdk15on",
+            "version": "1.60",
+            "cpe": "cpe:2.3:a:org.bouncycastle:bcprov-jdk15on:1.60:*:*:*:*:*:*:*",
+            "purl": "pkg:maven/org.bouncycastle/bcprov-jdk15on@1.60",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "java-pom-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "java"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:org.bouncycastle:bcprov_jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bcprov-jdk15on:bcprov-jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bcprov-jdk15on:bcprov_jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bcprov_jdk15on:bcprov-jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bcprov_jdk15on:bcprov_jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bouncycastle:bcprov-jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bouncycastle:bcprov_jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bcprov:bcprov-jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:bcprov:bcprov_jdk15on:1.60:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/pom.xml"
+                },
+                {
+                    "name": "syft:metadata:-:artifactID",
+                    "value": "bcprov-jdk15on"
+                },
+                {
+                    "name": "syft:metadata:-:groupID",
+                    "value": "org.bouncycastle"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:pypi/pycrypto@2.6.1?package-id=97e417ee999fbde8",
+            "type": "library",
+            "name": "pycrypto",
+            "version": "2.6.1",
+            "cpe": "cpe:2.3:a:python-pycrypto:python-pycrypto:2.6.1:*:*:*:*:*:*:*",
+            "purl": "pkg:pypi/pycrypto@2.6.1",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-pycrypto:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_pycrypto:python-pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_pycrypto:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:pycrypto:python-pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:pycrypto:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-pycrypto:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_pycrypto:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python-pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:pycrypto:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "0328106cb52bb1b0",
+            "type": "file",
+            "name": "/workspace/pom.xml",
+            "hashes": [
+                {
+                    "alg": "SHA-1",
+                    "content": "d4594fb9dd42528dda81ed3bb96bf754d258eb47"
+                },
+                {
+                    "alg": "SHA-256",
+                    "content": "7f60cd231345b3f21306f0a4923c9f9e8e306a411aab9d7c1940107ecdb8dfdd"
+                }
+            ]
+        },
+        {
+            "bom-ref": "26ca2b7dc025d550",
+            "type": "file",
+            "name": "/workspace/requirements.txt",
+            "hashes": [
+                {
+                    "alg": "SHA-1",
+                    "content": "9f60e3c4d4ec9aa9aaa9e1c5d78df27767a122f6"
+                },
+                {
+                    "alg": "SHA-256",
+                    "content": "34a0c90b5335b192e0afa9d054615dcc4a3119932e47381115013d410ebd67ab"
+                }
+            ]
+        }
+    ],
+    "dependencies": [
+        {
+            "ref": "pkg:maven/com.grc.dummies/aoc-09-eol-libraries@1.0.0?package-id=0233b4256cc63e2d",
+            "dependsOn": [
+                "pkg:maven/org.bouncycastle/bcprov-jdk15on@1.60?package-id=cbd270df4bf0e7f4"
+            ]
+        }
+    ]
+}

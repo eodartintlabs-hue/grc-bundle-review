@@ -1,0 +1,348 @@
+{
+    "version": "1.181.0",
+    "results": [
+        {
+            "check_id": "rules.grc-aoc04-java-command-injection",
+            "path": "/workspace/src/CommandExecutor.java",
+            "start": {
+                "line": 11,
+                "col": 9,
+                "offset": 392
+            },
+            "end": {
+                "line": 11,
+                "col": 55,
+                "offset": 438
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution in Java via Runtime or ProcessBuilder. Sanitize input and pass arguments as discrete array elements.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: OS Command Injection",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-java-command-injection",
+            "path": "/workspace/src/CommandExecutor.java",
+            "start": {
+                "line": 15,
+                "col": 29,
+                "offset": 543
+            },
+            "end": {
+                "line": 15,
+                "col": 59,
+                "offset": 573
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution in Java via Runtime or ProcessBuilder. Sanitize input and pass arguments as discrete array elements.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: OS Command Injection",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-go-command-injection",
+            "path": "/workspace/src/executor.go",
+            "start": {
+                "line": 10,
+                "col": 9,
+                "offset": 208
+            },
+            "end": {
+                "line": 10,
+                "col": 47,
+                "offset": 246
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Arbitrary shell execution invocation detected in Go. Execute binaries directly with separate arguments.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: OS Command Injection",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "MEDIUM"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-go-command-injection",
+            "path": "/workspace/src/executor.go",
+            "start": {
+                "line": 15,
+                "col": 9,
+                "offset": 339
+            },
+            "end": {
+                "line": 15,
+                "col": 42,
+                "offset": 372
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Arbitrary shell execution invocation detected in Go. Execute binaries directly with separate arguments.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: OS Command Injection",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "MEDIUM"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-python-command-injection",
+            "path": "/workspace/src/runner.py",
+            "start": {
+                "line": 14,
+                "col": 5,
+                "offset": 387
+            },
+            "end": {
+                "line": 14,
+                "col": 19,
+                "offset": 401
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution via shell invocation in Python. Use subprocess.run with arguments list and shell=False.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: Improper Neutralization of Special Elements used in an OS Command",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-python-command-injection",
+            "path": "/workspace/src/runner.py",
+            "start": {
+                "line": 20,
+                "col": 12,
+                "offset": 564
+            },
+            "end": {
+                "line": 20,
+                "col": 74,
+                "offset": 626
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution via shell invocation in Python. Use subprocess.run with arguments list and shell=False.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: Improper Neutralization of Special Elements used in an OS Command",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-python-command-injection",
+            "path": "/workspace/src/runner.py",
+            "start": {
+                "line": 28,
+                "col": 5,
+                "offset": 837
+            },
+            "end": {
+                "line": 28,
+                "col": 43,
+                "offset": 875
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Dynamic command execution via shell invocation in Python. Use subprocess.run with arguments list and shell=False.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: Improper Neutralization of Special Elements used in an OS Command",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-javascript-command-injection",
+            "path": "/workspace/src/system.js",
+            "start": {
+                "line": 5,
+                "col": 5,
+                "offset": 159
+            },
+            "end": {
+                "line": 11,
+                "col": 7,
+                "offset": 375
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Potential command injection in Node.js child_process.exec. Prefer child_process.execFile with parameter arrays.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: OS Command Injection",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        },
+        {
+            "check_id": "rules.grc-aoc04-javascript-command-injection",
+            "path": "/workspace/src/system.js",
+            "start": {
+                "line": 15,
+                "col": 12,
+                "offset": 425
+            },
+            "end": {
+                "line": 15,
+                "col": 45,
+                "offset": 458
+            },
+            "extra": {
+                "message": "AOC-04 [NIST SP 800-53 SI-4]: Potential command injection in Node.js child_process.exec. Prefer child_process.execFile with parameter arrays.",
+                "metadata": {
+                    "aoc": "AOC-04: Command Injection",
+                    "nist_control": "SI-4: Information System Monitoring",
+                    "cwe": "CWE-78: OS Command Injection",
+                    "owasp": "A03:2021 - Injection",
+                    "confidence": "HIGH"
+                },
+                "severity": "ERROR",
+                "fingerprint": "requires login",
+                "lines": "requires login",
+                "validation_state": "NO_VALIDATOR",
+                "engine_kind": "OSS"
+            }
+        }
+    ],
+    "errors": [],
+    "paths": {
+        "scanned": [
+            "/workspace/src/CommandExecutor.java",
+            "/workspace/src/executor.go",
+            "/workspace/src/runner.py",
+            "/workspace/src/system.js"
+        ]
+    },
+    "time": {
+        "rules": [],
+        "rules_parse_time": 0.0046350955963134766,
+        "profiling_times": {
+            "config_time": 0.13506126403808594,
+            "core_time": 0.18247032165527344,
+            "ignores_time": 8.749961853027344e-05,
+            "total_time": 0.3216361999511719
+        },
+        "parsing_time": {
+            "total_time": 0.020029783248901367,
+            "per_file_time": {
+                "mean": 0.005007445812225342,
+                "std_dev": 7.087286846285673e-08
+            },
+            "very_slow_stats": {
+                "time_ratio": 0.0,
+                "count_ratio": 0.0
+            },
+            "very_slow_files": []
+        },
+        "scanning_time": {
+            "total_time": 0.026543378829956055,
+            "per_file_time": {
+                "mean": 0.006635844707489014,
+                "std_dev": 2.439566451073461e-07
+            },
+            "very_slow_stats": {
+                "time_ratio": 0.0,
+                "count_ratio": 0.0
+            },
+            "very_slow_files": []
+        },
+        "matching_time": {
+            "total_time": 0.004567384719848633,
+            "per_file_and_rule_time": {
+                "mean": 0.0011418461799621582,
+                "std_dev": 4.679163723153579e-08
+            },
+            "very_slow_stats": {
+                "time_ratio": 0.0,
+                "count_ratio": 0.0
+            },
+            "very_slow_rules_on_files": []
+        },
+        "tainting_time": {
+            "total_time": 0.0,
+            "per_def_and_rule_time": {
+                "mean": 0.0,
+                "std_dev": 0.0
+            },
+            "very_slow_stats": {
+                "time_ratio": 0.0,
+                "count_ratio": 0.0
+            },
+            "very_slow_rules_on_defs": []
+        },
+        "fixpoint_timeouts": [],
+        "prefiltering": {
+            "project_level_time": 0.0,
+            "file_level_time": 0.0,
+            "rules_with_project_prefilters_ratio": 0.0,
+            "rules_with_file_prefilters_ratio": 1.0,
+            "rules_selected_ratio": 0.1,
+            "rules_matched_ratio": 0.1
+        },
+        "targets": [],
+        "total_bytes": 0,
+        "max_memory_bytes": 132488960
+    },
+    "engine_requested": "OSS",
+    "skipped_rules": [],
+    "profiling_results": []
+}

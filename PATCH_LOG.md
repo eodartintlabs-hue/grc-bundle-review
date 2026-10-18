@@ -1,0 +1,55 @@
+# v1.x Running Patch Ledger (`PATCH_LOG.md`)
+
+<p align="center">
+  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
+  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
+  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+</p>
+
+> **Active Major Series**: `v1.x`  
+> **Release Codename**: `Yokosuka`  
+> **Versioning Standard**: Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH> - <Codename>`)  
+> **Companion Document**: See **[`RELEASE_NOTES.md`](RELEASE_NOTES.md)** for full narrative release notes.
+
+---
+
+## 1. v1.x ("Yokosuka") Running Patch Table
+
+This ledger tracks all baseline releases and incremental patches (`v1.0.x`) across the **v1 lifecycle** of the **GRC Bundle & AMI Review Pipeline**.
+
+| Patch Version | Codename | Date | Category | Subsystem / Files Affected | Summary of Changes | Git Tag / Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **`v1.0.0`** | **Yokosuka** | `2026-10-18` | `Baseline Release` | `./grc`, `scripts/*`, `docker/*`, `rules/*`, `docs/*` | Initial production baseline of the 5-phase GRC Bundle & AMI Review Pipeline, 7-engine air-gapped Docker scanner suite, 37 custom Semgrep AOC rules, and Phase 4 SCR/SCN compliance reporting engine. | `v1.0.0` (Tagged) |
+| **`v1.0.1`** | **Yokosuka** | `2026-10-18` | `Hygiene & Docs` | `./grc`, `README.md`, `docs/grc-bundle-use-case.md`, `RELEASE_NOTES.md`, `PATCH_LOG.md`, `live-demo.md` | Adopted `Yokosuka` release codename in `grcfetch` CLI banner; standardized Git author identity to GitHub `noreply`; relocated and kebab-cased `docs/grc-bundle-use-case.md`; added `RELEASE_NOTES.md`, `PATCH_LOG.md`, and `live-demo.md`; refreshed AOC-04, AOC-09, and AOC-10 evidence packages. | `v1.0.1` (Active) |
+| *`v1.0.2`* | *Yokosuka* | *TBD* | *Planned* | *TBD* | *Reserved for next incremental patch, rule tuning, or documentation update.* | *Pending* |
+
+---
+
+## 2. Patch Classification Key
+
+| Category | Version Increment | Typical Scope |
+| :--- | :--- | :--- |
+| **`Hygiene & Docs`** | `v1.0.x` (Patch) | Documentation updates, diagram refreshes, filename standardization, `.gitignore` rules, and repository formatting. |
+| **`Bug Fix`** | `v1.0.x` (Patch) | Fixes to CLI argument parsing, path resolution, Markdown formatting, or scanner invocation flags without breaking existing workflows. |
+| **`Rule / Catalog Tuning`** | `v1.0.x` (Patch) | False-positive reductions in `rules/custom-baseline-ruleset.yaml` or EOL version updates in `rules/crypto_catalog.json`. |
+| **`Security / Container Patch`** | `v1.0.x` (Patch) | Rebuilding `grc-scanner:local` to update offline CVE databases (Grype/Trivy) or base Debian Bookworm packages. |
+
+---
+
+## 3. How to Cut & Record a New Patch (`v1.0.x`)
+
+1. **Add a row** to the table in Section 1 above and add a summary section in [`RELEASE_NOTES.md`](RELEASE_NOTES.md).
+2. **Update the version string** in [`./grc`](grc) and [`README.md`](README.md) (e.g., `GRC Bundle Reviewer v1.0.1 (Yokosuka)`).
+3. **Commit all changes** and create an annotated Git tag:
+   ```bash
+   git add -A && git commit -m "chore(release): bump version to v1.0.1 (Yokosuka)"
+   git tag -a v1.0.1 -m "Release v1.0.1 - Yokosuka: Repo hygiene, docs standardization, and patch ledger"
+   git push origin main --tags
+   ```

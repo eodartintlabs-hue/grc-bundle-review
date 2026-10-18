@@ -1,0 +1,560 @@
+{
+    "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.7",
+    "serialNumber": "urn:uuid:e3e961e4-c578-4ea7-9e19-4e27be24c92c",
+    "version": 1,
+    "metadata": {
+        "timestamp": "2026-10-16T19:05:45Z",
+        "tools": {
+            "components": [
+                {
+                    "type": "application",
+                    "author": "anchore",
+                    "name": "syft",
+                    "version": "1.54.1"
+                }
+            ]
+        },
+        "component": {
+            "bom-ref": "8dcbd803f369ec9f",
+            "type": "file",
+            "name": "/workspace"
+        }
+    },
+    "components": [
+        {
+            "bom-ref": "pkg:maven/com.grc.dummies/aoc-10-critical-cves@1.0.0?package-id=cdc0c39a79eb4b5b",
+            "type": "library",
+            "name": "aoc-10-critical-cves",
+            "version": "1.0.0",
+            "cpe": "cpe:2.3:a:aoc-10-critical-cves:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*",
+            "purl": "pkg:maven/com.grc.dummies/aoc-10-critical-cves@1.0.0",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "java-pom-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "java"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10-critical-cves:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10_critical_cves:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10_critical_cves:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10-critical:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10-critical:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10_critical:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10_critical:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:com.grc.dummies:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:com.grc.dummies:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10-critical-cves:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10_critical_cves:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:dummies:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:dummies:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:grc:aoc-10-critical-cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:grc:aoc_10_critical_cves:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10-critical:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10_critical:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:com.grc.dummies:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:dummies:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc-10:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc_10:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:aoc:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:grc:dummies:1.0.0:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/pom.xml"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:maven/org.apache.commons/commons-text@1.9?package-id=7a5c315e8e3aedb6",
+            "type": "library",
+            "group": "org.apache.commons",
+            "name": "commons-text",
+            "version": "1.9",
+            "cpe": "cpe:2.3:a:apache:commons-text:1.9:*:*:*:*:*:*:*",
+            "purl": "pkg:maven/org.apache.commons/commons-text@1.9",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "java-pom-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "java"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:apache:commons_text:1.9:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:apache:commons:1.9:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/pom.xml"
+                },
+                {
+                    "name": "syft:metadata:-:artifactID",
+                    "value": "commons-text"
+                },
+                {
+                    "name": "syft:metadata:-:groupID",
+                    "value": "org.apache.commons"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:pypi/flask@1.1.2?package-id=fca8e99af56a3b2b",
+            "type": "library",
+            "name": "flask",
+            "version": "1.1.2",
+            "cpe": "cpe:2.3:a:python-flask:python-flask:1.1.2:*:*:*:*:*:*:*",
+            "purl": "pkg:pypi/flask@1.1.2",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-flask:python_flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_flask:python-flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_flask:python_flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python-flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python_flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:flask:python-flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:flask:python_flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-flask:flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_flask:flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:flask:flask:1.1.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:pypi/jinja2@2.11.2?package-id=9861b4805106b03f",
+            "type": "library",
+            "name": "jinja2",
+            "version": "2.11.2",
+            "cpe": "cpe:2.3:a:python-jinja2:python-jinja2:2.11.2:*:*:*:*:*:*:*",
+            "purl": "pkg:pypi/jinja2@2.11.2",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-jinja2:python_jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_jinja2:python-jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_jinja2:python_jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:jinja2:python-jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:jinja2:python_jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-jinja2:jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python-jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python_jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_jinja2:jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:jinja2:jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:jinja2:2.11.2:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1?package-id=be8e187f9921950a",
+            "type": "library",
+            "group": "org.apache.logging.log4j",
+            "name": "log4j-core",
+            "version": "2.14.1",
+            "cpe": "cpe:2.3:a:apache:log4j-core:2.14.1:*:*:*:*:*:*:*",
+            "purl": "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "java-pom-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "java"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:apache:log4j_core:2.14.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:apache:log4j:2.14.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/pom.xml"
+                },
+                {
+                    "name": "syft:metadata:-:artifactID",
+                    "value": "log4j-core"
+                },
+                {
+                    "name": "syft:metadata:-:groupID",
+                    "value": "org.apache.logging.log4j"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:maven/org.springframework/spring-beans@5.3.17?package-id=c9369f31d8aa3975",
+            "type": "library",
+            "group": "org.springframework",
+            "name": "spring-beans",
+            "version": "5.3.17",
+            "cpe": "cpe:2.3:a:org.springframework:spring-beans:5.3.17:*:*:*:*:*:*:*",
+            "purl": "pkg:maven/org.springframework/spring-beans@5.3.17",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "java-pom-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "java"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "java-archive"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:org.springframework:spring_beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:springframework:spring-beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:springframework:spring_beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:spring-beans:spring-beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:spring-beans:spring_beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:spring_beans:spring-beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:spring_beans:spring_beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:spring:spring-beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:spring:spring_beans:5.3.17:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/pom.xml"
+                },
+                {
+                    "name": "syft:metadata:-:artifactID",
+                    "value": "spring-beans"
+                },
+                {
+                    "name": "syft:metadata:-:groupID",
+                    "value": "org.springframework"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:pypi/urllib3@1.26.4?package-id=28e3ab818faf5e0d",
+            "type": "library",
+            "name": "urllib3",
+            "version": "1.26.4",
+            "cpe": "cpe:2.3:a:python:urllib3:1.26.4:*:*:*:*:*:*:*",
+            "purl": "pkg:pypi/urllib3@1.26.4",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "0328106cb52bb1b0",
+            "type": "file",
+            "name": "/workspace/pom.xml",
+            "hashes": [
+                {
+                    "alg": "SHA-1",
+                    "content": "4e6e104568621c59f766d2a02b124f27a40927c0"
+                },
+                {
+                    "alg": "SHA-256",
+                    "content": "ca143c2e4a9a4a08395bffed2b9e5d95e901b2dae6d2110557bd8c62c852d7f0"
+                }
+            ]
+        },
+        {
+            "bom-ref": "26ca2b7dc025d550",
+            "type": "file",
+            "name": "/workspace/requirements.txt",
+            "hashes": [
+                {
+                    "alg": "SHA-1",
+                    "content": "b104f53984eb979662de8d526c5a5cdca27ac5ca"
+                },
+                {
+                    "alg": "SHA-256",
+                    "content": "7a8b9ec88ed3bc815c0e576fcd9a73ba2115421b6e9d9125da68c6314c250abb"
+                }
+            ]
+        }
+    ],
+    "dependencies": [
+        {
+            "ref": "pkg:maven/com.grc.dummies/aoc-10-critical-cves@1.0.0?package-id=cdc0c39a79eb4b5b",
+            "dependsOn": [
+                "pkg:maven/org.apache.commons/commons-text@1.9?package-id=7a5c315e8e3aedb6",
+                "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1?package-id=be8e187f9921950a",
+                "pkg:maven/org.springframework/spring-beans@5.3.17?package-id=c9369f31d8aa3975"
+            ]
+        }
+    ]
+}

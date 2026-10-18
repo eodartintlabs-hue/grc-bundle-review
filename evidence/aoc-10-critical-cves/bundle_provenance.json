@@ -1,0 +1,41 @@
+{
+  "manifest_schema": "grc-bundle-provenance-v1",
+  "session_id": "f9b83d86-3605-455a-af03-9068f5dde292",
+  "bundle_identifier": "dccc0b56a62dea31b1290d22898a9731089ca67b3e1721760544e1900298e94c",
+  "bundle_source_path": "/Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-10-critical-cves.bundle",
+  "bundle_size_bytes": 1916,
+  "bundle_sha256": "dccc0b56a62dea31b1290d22898a9731089ca67b3e1721760544e1900298e94c",
+  "workspace_path": "/Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace",
+  "checked_out_ref": "v1.0.0",
+  "commit_metadata": {
+    "commit_hash": "c06e5da23a2df8bd67a6dc26c94213ac231a7ef0",
+    "short_hash": "c06e5da",
+    "author_name": "Byron Turner",
+    "author_email": "byronturner-pro@Byrons-MacBook-Pro.local",
+    "author_date": "Thu Oct 15 00:51:00 2026 -0400",
+    "subject": "feat: synthetic release v1.0.0 for AOC-10",
+    "ref": "HEAD, tag: v1.0.0"
+  },
+  "restored_at": "2026-10-16T19:03:44.399349+00:00",
+  "status": "RESTORED",
+  "ephemeral": true,
+  "verification": {
+    "session_id": "f9b83d86-3605-455a-af03-9068f5dde292",
+    "bundle_file": "/Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-10-critical-cves.bundle",
+    "bundle_size_bytes": 1916,
+    "bundle_sha256": "dccc0b56a62dea31b1290d22898a9731089ca67b3e1721760544e1900298e94c",
+    "checksum_verified": true,
+    "git_bundle_valid": true,
+    "contained_references": [
+      {
+        "commit": "c06e5da23a2df8bd67a6dc26c94213ac231a7ef0",
+        "ref": "HEAD"
+      },
+      {
+        "commit": "06373a4ad0a8724c2b40eabc90183585c54fc4e2",
+        "ref": "refs/tags/v1.0.0"
+      }
+    ],
+    "verified_at": "2026-10-16T19:03:44.336318+00:00"
+  }
+}

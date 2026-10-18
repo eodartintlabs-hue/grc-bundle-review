@@ -7,7 +7,9 @@
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="grc-bundle%20Use%20Case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
@@ -16,7 +18,7 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,    eodartintlabs-hue/grc-bundle-reviewer
  {GGG'     `G# {GGG     `GGG {GGG'     `G#     -------------------------------------
- @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.0
+ @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.0 (Yokosuka)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG              OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG              Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#     Isolation: Air-Gapped (--network none, :ro)
@@ -236,7 +238,7 @@ The root `./grc` dispatcher provides a unified interface across all pipeline sta
 
 ### 8.1 Streamlined 2-Step Git Bundle Review (Recommended)
 
-> 💡 **Detailed Step-by-Step Scenario**: See **[`grc-bundle Use Case.md`](grc-bundle%20Use%20Case.md)** for a complete end-to-end audit walkthrough featuring sample terminal command sessions, `bundle_provenance.json` inspections, and tampered-bundle rejection handling.
+> 💡 **Detailed Step-by-Step Scenario**: See **[`docs/grc-bundle-use-case.md`](docs/grc-bundle-use-case.md)** for a complete end-to-end audit walkthrough featuring sample terminal command sessions, `bundle_provenance.json` inspections, and tampered-bundle rejection handling.
 
 ```bash
 # Step 1: Restore the release bundle into an isolated, read-only ephemeral workspace
@@ -282,7 +284,7 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 * 🔄 **[Pipeline Data Flow & Telemetry Lineage (`DATAFLOW.md`)](DATAFLOW.md)** — Visual data-flow architecture (`docs/assets/data-flow.svg`), trust boundary isolation zones, SBOM-to-CVE fan-out, and master artifact I/O lineage matrix.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
 * ⚖️ **[Federal & DoD Regulatory Governance Matrix (`GOVERNANCE.md`)](GOVERNANCE.md)** — Comprehensive statutory traceability matrix linking pipeline workflows and test dummies to NIST SP 800-53 R5, SSDF (800-218), C-SCRM (800-161), FIPS 140-3, DoDI 8510.01 (RMF), CC SRG (IL4–IL6), DISA STIGs, and EO 14028.
-* 📑 **[End-to-End Bundle Review Walkthrough (`grc-bundle Use Case.md`)](grc-bundle%20Use%20Case.md)** — Complete step-by-step audit walkthrough with terminal sessions for all 5 phases, manifest inspections, and negative-testing abort handling.
+* 📑 **[End-to-End Bundle Review Walkthrough (`docs/grc-bundle-use-case.md`)](docs/grc-bundle-use-case.md)** — Complete step-by-step audit walkthrough with terminal sessions for all 5 phases, manifest inspections, and negative-testing abort handling.
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`TESTING.md`)](TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
 
@@ -298,7 +300,8 @@ grc-bundle-review/
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
 ├── GOVERNANCE.md                     # Federal & DoD compliance matrix (NIST 800-53/218/161, DoDI 8510.01, STIGs)
 ├── TESTING.md                        # End-to-end audit verification test plan
-├── grc-bundle Use Case.md            # Complete 5-phase review walkthrough with sample terminal outputs
+├── RELEASE_NOTES.md                  # Narrative release notes and version naming convention (Yokosuka)
+├── PATCH_LOG.md                      # Running table of all v1.x patches across the app lifecycle
 ├── grc                               # Root CLI dispatcher wrapper
 ├── .gitignore                        # Protects against committing ephemeral workspaces and bundles
 │
@@ -313,6 +316,7 @@ grc-bundle-review/
 │   │   └── tech-stack.svg            # Layered Technology Stack infographic
 │   ├── ami-review-workflow.md        # AMI EBS snapshot cold-mount audit specification & schema
 │   ├── design-rules-and-aocs.md      # Core design principles and AOC 01–140 traceability matrix
+│   ├── grc-bundle-use-case.md        # Complete 5-phase review walkthrough with sample terminal outputs
 │   ├── review-workflow.md            # 5-stage Git bundle review & SCR/SCN lifecycle
 │   ├── test-dummies-guide.md         # Negative testing walkthrough, AOC cheat sheet, and jq guide
 │   └── workspace-layout.md           # Auditor workstation hardware/software baseline and deliverables

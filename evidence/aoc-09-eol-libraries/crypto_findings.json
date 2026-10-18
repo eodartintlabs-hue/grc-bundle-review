@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "scan_time": "2026-10-16T17:19:19.761246+00:00",
+    "workspace": "/Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace",
+    "tool": "crypto_lib_scan.py",
+    "framework": "NIST SP 800-53 Rev. 5 (SI-7, SC-12, SC-13)",
+    "aoc_coverage": [
+      "AOC-09",
+      "AOC-03"
+    ]
+  },
+  "summary": {
+    "total_crypto_libraries": 4,
+    "critical_eol_count": 1,
+    "high_severity_count": 1,
+    "compliant_count": 2
+  },
+  "findings": [
+    {
+      "library_name": "pycrypto",
+      "detected_version": "2.6.1",
+      "manifest_file": "requirements.txt",
+      "ecosystem": "python",
+      "compliance_status": "FAIL_DEPRECATED",
+      "severity": "CRITICAL",
+      "description": "PyCrypto has been unmaintained since 2013 and contains unpatched vulnerabilities.",
+      "remediation": "Migrate all cryptographic operations to 'cryptography' (pyca/cryptography) or 'pycryptodome'.",
+      "nist_controls": [
+        "SI-7",
+        "SC-13"
+      ],
+      "area_of_concern": "AOC-09: Crypto Dependencies on Unsupported Libraries",
+      "matched_rule": "pycrypto"
+    },
+    {
+      "library_name": "bcprov-jdk15on",
+      "detected_version": "1.60",
+      "manifest_file": "pom.xml",
+      "ecosystem": "java",
+      "compliance_status": "FAIL_EOL",
+      "severity": "HIGH",
+      "description": "Version '1.60' is End-of-Life (EOL since 2021-11-01).",
+      "remediation": "Upgrade org.bouncycastle dependencies to >= 1.70 (or bc-fips 1.0.2+) to mitigate cryptographic side-channels.",
+      "nist_controls": [
+        "SI-7",
+        "SC-12",
+        "SC-13"
+      ],
+      "area_of_concern": "AOC-09: Crypto Dependencies on Unsupported Libraries",
+      "matched_rule": "bouncycastle"
+    },
+    {
+      "library_name": "crypto-js",
+      "detected_version": "3.1.91",
+      "manifest_file": "package.json",
+      "ecosystem": "javascript",
+      "compliance_status": "PASS",
+      "severity": "INFO",
+      "description": "Supported cryptographic library. FIPS Capable: False.",
+      "remediation": "None required. Maintain automated dependency patch cadence.",
+      "nist_controls": [
+        "SI-7",
+        "SC-13"
+      ],
+      "area_of_concern": "AOC-09: Crypto Dependencies on Unsupported Libraries",
+      "matched_rule": "crypto-js"
+    },
+    {
+      "library_name": "libcrypto.so.1.1.1",
+      "detected_version": "Unknown",
+      "manifest_file": "usr/lib64/libcrypto.so.1.1.1",
+      "ecosystem": "system",
+      "compliance_status": "PASS",
+      "severity": "INFO",
+      "description": "Supported cryptographic library. FIPS Capable: True.",
+      "remediation": "None required. Maintain automated dependency patch cadence.",
+      "nist_controls": [
+        "SI-7",
+        "SC-12",
+        "SC-13"
+      ],
+      "area_of_concern": "AOC-09: Crypto Dependencies on Unsupported Libraries",
+      "matched_rule": "openssl"
+    }
+  ]
+}

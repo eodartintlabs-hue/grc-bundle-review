@@ -1,8 +1,8 @@
 # NIST SP 800-53 Rev. 5 Controls Traceability Matrix
 
 > **Classification / Use**: Internal Compliance & Security Audit Deliverable (FedRAMP High / DoD RMF / SCR-SCN)  
-> **Audit Target Identifier**: `aoc-02-weak-passwords`  
-> **Evaluation Timestamp**: `2026-10-15 22:50:23 UTC`  
+> **Audit Target Identifier**: `6dec88c8940840c0ee7bcea50a24226c50ddffd2be92ad8b107831996f9f67a2`  
+> **Evaluation Timestamp**: `2026-10-16 19:15:35 UTC`  
 
 ---
 
@@ -14,7 +14,7 @@
 | **AC-6** | Least Privilege | Access Control (AC) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **CM-6** | Configuration Settings | Configuration Management (CM) | `CAT II` | 0 | ✅ **COMPLIANT** |
 | **CM-8** | Information System Component Inventory | Configuration Management (CM) | `CAT II` | 0 | ✅ **COMPLIANT** |
-| **IA-2** | Identification and Authentication (Organizational Users) | Identification and Authentication (IA) | `CAT I` | 16 | ❌ **NON-COMPLIANT (16)** |
+| **IA-2** | Identification and Authentication (Organizational Users) | Identification and Authentication (IA) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **IA-7** | Cryptographic Module Authentication | Identification and Authentication (IA) | `CAT II` | 0 | ✅ **COMPLIANT** |
 | **RA-5** | Vulnerability Monitoring and Scanning | Risk Assessment (RA) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SC-12** | Cryptographic Key Establishment and Management | System and Communications Protection (SC) | `CAT I` | 0 | ✅ **COMPLIANT** |
@@ -25,7 +25,7 @@
 | **SI-16** | Memory Protection / Cryptographic Hash Integrity | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SI-17** | Fail-Secure / Secure Communications Initiation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 | **SI-2** | Flaw Remediation | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
-| **SI-4** | Information System Monitoring | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
+| **SI-4** | Information System Monitoring | System and Information Integrity (SI) | `CAT I` | 9 | ❌ **NON-COMPLIANT (9)** |
 | **SI-7** | Software, Firmware, and Information Integrity | System and Information Integrity (SI) | `CAT I` | 0 | ✅ **COMPLIANT** |
 
 ---
@@ -56,30 +56,11 @@
 * **Control Objective**: Develop and document an inventory of information system components (SBOM) detailing name, version, and license.
 * **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 
-### IA-2: Identification and Authentication (Organizational Users) — ❌ NON-COMPLIANT
+### IA-2: Identification and Authentication (Organizational Users) — ✅ COMPLIANT
 * **Control Family**: Identification and Authentication (IA)
 * **DISA STIG Baseline**: `CAT I`
 * **Control Objective**: Uniquely identify and authenticate organizational users (or processes acting on their behalf). Prohibits hardcoded static credentials, default passwords, and unmanaged API tokens.
-* **Evaluation Outcome**: Deficiencies detected out-of-band requiring remediation.
-
-| Finding ID | Source Engine | Rule / CVE ID | Affected Location | Severity |
-| :--- | :--- | :--- | :--- | :--- |
-| **POAM-001** | `Semgrep` | `rules.grc-aoc02-java-hardcoded-credentials` | `src/ApplicationConfig.java:10` | **HIGH** |
-| **POAM-002** | `Semgrep` | `rules.grc-aoc02-java-hardcoded-credentials` | `src/ApplicationConfig.java:11` | **HIGH** |
-| **POAM-003** | `Semgrep` | `rules.grc-aoc02-java-hardcoded-credentials` | `src/ApplicationConfig.java:12` | **HIGH** |
-| **POAM-004** | `Semgrep` | `rules.grc-aoc02-java-hardcoded-credentials` | `src/ApplicationConfig.java:13` | **HIGH** |
-| **POAM-005** | `Semgrep` | `rules.grc-aoc02-python-hardcoded-credentials` | `src/auth_service.py:11` | **HIGH** |
-| **POAM-006** | `Semgrep` | `rules.grc-aoc02-python-hardcoded-credentials` | `src/auth_service.py:12` | **HIGH** |
-| **POAM-007** | `Semgrep` | `rules.grc-aoc02-python-hardcoded-credentials` | `src/auth_service.py:13` | **HIGH** |
-| **POAM-008** | `Semgrep` | `rules.grc-aoc02-python-hardcoded-credentials` | `src/auth_service.py:14` | **HIGH** |
-| **POAM-009** | `Semgrep` | `rules.grc-aoc02-javascript-hardcoded-credentials` | `src/client.js:7` | **HIGH** |
-| **POAM-010** | `Semgrep` | `rules.grc-aoc02-javascript-hardcoded-credentials` | `src/client.js:8` | **HIGH** |
-| **POAM-011** | `Semgrep` | `rules.grc-aoc02-javascript-hardcoded-credentials` | `src/client.js:9` | **HIGH** |
-| **POAM-012** | `Semgrep` | `rules.grc-aoc02-javascript-hardcoded-credentials` | `src/client.js:11` | **HIGH** |
-| **POAM-013** | `Semgrep` | `rules.grc-aoc02-go-hardcoded-credentials` | `src/database.go:9` | **HIGH** |
-| **POAM-014** | `Semgrep` | `rules.grc-aoc02-go-hardcoded-credentials` | `src/database.go:10` | **HIGH** |
-| **POAM-015** | `Semgrep` | `rules.grc-aoc02-go-hardcoded-credentials` | `src/database.go:13` | **HIGH** |
-| **POAM-016** | `Semgrep` | `rules.grc-aoc02-go-hardcoded-credentials` | `src/database.go:14` | **HIGH** |
+* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 
 ### IA-7: Cryptographic Module Authentication — ✅ COMPLIANT
 * **Control Family**: Identification and Authentication (IA)
@@ -141,11 +122,23 @@
 * **Control Objective**: Identify, report, and correct system flaws (vulnerabilities and CVEs) within defined remediation timeframes.
 * **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
 
-### SI-4: Information System Monitoring — ✅ COMPLIANT
+### SI-4: Information System Monitoring — ❌ NON-COMPLIANT
 * **Control Family**: System and Information Integrity (SI)
 * **DISA STIG Baseline**: `CAT I`
 * **Control Objective**: Monitor system execution to detect attacks and indicators of potential compromise. Prohibits unsanitized runtime shell execution (command injection).
-* **Evaluation Outcome**: No policy violations or vulnerabilities detected. Conforms to baseline.
+* **Evaluation Outcome**: Deficiencies detected out-of-band requiring remediation.
+
+| Finding ID | Source Engine | Rule / CVE ID | Affected Location | Severity |
+| :--- | :--- | :--- | :--- | :--- |
+| **POAM-001** | `Semgrep` | `rules.grc-aoc04-java-command-injection` | `src/CommandExecutor.java:11` | **CRITICAL** |
+| **POAM-002** | `Semgrep` | `rules.grc-aoc04-java-command-injection` | `src/CommandExecutor.java:15` | **CRITICAL** |
+| **POAM-003** | `Semgrep` | `rules.grc-aoc04-go-command-injection` | `src/executor.go:10` | **CRITICAL** |
+| **POAM-004** | `Semgrep` | `rules.grc-aoc04-go-command-injection` | `src/executor.go:15` | **CRITICAL** |
+| **POAM-005** | `Semgrep` | `rules.grc-aoc04-python-command-injection` | `src/runner.py:14` | **CRITICAL** |
+| **POAM-006** | `Semgrep` | `rules.grc-aoc04-python-command-injection` | `src/runner.py:20` | **CRITICAL** |
+| **POAM-007** | `Semgrep` | `rules.grc-aoc04-python-command-injection` | `src/runner.py:28` | **CRITICAL** |
+| **POAM-008** | `Semgrep` | `rules.grc-aoc04-javascript-command-injection` | `src/system.js:5` | **CRITICAL** |
+| **POAM-009** | `Semgrep` | `rules.grc-aoc04-javascript-command-injection` | `src/system.js:15` | **CRITICAL** |
 
 ### SI-7: Software, Firmware, and Information Integrity — ✅ COMPLIANT
 * **Control Family**: System and Information Integrity (SI)
