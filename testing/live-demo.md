@@ -1,14 +1,17 @@
-# GRC Bundle Reviewer — Live Demo Runbook (`live-demo.md`)
+# GRC Bundle Reviewer — Live Demo Runbook (`testing/live-demo.md`)
 
 <p align="center">
-  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
-  <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
-  <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
-  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
-  <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
   <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="live-demo.md"><b>🎬 Live Demo Script</b></a> &nbsp;·&nbsp;
-  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+  <a href="live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Purpose**: Step-by-step live presentation script for demonstrating the 5-phase GRC Bundle Review Pipeline across **AOC-09 (EOL Cryptographic Libraries)**, **AOC-10 (Critical CVEs)**, and **AOC-04 (OS Command Injection)**.
@@ -37,7 +40,7 @@ cd ~/Desktop/GRC-Bundle-Review_Pipeline
 
 ## 1️⃣ Demo Run 1: AOC-09 — Unsupported & EOL Cryptographic Libraries (`NIST SP 800-53 SI-7`)
 
-**What this demonstrates**: Detects deprecated, unmaintained, and End-of-Life (EOL) cryptographic libraries (`pycrypto`, `OpenSSL 1.1.1`, `Bouncy Castle < 1.70`) against [`rules/crypto_catalog.json`](rules/crypto_catalog.json).
+**What this demonstrates**: Detects deprecated, unmaintained, and End-of-Life (EOL) cryptographic libraries (`pycrypto`, `OpenSSL 1.1.1`, `Bouncy Castle < 1.70`) against [`rules/crypto_catalog.json`](../rules/crypto_catalog.json).
 
 ### Phase 1: Cryptographic Bundle Verification
 ```bash
@@ -124,7 +127,7 @@ cat evidence/aoc-10-critical-cves/controls.md
 
 ## 3️⃣ Demo Run 3: AOC-04 — OS Command Injection (`NIST SP 800-53 SI-4, SI-10`)
 
-**What this demonstrates**: Uses the custom 37-rule **Semgrep AST ruleset** ([`rules/custom-baseline-ruleset.yaml`](rules/custom-baseline-ruleset.yaml)) to catch unsanitized shell execution across Python (`os.system`, `subprocess.Popen(shell=True)`), Go (`exec.Command("bash", ...)`), and Java (`Runtime.getRuntime().exec()`).
+**What this demonstrates**: Uses the custom 37-rule **Semgrep AST ruleset** ([`rules/custom-baseline-ruleset.yaml`](../rules/custom-baseline-ruleset.yaml)) to catch unsanitized shell execution across Python (`os.system`, `subprocess.Popen(shell=True)`), Go (`exec.Command("bash", ...)`), and Java (`Runtime.getRuntime().exec()`).
 
 ### Phase 1: Cryptographic Bundle Verification
 ```bash

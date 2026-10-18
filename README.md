@@ -2,13 +2,14 @@
 
 <p align="center">
   <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
-  <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
-  <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
+  <a href="amplifying-info/ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="amplifying-info/DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
-  <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
-  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
-  <a href="PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="amplifying-info/GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
+  <a href="testing/TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
   <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
@@ -18,7 +19,7 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,    eodartintlabs-hue/grc-bundle-reviewer
  {GGG'     `G# {GGG     `GGG {GGG'     `G#     -------------------------------------
- @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.0 (Yokosuka)
+ @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.2 (Yokosuka)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG              OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG              Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#     Isolation: Air-Gapped (--network none, :ro)
@@ -60,7 +61,7 @@ The **GRC Bundle & AMI Review Pipeline** is an automated, cryptographic verifica
 
 Designed for high-assurance federal and defense environments (**FedRAMP High**, **DISA STIG**, **DoD RMF**), the pipeline guarantees deep compliance verification and automated **Security Change Request / Security Change Notification (SCR/SCN)** evidence generation without gating or slowing down developer CI/CD velocity.
 
-> 🏛️ **Explore the Visual Technology Stack**: View our Layered System Architecture diagram and detailed technology stack breakdown in **[`ARCHITECTURE.md`](ARCHITECTURE.md)**.
+> 🏛️ **Explore the Visual Technology Stack**: View our Layered System Architecture diagram and detailed technology stack breakdown in **[`amplifying-info/ARCHITECTURE.md`](amplifying-info/ARCHITECTURE.md)**.
 
 ---
 
@@ -280,13 +281,15 @@ ls -la evidence/release-v1.0.0/
 
 In high-assurance compliance automation, a scanner that outputs zero findings is untrusted until proven capable of failing. This pipeline is paired with the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository containing 8 pre-compiled synthetic release bundles (`aoc-02` through `aoc-12`) and flawed AMI fixtures engineered to trigger every control in the pipeline:
 
-* 🏛️ **[System Architecture & Technology Stack (`ARCHITECTURE.md`)](ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
-* 🔄 **[Pipeline Data Flow & Telemetry Lineage (`DATAFLOW.md`)](DATAFLOW.md)** — Visual data-flow architecture (`docs/assets/data-flow.svg`), trust boundary isolation zones, SBOM-to-CVE fan-out, and master artifact I/O lineage matrix.
+* 🏛️ **[System Architecture & Technology Stack (`amplifying-info/ARCHITECTURE.md`)](amplifying-info/ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
+* 🔄 **[Pipeline Data Flow & Telemetry Lineage (`amplifying-info/DATAFLOW.md`)](amplifying-info/DATAFLOW.md)** — Visual data-flow architecture (`docs/assets/data-flow.svg`), trust boundary isolation zones, SBOM-to-CVE fan-out, and master artifact I/O lineage matrix.
 * 🛡️ **[Security Policy & Architecture Assurance (`SECURITY.md`)](SECURITY.md)** — Detailed analysis of runtime air-gap enforcement (`--network none`), scanner telemetry suppression, symlink escape prevention, and our 7-point threat model.
-* ⚖️ **[Federal & DoD Regulatory Governance Matrix (`GOVERNANCE.md`)](GOVERNANCE.md)** — Comprehensive statutory traceability matrix linking pipeline workflows and test dummies to NIST SP 800-53 R5, SSDF (800-218), C-SCRM (800-161), FIPS 140-3, DoDI 8510.01 (RMF), CC SRG (IL4–IL6), DISA STIGs, and EO 14028.
+* ⚖️ **[Federal & DoD Regulatory Governance Matrix (`amplifying-info/GOVERNANCE.md`)](amplifying-info/GOVERNANCE.md)** — Comprehensive statutory traceability matrix linking pipeline workflows and test dummies to NIST SP 800-53 R5, SSDF (800-218), C-SCRM (800-161), FIPS 140-3, DoDI 8510.01 (RMF), CC SRG (IL4–IL6), DISA STIGs, and EO 14028.
 * 📑 **[End-to-End Bundle Review Walkthrough (`docs/grc-bundle-use-case.md`)](docs/grc-bundle-use-case.md)** — Complete step-by-step audit walkthrough with terminal sessions for all 5 phases, manifest inspections, and negative-testing abort handling.
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
-* 📋 **[End-to-End Verification Test Plan (`TESTING.md`)](TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
+* 📋 **[End-to-End Verification Test Plan (`testing/TESTING.md`)](testing/TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
+* 🎬 **[Live Demo Presentation Runbook (`testing/live-demo.md`)](testing/live-demo.md)** — Step-by-step live demo script covering AOC-09, AOC-10, and AOC-04.
+* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)** & **[v1 Patch Ledger (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)** — Version history, `Yokosuka` release notes, and running `v1.x` patch table.
 
 ---
 
@@ -295,22 +298,29 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 ```text
 grc-bundle-review/
 ├── README.md                         # Master project overview, lifecycle, and CLI reference
-├── ARCHITECTURE.md                   # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
-├── DATAFLOW.md                       # End-to-end data flow, trust boundaries, and artifact lineage matrix
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
-├── GOVERNANCE.md                     # Federal & DoD compliance matrix (NIST 800-53/218/161, DoDI 8510.01, STIGs)
-├── TESTING.md                        # End-to-end audit verification test plan
-├── RELEASE_NOTES.md                  # Narrative release notes and version naming convention (Yokosuka)
-├── PATCH_LOG.md                      # Running table of all v1.x patches across the app lifecycle
 ├── grc                               # Root CLI dispatcher wrapper
 ├── .gitignore                        # Protects against committing ephemeral workspaces and bundles
+│
+├── amplifying-info/                  # Deep-dive architecture, data flow & regulatory governance
+│   ├── ARCHITECTURE.md               # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
+│   ├── DATAFLOW.md                   # End-to-end data flow, trust boundaries, and artifact lineage matrix
+│   └── GOVERNANCE.md                 # Federal & DoD compliance matrix (NIST 800-53/218/161, DoDI 8510.01, STIGs)
+│
+├── testing/                          # Verification test plans & live presentation runbooks
+│   ├── TESTING.md                    # End-to-end audit verification test plan
+│   └── live-demo.md                  # Step-by-step live demo runbook (AOC-09, AOC-10, AOC-04)
+│
+├── hygiene/                          # Release engineering, versioning & patch tracking
+│   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka)
+│   └── PATCH_LOG.md                  # Running table of all v1.x patches across the app lifecycle
 │
 ├── docker/                           # Containerized scanning suite (100% local, $0 cloud cost)
 │   ├── Dockerfile.scanner            # Image recipe bundling Semgrep, Checkov, Gitleaks, Syft, Grype, Trivy, OpenSCAP
 │   ├── scan_orchestrator.sh          # In-container multi-engine runner with JSON pretty-printing
 │   └── README.md                     # Container architecture, --network none isolation, and usage guide
 │
-├── docs/                             # Governance & architecture specifications
+├── docs/                             # Operational workflow & test dummy specifications
 │   ├── assets/
 │   │   ├── data-flow.svg             # Dark-mode Pipeline Data Flow presentation graphic
 │   │   └── tech-stack.svg            # Layered Technology Stack infographic

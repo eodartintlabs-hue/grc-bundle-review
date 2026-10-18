@@ -21,7 +21,7 @@ print_grcfetch() {
     echo -e "  ${P}        .--.          .--.          .--.        ${R}"
     echo -e "  ${P}  ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp,   ${M}eodartintlabs-hue/grc-bundle-reviewer${R}"
     echo -e "  ${P} {GGG'     \`G# {GGG     \`GGG {GGG'     \`G#    ${D}-------------------------------------${R}"
-    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG             ${G}App:${W} GRC Bundle Reviewer v1.0.0 (Yokosuka)${R}"
+    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG             ${G}App:${W} GRC Bundle Reviewer v1.0.2 (Yokosuka)${R}"
     echo -e "  ${P} 'GGG   ,p#GG# @GGG#**#GGG\"  'GGG             ${G}OS:${W} Darwin ARM64 / Linux Bookworm${R}"
     echo -e "  ${P}  GGG   \"\"\`GGG @GGG   \`GGG,   GGG             ${G}Model:${W} Out-of-Band (OOB) / Fail-Open${R}"
     echo -e "  ${P} ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ${G}Isolation:${W} Air-Gapped (--network none, :ro)${R}"

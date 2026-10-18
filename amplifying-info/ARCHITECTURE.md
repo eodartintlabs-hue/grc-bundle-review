@@ -1,14 +1,17 @@
-# System Architecture & Technology Stack (`ARCHITECTURE.md`)
+# System Architecture & Technology Stack (`amplifying-info/ARCHITECTURE.md`)
 
 <p align="center">
-  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
-  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
-  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
-  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+  <a href="../testing/TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="../testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Classification**: Internal DevSecOps & Security Compliance Architecture Specification  
@@ -38,7 +41,7 @@
 The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & Compliance Domains** at the top, coordinated through a **Unified Application Dispatcher (`./grc`)**, executed inside an **Air-Gapped Container Bus**, synthesized into **Phase 4 SCR/SCN Compliance Deliverables**, and anchored on an **Apple Silicon Hardware Foundation**:
 
 <p align="center">
-  <img src="docs/assets/tech-stack.svg" alt="GRC Bundle Reviewer Technology Stack" width="100%" />
+  <img src="../docs/assets/tech-stack.svg" alt="GRC Bundle Reviewer Technology Stack" width="100%" />
 </p>
 
 ---
@@ -142,7 +145,7 @@ The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & C
 
 #### Declarative Baseline Ruleset & Crypto Catalog
 * **Classification**: `[Custom-Made Tool]` / `[Policy]`
-* **General Purpose**: High-assurance policy definitions comprising [`rules/custom-baseline-ruleset.yaml`](rules/custom-baseline-ruleset.yaml) (37 tailored Semgrep AST rules across Python, Go, Java, JS/TS) and [`rules/crypto_catalog.json`](rules/crypto_catalog.json) (FIPS 140 and EOL database).
+* **General Purpose**: High-assurance policy definitions comprising [`rules/custom-baseline-ruleset.yaml`](../rules/custom-baseline-ruleset.yaml) (37 tailored Semgrep AST rules across Python, Go, Java, JS/TS) and [`rules/crypto_catalog.json`](../rules/crypto_catalog.json) (FIPS 140 and EOL database).
 * **Item Produced**: Policy rulesets enforced directly by Semgrep and the cryptographic auditor during Phase 3 analysis.
 * **Individual Cost**: **$0** (In-house custom compliance policies tailored for FedRAMP High and DISA STIG).
 

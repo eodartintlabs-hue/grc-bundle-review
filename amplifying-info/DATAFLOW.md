@@ -1,14 +1,17 @@
-# Pipeline Data Flow & Telemetry Lineage (`DATAFLOW.md`)
+# Pipeline Data Flow & Telemetry Lineage (`amplifying-info/DATAFLOW.md`)
 
 <p align="center">
-  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
-  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
-  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
-  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+  <a href="../testing/TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="../testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Classification**: Internal DevSecOps & Security Compliance Data Architecture  
@@ -18,7 +21,7 @@
 ---
 
 <p align="center">
-  <img src="docs/assets/data-flow.svg" alt="GRC Bundle Reviewer Pipeline Data Flow" width="100%" />
+  <img src="../docs/assets/data-flow.svg" alt="GRC Bundle Reviewer Pipeline Data Flow" width="100%" />
 </p>
 
 ---
@@ -67,7 +70,7 @@ To prevent untrusted release artifacts from compromising the auditor's workstati
 
 ### 3.1 Phase 1: Cryptographic Gate & Pre-Extraction Validation
 
-Before any file is extracted to the host filesystem, the ingestion controller ([`scripts/grc_bundle.py`](scripts/grc_bundle.py) or [`scripts/grc_ami.py`](scripts/grc_ami.py)) validates the artifact stream:
+Before any file is extracted to the host filesystem, the ingestion controller ([`scripts/grc_bundle.py`](../scripts/grc_bundle.py) or [`scripts/grc_ami.py`](../scripts/grc_ami.py)) validates the artifact stream:
 
 * **Git Release Bundles (`.bundle`)**:
   1. Streams the `.bundle` file through Python's `hashlib.sha256()` in 64 KB chunks to compute its cryptographic digest.
@@ -88,13 +91,13 @@ Once Phase 1 passes, the verified artifact is materialized into **Zone 1 (Epheme
   * `grc_ami.py` attaches the EBS volume to a non-boot block device and cold-mounts the filesystem using `mount -o ro,noload,noexec,nosuid`.
 * **Provenance Emission**:
   * Extracts Git commit metadata (`commit_hash`, `author_name`, `author_email`, `author_date`, `subject`) or AMI OS metadata (`/etc/os-release`).
-  * Writes [`bundle_provenance.json`](docs/workspace-layout.md) (or `ami_provenance.json`) into the workspace root, establishing the formal **Artifact Identifier** that links all downstream scanner findings to the exact cryptographic digest of the release.
+  * Writes [`bundle_provenance.json`](../docs/workspace-layout.md) (or `ami_provenance.json`) into the workspace root, establishing the formal **Artifact Identifier** that links all downstream scanner findings to the exact cryptographic digest of the release.
 
 ---
 
 ### 3.3 Phase 3: Air-Gapped Container Bus & Multi-Engine Telemetry
 
-When `./grc scan` executes, the host dispatcher mounts Zone 1 (`./ephemeral_workspace`) into **Zone 2 (`grc-scanner:local`)** at `/workspace:ro` and mounts the target evidence folder at `/evidence:rw`. Inside the container, [`docker/scan_orchestrator.sh`](docker/scan_orchestrator.sh) drives 7 analysis streams:
+When `./grc scan` executes, the host dispatcher mounts Zone 1 (`./ephemeral_workspace`) into **Zone 2 (`grc-scanner:local`)** at `/workspace:ro` and mounts the target evidence folder at `/evidence:rw`. Inside the container, [`docker/scan_orchestrator.sh`](../docker/scan_orchestrator.sh) drives 7 analysis streams:
 
 1. **Provenance Copy**: Copies `/workspace/bundle_provenance.json` (or `ami_provenance.json`) directly into `/evidence/` to anchor the audit trail.
 2. **Stream 1 — Semgrep AST SAST**: Parses source files into Abstract Syntax Trees and evaluates all 37 rules in `/rules/custom-baseline-ruleset.yaml` (`--metrics=off`). Writes **`/evidence/semgrep_findings.json`**.
@@ -104,14 +107,14 @@ When `./grc scan` executes, the host dispatcher mounts Zone 1 (`./ephemeral_work
 6. **Stream 5 — Grype & Trivy Offline CVE Matching**:
    * **Grype** ingests `sbom.cdx.json` (`sbom:/evidence/sbom.cdx.json`) and matches components against its pre-cached SQLite vulnerability database (`GRYPE_DB_AUTO_UPDATE=false`). Writes **`/evidence/grype_cve_report.json`**.
    * **Trivy** scans `/workspace` using its pre-cached BoltDB vulnerability database (`--offline-scan --skip-db-update`). Writes **`/evidence/trivy_cve_report.json`**.
-7. **Stream 6 — Cryptographic Library & EOL Audit**: [`scripts/crypto_lib_scan.py`](scripts/crypto_lib_scan.py) inspects dependency manifests and source imports against [`rules/crypto_catalog.json`](rules/crypto_catalog.json). Writes **`/evidence/crypto_lib_findings.json`**.
-8. **Stream 7 — DISA STIG & DoD SRG Mapping**: [`scripts/sbom_analyzer.py`](scripts/sbom_analyzer.py) ingests `/evidence/sbom.cdx.json` and maps discovered components to applicable DISA STIG benchmarks. Writes **`/evidence/stig_applicability_report.json`** and **`/evidence/stig_applicability_matrix.md`**.
+7. **Stream 6 — Cryptographic Library & EOL Audit**: [`scripts/crypto_lib_scan.py`](../scripts/crypto_lib_scan.py) inspects dependency manifests and source imports against [`rules/crypto_catalog.json`](../rules/crypto_catalog.json). Writes **`/evidence/crypto_lib_findings.json`**.
+8. **Stream 7 — DISA STIG & DoD SRG Mapping**: [`scripts/sbom_analyzer.py`](../scripts/sbom_analyzer.py) ingests `/evidence/sbom.cdx.json` and maps discovered components to applicable DISA STIG benchmarks. Writes **`/evidence/stig_applicability_report.json`** and **`/evidence/stig_applicability_matrix.md`**.
 
 ---
 
 ### 3.4 Phase 4: Finding Normalization, SLA Calculation & SCR/SCN Synthesis
 
-Immediately after container termination (or via standalone `./grc report -e ./evidence/<bundle>`), [`scripts/grc_reporter.py`](scripts/grc_reporter.py) ingests all raw telemetry files from `evidence/<bundle>/` and transforms them into standardized compliance deliverables:
+Immediately after container termination (or via standalone `./grc report -e ./evidence/<bundle>`), [`scripts/grc_reporter.py`](../scripts/grc_reporter.py) ingests all raw telemetry files from `evidence/<bundle>/` and transforms them into standardized compliance deliverables:
 
 ```mermaid
 %%{init: {
@@ -147,11 +150,11 @@ flowchart LR
 ```
 
 1. **Schema Normalization**: Converts disparate scanner fields (Semgrep `extra.severity`, Checkov `check_id`, Grype `vulnerability.severity`, Gitleaks `RuleID`, CryptoScan `risk_level`) into a canonical finding schema with deterministic `POA&M-YYYY-NNN` IDs.
-2. **FedRAMP High SLA Calculation**: Computes exact calendar remediation deadlines from the scan timestamp (`CRITICAL` / `HIGH` = **+30 days**, `MEDIUM` = **+90 days**, `LOW` = **+180 days**) and writes **[`poam_data.md`](evidence/aoc-07-iac-misconfig/poam_data.md)**.
-3. **NIST SP 800-53 Rev. 5 Control Mapping**: Evaluates findings against 18 NIST control families (`AC-3`, `AC-6`, `AU-2`, `CM-6`, `CM-7`, `IA-5`, `RA-5`, `SA-11`, `SC-7`, `SC-8`, `SC-12`, `SC-13`, `SC-28`, `SI-2`, `SI-7`, `SI-10`, `SI-17`, `SR-3`), marking each control as `FAIL (Open Findings)` or `PASS (No Violations)` in **[`controls.md`](evidence/aoc-07-iac-misconfig/controls.md)**.
-4. **AST Ruleset Verification**: Cross-references all 37 rules in [`rules/custom-baseline-ruleset.yaml`](rules/custom-baseline-ruleset.yaml) against Semgrep execution telemetry to prove 100% policy load coverage in **[`ruleset_validation.md`](evidence/aoc-07-iac-misconfig/ruleset_validation.md)**.
-5. **eMASS / GRC Machine Payload**: Serializes provenance, executive metrics, control statuses, ruleset logs, and normalized POA&M items into **[`scr_scn_package.json`](evidence/aoc-07-iac-misconfig/scr_scn_package.json)**.
-6. **Cryptographic Evidence Sealing**: Computes the SHA-256 hash and byte size of every JSON, XML, and Markdown file in the evidence directory and writes **[`sha256sum`](evidence/aoc-07-iac-misconfig/sha256sum)**.
+2. **FedRAMP High SLA Calculation**: Computes exact calendar remediation deadlines from the scan timestamp (`CRITICAL` / `HIGH` = **+30 days**, `MEDIUM` = **+90 days**, `LOW` = **+180 days**) and writes **[`poam_data.md`](../evidence/aoc-07-iac-misconfig/poam_data.md)**.
+3. **NIST SP 800-53 Rev. 5 Control Mapping**: Evaluates findings against 18 NIST control families (`AC-3`, `AC-6`, `AU-2`, `CM-6`, `CM-7`, `IA-5`, `RA-5`, `SA-11`, `SC-7`, `SC-8`, `SC-12`, `SC-13`, `SC-28`, `SI-2`, `SI-7`, `SI-10`, `SI-17`, `SR-3`), marking each control as `FAIL (Open Findings)` or `PASS (No Violations)` in **[`controls.md`](../evidence/aoc-07-iac-misconfig/controls.md)**.
+4. **AST Ruleset Verification**: Cross-references all 37 rules in [`rules/custom-baseline-ruleset.yaml`](../rules/custom-baseline-ruleset.yaml) against Semgrep execution telemetry to prove 100% policy load coverage in **[`ruleset_validation.md`](../evidence/aoc-07-iac-misconfig/ruleset_validation.md)**.
+5. **eMASS / GRC Machine Payload**: Serializes provenance, executive metrics, control statuses, ruleset logs, and normalized POA&M items into **[`scr_scn_package.json`](../evidence/aoc-07-iac-misconfig/scr_scn_package.json)**.
+6. **Cryptographic Evidence Sealing**: Computes the SHA-256 hash and byte size of every JSON, XML, and Markdown file in the evidence directory and writes **[`sha256sum`](../evidence/aoc-07-iac-misconfig/sha256sum)**.
 
 ---
 

@@ -1,14 +1,17 @@
-# Federal & DoD Regulatory Governance Matrix (`GOVERNANCE.md`)
+# Federal & DoD Regulatory Governance Matrix (`amplifying-info/GOVERNANCE.md`)
 
 <p align="center">
-  <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
   <a href="ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
-  <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
   <a href="GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
-  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
-  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
-  <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+  <a href="../testing/TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="../testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Classification**: Internal DevSecOps & Security Compliance Governance Specification  
@@ -248,7 +251,7 @@ The companion repository **[`GRC-Test-Dummies`](https://github.com/eodartintlabs
 | **`aoc-11-docker-root.bundle`** | AOC-11 (Insecure Dockerfile & Root Execution) | `AC-6`, `CM-6` | Checkov flags missing non-root `USER` directive in container images. |
 | **`aoc-12-hardcoded-keys.bundle`** | AOC-12 (Exposed Private RSA / SSH Keys) | `IA-5`, `SC-12` | Gitleaks flags unencrypted RSA private key blocks committed to repo. |
 
-> 🧪 **Assessor Verification Walkthrough**: See [`docs/test-dummies-guide.md`](docs/test-dummies-guide.md) for the batch verification test runner and instructions for executing the complete negative testing suite.
+> 🧪 **Assessor Verification Walkthrough**: See [`docs/test-dummies-guide.md`](../docs/test-dummies-guide.md) for the batch verification test runner and instructions for executing the complete negative testing suite.
 
 ---
 

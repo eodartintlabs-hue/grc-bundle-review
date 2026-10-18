@@ -1,4 +1,18 @@
-# GRC Bundle Review Pipeline — Test Plan & Verification Guide
+# GRC Bundle Review Pipeline — Test Plan & Verification Guide (`testing/TESTING.md`)
+
+<p align="center">
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
+  <a href="TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="../hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+</p>
 
 > **Classification**: Internal DevSecOps & Compliance Specification  
 > **Target Frameworks**: DISA STIG, NIST SP 800-53 Rev. 5, FedRAMP, OWASP Top 10  
@@ -12,7 +26,7 @@ This document outlines the end-to-end verification and testing procedures for th
 
 > [!TIP]
 > **Fast-Track Testing with Pre-Built Test Bundles**:  
-> If you are verifying the pipeline using the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository, refer to the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](docs/test-dummies-guide.md)** for an interactive cheat sheet and copy-pasteable scan commands for each AOC (`aoc-02` through `aoc-12`).
+> If you are verifying the pipeline using the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository, refer to the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](../docs/test-dummies-guide.md)** for an interactive cheat sheet and copy-pasteable scan commands for each AOC (`aoc-02` through `aoc-12`).
 
 ```mermaid
 flowchart TD
@@ -79,7 +93,7 @@ chmod +x ./grc ./scripts/grc_bundle.py ./scripts/sbom_analyzer.py ./scripts/cryp
 ## 4. Stage 2: Synthetic Test Bundle Generation
 
 To safely test detection capabilities without risking proprietary source code, you can either:
-1. **Use Pre-Built Dummies (Recommended)**: Use the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository and follow the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](docs/test-dummies-guide.md)**.
+1. **Use Pre-Built Dummies (Recommended)**: Use the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository and follow the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](../docs/test-dummies-guide.md)**.
 2. **Generate Manually in `/tmp`**: Follow the steps below to construct a synthetic scratch bundle from scratch:
 
 ```bash
