@@ -19,7 +19,7 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,    eodartintlabs-hue/grc-bundle-reviewer
  {GGG'     `G# {GGG     `GGG {GGG'     `G#     -------------------------------------
- @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.2 (Yokosuka)
+ @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.3 (Yokosuka)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG              OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG              Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#     Isolation: Air-Gapped (--network none, :ro)
@@ -307,9 +307,12 @@ grc-bundle-review/
 │   ├── DATAFLOW.md                   # End-to-end data flow, trust boundaries, and artifact lineage matrix
 │   └── GOVERNANCE.md                 # Federal & DoD compliance matrix (NIST 800-53/218/161, DoDI 8510.01, STIGs)
 │
-├── testing/                          # Verification test plans & live presentation runbooks
+├── testing/                          # Verification test plans, live runbooks & synthetic demo outputs
 │   ├── TESTING.md                    # End-to-end audit verification test plan
-│   └── live-demo.md                  # Step-by-step live demo runbook (AOC-09, AOC-10, AOC-04)
+│   ├── live-demo.md                  # Step-by-step live demo runbook (AOC-09, AOC-10, AOC-04)
+│   └── demo-evidence/                # Synthetic test bundle evidence (aoc-04, aoc-07, aoc-09, aoc-10)
+│
+├── evidence/                         # Production compliance vault (reserved strictly for real bundles)
 │
 ├── hygiene/                          # Release engineering, versioning & patch tracking
 │   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka)

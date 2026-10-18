@@ -31,9 +31,26 @@ All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired 
 
 ---
 
+## 🩹 `v1.0.3` — Yokosuka (Patch 3: Production vs. Demo Evidence Segregation & Ledger Refinement)
+**Release Date**: October 18, 2026  
+**Tag**: `v1.0.3`  
+**Type**: Patch Release (Evidence Vault Hygiene & Patch Ledger)
+
+### Highlights & Changes
+* **Production vs. Demo Evidence Segregation (`testing/demo-evidence/`)**:
+  * Relocated all synthetic test bundle outputs (`aoc-04-command-injection`, `aoc-07-iac-misconfig`, `aoc-09-eol-libraries`, `aoc-10-critical-cves`) into [`testing/demo-evidence/`](../testing/demo-evidence/).
+  * Added `evidence/.gitkeep` so the root `evidence/` directory remains tracked as a pristine vault strictly reserved for real production bundle reviews.
+  * Updated [`testing/live-demo.md`](../testing/live-demo.md), [`amplifying-info/DATAFLOW.md`](../amplifying-info/DATAFLOW.md), and [`amplifying-info/GOVERNANCE.md`](../amplifying-info/GOVERNANCE.md) to target `testing/demo-evidence/`.
+* **Patch Ledger Table Optimization ([`hygiene/PATCH_LOG.md`](PATCH_LOG.md))**:
+  * Removed redundant duplicate version/tag and codename columns.
+  * Added explicit `Commit` SHA tracking and a rightmost **`Author / POC`** attribution column.
+  * Bumped the `grcfetch` version banner in [`./grc`](../grc) and [`README.md`](../README.md) to `GRC Bundle Reviewer v1.0.3 (Yokosuka)`.
+
+---
+
 ## 🩹 `v1.0.2` — Yokosuka (Patch 2: Modular Directory Reorganization)
 **Release Date**: October 18, 2026  
-**Tag**: `v1.0.2`  
+**Tag**: `v1.0.2` (`3445ac6`)  
 **Type**: Patch Release (Repository Hygiene & Directory Architecture)
 
 ### Highlights & Changes

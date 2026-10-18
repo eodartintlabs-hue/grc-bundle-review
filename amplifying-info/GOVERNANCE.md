@@ -84,7 +84,7 @@ The table below maps the automated workflows conducted across `GRC-Bundle-Review
 
 ### 3.1 NIST SP 800-53 Rev. 5: Security and Privacy Controls
 
-The pipeline directly implements and audits controls across **18 NIST SP 800-53 Rev. 5 control families**, highlighted in [`controls.md`](file:///Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/evidence/aoc-07-iac-misconfig/controls.md):
+The pipeline directly implements and audits controls across **18 NIST SP 800-53 Rev. 5 control families**, highlighted in [`controls.md`](../testing/demo-evidence/aoc-07-iac-misconfig/controls.md):
 
 ```text
 NIST SP 800-53 Rev. 5 Control Family Implementation:

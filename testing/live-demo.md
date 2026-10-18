@@ -63,19 +63,19 @@ cat ./ephemeral_workspace/bundle_provenance.json
 
 ### Phases 3 & 4: Air-Gapped Scan, Crypto Audit & SCR/SCN Report Synthesis
 ```bash
-./grc scan -w ./ephemeral_workspace
-./grc crypto -w ./ephemeral_workspace --format json -o evidence/aoc-09-eol-libraries/crypto_findings.json
-./grc report -e evidence/aoc-09-eol-libraries -w ./ephemeral_workspace
+./grc scan -w ./ephemeral_workspace -e testing/demo-evidence/aoc-09-eol-libraries
+./grc crypto -w ./ephemeral_workspace --format json -o testing/demo-evidence/aoc-09-eol-libraries/crypto_findings.json
+./grc report -e testing/demo-evidence/aoc-09-eol-libraries -w ./ephemeral_workspace
 ```
 
 ### Inspect AOC-09 Deliverables
 ```bash
 # 1. View the detected EOL crypto libraries
-cat evidence/aoc-09-eol-libraries/crypto_findings.json | jq '.findings[] | {library: .library_name, version: .detected_version, status: .compliance_status, remediation: .remediation}'
+cat testing/demo-evidence/aoc-09-eol-libraries/crypto_findings.json | jq '.findings[] | {library: .library_name, version: .detected_version, status: .compliance_status, remediation: .remediation}'
 
 # 2. View the FedRAMP High POA&M Table & NIST 800-53 Controls Matrix
-cat evidence/aoc-09-eol-libraries/poam_data.md
-cat evidence/aoc-09-eol-libraries/controls.md
+cat testing/demo-evidence/aoc-09-eol-libraries/poam_data.md
+cat testing/demo-evidence/aoc-09-eol-libraries/controls.md
 ```
 
 ### Phase 5: Ephemeral Workspace Teardown
@@ -105,17 +105,17 @@ cat evidence/aoc-09-eol-libraries/controls.md
 
 ### Phases 3 & 4: Air-Gapped Scan & SCR/SCN Report Synthesis
 ```bash
-./grc scan -w ./ephemeral_workspace
+./grc scan -w ./ephemeral_workspace -e testing/demo-evidence/aoc-10-critical-cves
 ```
 
 ### Inspect AOC-10 Deliverables
 ```bash
 # 1. View the Critical CVEs matched against the CycloneDX SBOM
-cat evidence/aoc-10-critical-cves/grype_findings.json | jq -r '.matches[] | select(.vulnerability.severity == "Critical") | "\(.vulnerability.id) | \(.artifact.name):\(.artifact.version)"'
+cat testing/demo-evidence/aoc-10-critical-cves/grype_findings.json | jq -r '.matches[] | select(.vulnerability.severity == "Critical") | "\(.vulnerability.id) | \(.artifact.name):\(.artifact.version)"'
 
 # 2. View the FedRAMP High POA&M (30-Day SLA for Critical/High CVEs) & Controls Matrix
-cat evidence/aoc-10-critical-cves/poam_data.md
-cat evidence/aoc-10-critical-cves/controls.md
+cat testing/demo-evidence/aoc-10-critical-cves/poam_data.md
+cat testing/demo-evidence/aoc-10-critical-cves/controls.md
 ```
 
 ### Phase 5: Ephemeral Workspace Teardown
@@ -145,19 +145,19 @@ cat evidence/aoc-10-critical-cves/controls.md
 
 ### Phases 3 & 4: Air-Gapped Scan & SCR/SCN Report Synthesis
 ```bash
-./grc scan -w ./ephemeral_workspace
+./grc scan -w ./ephemeral_workspace -e testing/demo-evidence/aoc-04-command-injection
 ```
 
 ### Inspect AOC-04 Deliverables
 ```bash
 # 1. View the command injection findings caught by Semgrep AST rules
-cat evidence/aoc-04-command-injection/semgrep_findings.json | jq -r '.results[] | "\(.extra.severity) | \(.path):\(.start.line) | \(.extra.message)"'
+cat testing/demo-evidence/aoc-04-command-injection/semgrep_findings.json | jq -r '.results[] | "\(.extra.severity) | \(.path):\(.start.line) | \(.extra.message)"'
 
 # 2. View the FedRAMP POA&M, NIST 800-53 Controls Matrix, 37-Rule Log, and Cryptographic Seal
-cat evidence/aoc-04-command-injection/poam_data.md
-cat evidence/aoc-04-command-injection/controls.md
-cat evidence/aoc-04-command-injection/ruleset_validation.md
-cat evidence/aoc-04-command-injection/sha256sum
+cat testing/demo-evidence/aoc-04-command-injection/poam_data.md
+cat testing/demo-evidence/aoc-04-command-injection/controls.md
+cat testing/demo-evidence/aoc-04-command-injection/ruleset_validation.md
+cat testing/demo-evidence/aoc-04-command-injection/sha256sum
 ```
 
 ### Phase 5: Final Ephemeral Workspace Teardown

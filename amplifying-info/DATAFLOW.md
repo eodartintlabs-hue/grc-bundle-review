@@ -150,11 +150,11 @@ flowchart LR
 ```
 
 1. **Schema Normalization**: Converts disparate scanner fields (Semgrep `extra.severity`, Checkov `check_id`, Grype `vulnerability.severity`, Gitleaks `RuleID`, CryptoScan `risk_level`) into a canonical finding schema with deterministic `POA&M-YYYY-NNN` IDs.
-2. **FedRAMP High SLA Calculation**: Computes exact calendar remediation deadlines from the scan timestamp (`CRITICAL` / `HIGH` = **+30 days**, `MEDIUM` = **+90 days**, `LOW` = **+180 days**) and writes **[`poam_data.md`](../evidence/aoc-07-iac-misconfig/poam_data.md)**.
-3. **NIST SP 800-53 Rev. 5 Control Mapping**: Evaluates findings against 18 NIST control families (`AC-3`, `AC-6`, `AU-2`, `CM-6`, `CM-7`, `IA-5`, `RA-5`, `SA-11`, `SC-7`, `SC-8`, `SC-12`, `SC-13`, `SC-28`, `SI-2`, `SI-7`, `SI-10`, `SI-17`, `SR-3`), marking each control as `FAIL (Open Findings)` or `PASS (No Violations)` in **[`controls.md`](../evidence/aoc-07-iac-misconfig/controls.md)**.
-4. **AST Ruleset Verification**: Cross-references all 37 rules in [`rules/custom-baseline-ruleset.yaml`](../rules/custom-baseline-ruleset.yaml) against Semgrep execution telemetry to prove 100% policy load coverage in **[`ruleset_validation.md`](../evidence/aoc-07-iac-misconfig/ruleset_validation.md)**.
-5. **eMASS / GRC Machine Payload**: Serializes provenance, executive metrics, control statuses, ruleset logs, and normalized POA&M items into **[`scr_scn_package.json`](../evidence/aoc-07-iac-misconfig/scr_scn_package.json)**.
-6. **Cryptographic Evidence Sealing**: Computes the SHA-256 hash and byte size of every JSON, XML, and Markdown file in the evidence directory and writes **[`sha256sum`](../evidence/aoc-07-iac-misconfig/sha256sum)**.
+2. **FedRAMP High SLA Calculation**: Computes exact calendar remediation deadlines from the scan timestamp (`CRITICAL` / `HIGH` = **+30 days**, `MEDIUM` = **+90 days**, `LOW` = **+180 days**) and writes **[`poam_data.md`](../testing/demo-evidence/aoc-07-iac-misconfig/poam_data.md)**.
+3. **NIST SP 800-53 Rev. 5 Control Mapping**: Evaluates findings against 18 NIST control families (`AC-3`, `AC-6`, `AU-2`, `CM-6`, `CM-7`, `IA-5`, `RA-5`, `SA-11`, `SC-7`, `SC-8`, `SC-12`, `SC-13`, `SC-28`, `SI-2`, `SI-7`, `SI-10`, `SI-17`, `SR-3`), marking each control as `FAIL (Open Findings)` or `PASS (No Violations)` in **[`controls.md`](../testing/demo-evidence/aoc-07-iac-misconfig/controls.md)**.
+4. **AST Ruleset Verification**: Cross-references all 37 rules in [`rules/custom-baseline-ruleset.yaml`](../rules/custom-baseline-ruleset.yaml) against Semgrep execution telemetry to prove 100% policy load coverage in **[`ruleset_validation.md`](../testing/demo-evidence/aoc-07-iac-misconfig/ruleset_validation.md)**.
+5. **eMASS / GRC Machine Payload**: Serializes provenance, executive metrics, control statuses, ruleset logs, and normalized POA&M items into **[`scr_scn_package.json`](../testing/demo-evidence/aoc-07-iac-misconfig/scr_scn_package.json)**.
+6. **Cryptographic Evidence Sealing**: Computes the SHA-256 hash and byte size of every JSON, XML, and Markdown file in the evidence directory and writes **[`sha256sum`](../testing/demo-evidence/aoc-07-iac-misconfig/sha256sum)**.
 
 ---
 
