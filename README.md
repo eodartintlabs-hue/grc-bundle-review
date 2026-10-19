@@ -10,6 +10,7 @@
   <a href="testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
   <a href="hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
   <a href="hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="hygiene/ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
   <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
@@ -19,7 +20,7 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,    eodartintlabs-hue/grc-bundle-reviewer
  {GGG'     `G# {GGG     `GGG {GGG'     `G#     -------------------------------------
- @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.4 (Yokosuka)
+ @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.5 (Yokosuka)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG              OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG              Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#     Isolation: Air-Gapped (--network none, :ro)
@@ -34,6 +35,7 @@
 ```
 
 > **Classification**: Internal DevSecOps & Security Compliance Specification  
+> **Release Stage**: `v1.x — Yokosuka` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
 > **Target Frameworks**: DISA STIG, NIST SP 800-53 Rev. 5, FedRAMP High, DoD Cloud Computing SRG, OWASP Top 10  
 > **Operational Model**: Out-of-Band (OOB), Fail-Open, Zero Untrusted Execution, Ephemeral Hygiene  
 > **Companion Test Corpus**: [`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)  
@@ -51,7 +53,8 @@
 7. [CLI Command Reference (`./grc`)](#7-cli-command-reference-grc)
 8. [Quickstart Workflows](#8-quickstart-workflows)
 9. [Security Assurance, Negative Testing & Verification](#9-security-assurance-negative-testing--verification)
-10. [Repository Structure & Documentation Index](#10-repository-structure--documentation-index)
+10. [Product Roadmap (`Yokosuka` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)](#10-product-roadmap-yokosuka-rightarrow-sasebo-rightarrow-misawa-rightarrow-pearl-harbor-ga)
+11. [Repository Structure & Documentation Index](#11-repository-structure--documentation-index)
 
 ---
 
@@ -289,11 +292,24 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`testing/TESTING.md`)](testing/TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
 * 🎬 **[Live Demo Presentation Runbook (`testing/live-demo.md`)](testing/live-demo.md)** — Step-by-step live demo script covering AOC-09, AOC-10, and AOC-04.
-* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)** & **[v1 Patch Ledger (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)** — Version history, `Yokosuka` release notes, and running `v1.x` patch table.
+* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)**, **[v1 Patch Ledger (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)** & **[Product Roadmap (`hygiene/ROADMAP.md`)](hygiene/ROADMAP.md)** — Version history, `Yokosuka` release notes, running `v1.x` patch table, and the upcoming **`v2.0.0 — Pearl Harbor`** GA roadmap.
 
 ---
 
-## 10. Repository Structure & Documentation Index
+## 10. Product Roadmap (`Yokosuka` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)
+
+| Release Milestone | Series | Key Capabilities Planned |
+| :--- | :--- | :--- |
+| **`v1.2.0 — Sasebo`** | 🇯🇵 Japan *(Beta)* | **Universal Workstation Portability**: Out-of-the-box compatibility for any user cloning from GitHub across macOS (`arm64`/`amd64`), Linux, and Windows WSL2—fixing Linux UID/GID root volume ownership, adding SELinux/Podman support, pinning `Dockerfile.scanner` versions, and introducing `./grc doctor`. |
+| **`v1.3.0 — Misawa`** | 🇯🇵 Japan *(Beta)* | **Tenable & AWS Inspector CSV Ingest**: Ingests external Tenable and AWS Inspector vulnerability CSV reports (`./grc ingest`), deduplicates findings across static and runtime scans, and populates the **official FedRAMP POA&M spreadsheet (`.xlsx`)**. |
+| **`v2.0.0 — Pearl Harbor`** | 🌺 Hawaii *(GA Launch)* | **Cloud Enclave Lift, Helm Auditing & Local LLM Baseline**: Lifts execution from local workstations to **AWS EC2** and **AWS Bottlerocket** container hosts, adds **Helm chart compliance auditing (`./grc scan --engine helm`)**, and integrates a baseline air-gapped **Gemma / GPT-OSS** model for POA&M synthesis. |
+| **`v2.1.0 — Kaneohe`** | 🌺 Hawaii *(Post-GA)* | **RAM-Adaptive Local LLM Scaling & OSCAL**: Dynamic endpoint RAM profiler (`8GB` to `64GB+`) that automatically selects the optimal quantized `Gemma` or `GPT-OSS` model tier based on host memory, plus NIST OSCAL 1.1.x export. |
+
+> 🗺️ **Full Architectural Specification**: See **[`hygiene/ROADMAP.md`](hygiene/ROADMAP.md)** for the complete feature breakdown across `Sasebo`, `Misawa`, `Pearl Harbor`, and `Kaneohe`.
+
+---
+
+## 11. Repository Structure & Documentation Index
 
 ```text
 grc-bundle-review/
@@ -314,9 +330,10 @@ grc-bundle-review/
 │
 ├── evidence/                         # Production compliance vault (reserved strictly for real bundles)
 │
-├── hygiene/                          # Release engineering, versioning & patch tracking
+├── hygiene/                          # Release engineering, versioning, patch tracking & product roadmap
 │   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka)
-│   └── PATCH_LOG.md                  # Running table of all v1.x patches across the app lifecycle
+│   ├── PATCH_LOG.md                  # Running table of all v1.x patches across the app lifecycle
+│   └── ROADMAP.md                    # v2.0.0 (Pearl Harbor) product roadmap & Hawaiian series milestones
 │
 ├── docker/                           # Containerized scanning suite (100% local, $0 cloud cost)
 │   ├── Dockerfile.scanner            # Image recipe bundling Semgrep, Checkov, Gitleaks, Syft, Grype, Trivy, OpenSCAP

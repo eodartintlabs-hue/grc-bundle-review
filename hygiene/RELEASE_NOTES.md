@@ -10,30 +10,56 @@
   <a href="../testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
   <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
   <a href="PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
   <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Project**: GRC Bundle & AMI Review Pipeline (`grc-bundle-review`)  
-> **Active Release Series**: `v1.x` — Codename **Yokosuka**  
+> **Active Release Series**: `v1.x` — Codename **Yokosuka** *(Restricted Beta / Integration Testing)*  
+> **Upcoming Full Production Release (`v2.0.0`)**: **`Pearl Harbor`** *(First in the Hawaiian Military Base Cities Series — see **[`hygiene/ROADMAP.md`](ROADMAP.md)**)*  
 > **Quick Patch Ledger**: See **[`hygiene/PATCH_LOG.md`](PATCH_LOG.md)** for the condensed running table of all `v1` patches.
 
 ---
 
-## Versioning & Codename Convention
+## Release Series Roadmap & Codename Convention
 
-All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired with a **Release Series Codename**:
+All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired with a **Geographic Military Base Codename** that denotes the maturity phase of the pipeline:
+
+| Major Series | Lifecycle Phase | Access & Scope | Geographic Theme | Active / Candidate Codenames |
+| :--- | :--- | :--- | :--- | :--- |
+| **`v1.x`** | **Restricted Beta & Integration Testing** | Limited access for designated integration testers, security assessors, and pilot engineering teams validating end-to-end bundle & AMI workflows. | 🇯🇵 **Japan** *(U.S. Military Installations)* | **`Yokosuka`** *(Active — `v1.0.x`)* · **`Sasebo`** *(`v1.2.0` Workstation Portability)* · **`Misawa`** *(`v1.3.0` Tenable/Inspector CSV Ingest)* |
+| **`v2.x`** | **Full Production Release (GA)** | General Availability across production enclaves after Beta integration sign-off. | 🌺 **Hawaii** *(Cities with U.S. Military Bases)* | **`Pearl Harbor`** *(`v2.0.0` GA Launch)* · **`Kaneohe`** *(`v2.1.0` RAM-Adaptive LLM)* · `Wahiawa` (`v2.2.0`), `Kunia`, `Kekaha` |
+
+### Semantic Versioning Rules
 * **Format**: `Release v<MAJOR>.<MINOR>.<PATCH> - <Codename>: <Summary>`
-* **Current Series (`v1.x`)**: **Yokosuka**
-  * **MAJOR (`v1.0.0`)**: Architectural baseline and major compliance milestones.
-  * **MINOR (`v1.x.0`)**: New backward-compatible scanners, CLI subcommands, or compliance frameworks.
-  * **PATCH (`v1.0.x`)**: Bug fixes, rule tuning, offline CVE database refreshes, documentation, and repository hygiene.
+* **MAJOR (`v1.0.0` Beta $\rightarrow$ `v2.0.0` Full Release)**: Lifecycle milestone transitions (Beta Integration Testing in `v1.x` to Full Production GA in `v2.0.0`).
+* **MINOR (`v1.x.0`)**: New backward-compatible scanners, CLI subcommands, or compliance frameworks introduced during the series.
+* **PATCH (`v1.0.x`)**: Bug fixes, rule tuning, offline CVE database refreshes, documentation, and repository hygiene.
+
+---
+
+## 🗺️ `v1.0.5` — Yokosuka (Patch 5: Product Roadmap Specification — `Sasebo`, `Misawa` & `Pearl Harbor` GA)
+**Release Date**: October 19, 2026  
+**Tag**: `v1.0.5`  
+**Type**: Patch Release (`Hygiene & Docs` — Product Roadmap & Navigation Synchronization)
+
+### Highlights & Changes
+* **Dedicated Product Roadmap ([`hygiene/ROADMAP.md`](ROADMAP.md)) & `README.md` Section 10**:
+  * Authored a comprehensive forward-looking product roadmap detailing the multi-stage progression from the active `v1.0.x — Yokosuka` Beta baseline through upcoming Japan-series minor updates and the `v2.x` Hawaiian General Availability (GA) series:
+    * **`v1.2.0 — Sasebo` (Universal Workstation Portability)**: Out-of-the-box compatibility across macOS (`arm64`/`amd64`), Linux, and Windows WSL2—resolving Linux container UID/GID root ownership on `evidence/`, adding SELinux (`:Z`) and Podman support, pinning deterministic `Dockerfile.scanner` tool versions, and adding `./grc doctor`.
+    * **`v1.3.0 — Misawa` (Tenable & AWS Inspector CSV Ingest $\rightarrow$ Official FedRAMP POA&M `.xlsx`)**: Multi-source vulnerability CSV ingestion (`./grc ingest`), cross-scanner CVE deduplication, and automated population of the official FedRAMP POA&M Excel spreadsheet (`.xlsx`).
+    * **`v2.0.0 — Pearl Harbor` (Full Production GA Launch)**: Cloud enclave execution on hardened **AWS EC2** and immutable **AWS Bottlerocket** container hosts, offline **Helm Chart compliance auditing (`./grc scan --engine helm`)**, and a baseline air-gapped local LLM (`Gemma` / `GPT-OSS`) synthesis engine.
+    * **`v2.1.0 — Kaneohe` (RAM-Adaptive LLM Scaling & OSCAL)**: Dynamic endpoint RAM profiler (`8GB` to `64GB+`) that automatically selects the optimal quantized `Gemma` / `GPT-OSS` model tier based on host memory configuration, plus NIST OSCAL 1.1.x export.
+* **Cross-Repository Navigation & Version Bump**:
+  * Added **`🗺️ Roadmap`** to the top navigation bar across all documentation pages and updated [`hygiene/PATCH_LOG.md`](PATCH_LOG.md).
+  * Bumped the `grcfetch` CLI banner in [`./grc`](../grc) and [`README.md`](../README.md) to `GRC Bundle Reviewer v1.0.5 (Yokosuka)`.
 
 ---
 
 ## 🐛 `v1.0.4` — Yokosuka (Patch 4: Unified 9-Engine Scan Fix & Independent Engine Dispatch)
 **Release Date**: October 18, 2026  
-**Tag**: `v1.0.4`  
+**Tag**: `v1.0.4` (`19c41dc`)  
 **Type**: Bug Fix & CLI Enhancement (`Bug Fix`)
 
 ### Highlights & Changes
@@ -105,13 +131,14 @@ All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired 
 
 ---
 
-## 🚀 `v1.0.0` — Yokosuka (Initial Production Release)
+## 🚀 `v1.0.0` — Yokosuka (Initial Beta Baseline — Integration Testing)
 **Release Date**: October 18, 2026  
 **Tag**: `v1.0.0` (`9bc27c3`)  
+**Stage**: Restricted Beta (Integration Testing Access Only)  
 **Annotation**: `Release v1.0.0 - Yokosuka: Initial working 5-phase GRC Bundle Review Pipeline`
 
 ### Executive Summary
-`v1.0.0 - Yokosuka` marks the first complete, end-to-end operational release of the **GRC Bundle & AMI Review Pipeline**. Engineered for high-assurance federal and defense environments (**FedRAMP High**, **DISA STIG**, **NIST SP 800-53 Rev. 5**, **DoD RMF**), the pipeline performs cryptographic pre-verification, read-only ephemeral restoration, air-gapped multi-engine static analysis, and automated **Security Change Request / Security Change Notification (SCR/SCN)** evidence synthesis.
+`v1.0.0 - Yokosuka` marks the initial end-to-end **Beta baseline** of the **GRC Bundle & AMI Review Pipeline**, released to designated integration testers prior to the upcoming **`v2.0.0` Full Production Release**. Engineered for high-assurance federal and defense environments (**FedRAMP High**, **DISA STIG**, **NIST SP 800-53 Rev. 5**, **DoD RMF**), the pipeline performs cryptographic pre-verification, read-only ephemeral restoration, air-gapped multi-engine static analysis, and automated **Security Change Request / Security Change Notification (SCR/SCN)** evidence synthesis.
 
 ### Key Capabilities Delivered in `v1.0.0`
 
