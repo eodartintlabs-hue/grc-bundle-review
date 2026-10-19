@@ -39,13 +39,29 @@ All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired 
 
 ---
 
+## 🖥️ `v1.0.6` — Yokosuka (Patch 6: Minimum & Recommended System Requirements & 4-AOC Combo Verification)
+**Release Date**: October 19, 2026  
+**Tag**: `v1.0.6`  
+**Type**: Patch Release (`Hygiene & Docs` — System Requirements & Multi-AOC Verification Evidence)
+
+### Highlights & Changes
+* **Minimum & Recommended System Requirements (`README.md` Section 7 & [`docs/workspace-layout.md`](../docs/workspace-layout.md))**:
+  * Documented explicit minimum (`v1.x` baseline) and recommended (`v1.x` & `v2.0+` local LLM) hardware specifications (`64-bit` CPU, `8 GB` min / `16–32 GB+` recommended RAM, `10 GB` min / `25 GB+` recommended SSD, air-gapped `--network none` runtime).
+  * Added a software prerequisites matrix (`bash >= 3.2`, `git >= 2.30+`, `python3 >= 3.9+` standard library, `Docker >= 24.0+` / Docker Desktop `4.25+`, optional `aws-cli` v2) with quick verification commands.
+  * Upgraded [`docs/workspace-layout.md`](../docs/workspace-layout.md) to reflect all 9 compliance engines, top navigation links, and Phase 4 deliverable schemas.
+* **Multi-AOC Combined Synthetic Verification ([`testing/demo-evidence/aoc-combo-4x/`](../testing/demo-evidence/aoc-combo-4x/))**:
+  * Verified end-to-end 9-engine detection and Phase 4 synthesis against a 4-in-1 synthetic bundle (`aoc-combo-4x.bundle`) combining **AOC-02** (Password Hygiene), **AOC-04** (Command Injection), **AOC-07** (IaC Misconfigurations), and **AOC-09** (Unsupported Crypto Libraries), generating 19 normalized POA&M findings across 7 NIST SP 800-53 controls.
+  * Bumped the `grcfetch` CLI banner in [`./grc`](../grc) and [`README.md`](../README.md) to `GRC Bundle Reviewer v1.0.6 (Yokosuka)`.
+
+---
+
 ## 🗺️ `v1.0.5` — Yokosuka (Patch 5: Product Roadmap Specification — `Sasebo`, `Misawa` & `Pearl Harbor` GA)
 **Release Date**: October 19, 2026  
-**Tag**: `v1.0.5`  
+**Tag**: `v1.0.5` (`48d1d34`)  
 **Type**: Patch Release (`Hygiene & Docs` — Product Roadmap & Navigation Synchronization)
 
 ### Highlights & Changes
-* **Dedicated Product Roadmap ([`hygiene/ROADMAP.md`](ROADMAP.md)) & `README.md` Section 10**:
+* **Dedicated Product Roadmap ([`hygiene/ROADMAP.md`](ROADMAP.md)) & `README.md` Roadmap Section**:
   * Authored a comprehensive forward-looking product roadmap detailing the multi-stage progression from the active `v1.0.x — Yokosuka` Beta baseline through upcoming Japan-series minor updates and the `v2.x` Hawaiian General Availability (GA) series:
     * **`v1.2.0 — Sasebo` (Universal Workstation Portability)**: Out-of-the-box compatibility across macOS (`arm64`/`amd64`), Linux, and Windows WSL2—resolving Linux container UID/GID root ownership on `evidence/`, adding SELinux (`:Z`) and Podman support, pinning deterministic `Dockerfile.scanner` tool versions, and adding `./grc doctor`.
     * **`v1.3.0 — Misawa` (Tenable & AWS Inspector CSV Ingest $\rightarrow$ Official FedRAMP POA&M `.xlsx`)**: Multi-source vulnerability CSV ingestion (`./grc ingest`), cross-scanner CVE deduplication, and automated population of the official FedRAMP POA&M Excel spreadsheet (`.xlsx`).

@@ -1,0 +1,45 @@
+{
+    "manifest_schema": "grc-bundle-provenance-v1",
+    "session_id": "6eb152ba-a455-4b5e-886f-7f8fb5b69794",
+    "bundle_identifier": "001b61db92be9f9b7ddd0d5d0d8f32a20edab91d1e0f033a30448a8f77ee3dbb",
+    "bundle_source_path": "/Users/byronturner-pro/.gemini/antigravity/brain/a02fc92f-c7d7-4544-b1f1-0a72d57cfeff/scratch/bundles/aoc-combo-4x.bundle",
+    "bundle_size_bytes": 1112,
+    "bundle_sha256": "001b61db92be9f9b7ddd0d5d0d8f32a20edab91d1e0f033a30448a8f77ee3dbb",
+    "workspace_path": "/Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace",
+    "checked_out_ref": "v1.0.0",
+    "commit_metadata": {
+        "commit_hash": "b402039ce6309f30c651ec4e9a1fce904d7d0918",
+        "short_hash": "b402039",
+        "author_name": "Byron Turner",
+        "author_email": "eodartintlabs-hue@users.noreply.github.com",
+        "author_date": "Mon Oct 19 10:24:02 2026 -0400",
+        "subject": "feat: synthetic 4-AOC combo dummy (AOC-02, AOC-04, AOC-07, AOC-09)",
+        "ref": "HEAD, tag: v1.0.0, origin/main, origin/HEAD, main"
+    },
+    "restored_at": "2026-10-19T14:24:40.648471+00:00",
+    "status": "RESTORED",
+    "ephemeral": true,
+    "verification": {
+        "session_id": "6eb152ba-a455-4b5e-886f-7f8fb5b69794",
+        "bundle_file": "/Users/byronturner-pro/.gemini/antigravity/brain/a02fc92f-c7d7-4544-b1f1-0a72d57cfeff/scratch/bundles/aoc-combo-4x.bundle",
+        "bundle_size_bytes": 1112,
+        "bundle_sha256": "001b61db92be9f9b7ddd0d5d0d8f32a20edab91d1e0f033a30448a8f77ee3dbb",
+        "checksum_verified": true,
+        "git_bundle_valid": true,
+        "contained_references": [
+            {
+                "commit": "b402039ce6309f30c651ec4e9a1fce904d7d0918",
+                "ref": "refs/heads/main"
+            },
+            {
+                "commit": "b402039ce6309f30c651ec4e9a1fce904d7d0918",
+                "ref": "refs/tags/v1.0.0"
+            },
+            {
+                "commit": "b402039ce6309f30c651ec4e9a1fce904d7d0918",
+                "ref": "HEAD"
+            }
+        ],
+        "verified_at": "2026-10-19T14:24:40.599962+00:00"
+    }
+}

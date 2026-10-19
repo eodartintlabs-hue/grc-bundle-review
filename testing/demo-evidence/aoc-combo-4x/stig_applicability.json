@@ -1,0 +1,156 @@
+{
+  "metadata": {
+    "generated_at": "2026-10-19T14:29:47.134430+00:00",
+    "source_sbom": "sbom.cdx.json",
+    "analyzer": "sbom_analyzer.py (GRC Bundle Review Pipeline)"
+  },
+  "summary": {
+    "total_components": 5,
+    "unique_stigs_mapped": 1,
+    "stig_distribution": {
+      "U_ASD_V5R1_STIG": 5
+    },
+    "severity_distribution": {
+      "CAT I": 5
+    },
+    "mapped_nist_controls": [
+      "AC-3",
+      "IA-2",
+      "SC-12",
+      "SC-13",
+      "SC-8",
+      "SI-10",
+      "SI-16",
+      "SI-2",
+      "SI-4",
+      "SI-7"
+    ]
+  },
+  "mappings": [
+    {
+      "component_name": "/workspace",
+      "component_version": "Unknown",
+      "component_type": "file",
+      "purl": "",
+      "stig_id": "U_ASD_V5R1_STIG",
+      "stig_title": "Application Security and Development (ASD) STIG",
+      "benchmark_id": "Application_Security_and_Development_STIG",
+      "version": "Version 5, Release 1",
+      "max_severity": "CAT I",
+      "nist_controls": [
+        "SI-2",
+        "SI-4",
+        "SI-7",
+        "SI-10",
+        "SI-16",
+        "SC-8",
+        "SC-12",
+        "SC-13",
+        "IA-2",
+        "AC-3"
+      ],
+      "match_reason": "Application dependency governed by General Application Security and Development (ASD) STIG",
+      "match_type": "FALLBACK"
+    },
+    {
+      "component_name": "cryptography",
+      "component_version": "38.0.1",
+      "component_type": "library",
+      "purl": "pkg:pypi/cryptography@38.0.1",
+      "stig_id": "U_ASD_V5R1_STIG",
+      "stig_title": "Application Security and Development (ASD) STIG",
+      "benchmark_id": "Application_Security_and_Development_STIG",
+      "version": "Version 5, Release 1",
+      "max_severity": "CAT I",
+      "nist_controls": [
+        "SI-2",
+        "SI-4",
+        "SI-7",
+        "SI-10",
+        "SI-16",
+        "SC-8",
+        "SC-12",
+        "SC-13",
+        "IA-2",
+        "AC-3"
+      ],
+      "match_reason": "Resolved via PURL ecosystem (pypi): Python application dependency (PyPI)",
+      "match_type": "PURL_ECOSYSTEM"
+    },
+    {
+      "component_name": "pycrypto",
+      "component_version": "2.6.1",
+      "component_type": "library",
+      "purl": "pkg:pypi/pycrypto@2.6.1",
+      "stig_id": "U_ASD_V5R1_STIG",
+      "stig_title": "Application Security and Development (ASD) STIG",
+      "benchmark_id": "Application_Security_and_Development_STIG",
+      "version": "Version 5, Release 1",
+      "max_severity": "CAT I",
+      "nist_controls": [
+        "SI-2",
+        "SI-4",
+        "SI-7",
+        "SI-10",
+        "SI-16",
+        "SC-8",
+        "SC-12",
+        "SC-13",
+        "IA-2",
+        "AC-3"
+      ],
+      "match_reason": "Resolved via PURL ecosystem (pypi): Python application dependency (PyPI)",
+      "match_type": "PURL_ECOSYSTEM"
+    },
+    {
+      "component_name": "requests",
+      "component_version": "2.31.0",
+      "component_type": "library",
+      "purl": "pkg:pypi/requests@2.31.0",
+      "stig_id": "U_ASD_V5R1_STIG",
+      "stig_title": "Application Security and Development (ASD) STIG",
+      "benchmark_id": "Application_Security_and_Development_STIG",
+      "version": "Version 5, Release 1",
+      "max_severity": "CAT I",
+      "nist_controls": [
+        "SI-2",
+        "SI-4",
+        "SI-7",
+        "SI-10",
+        "SI-16",
+        "SC-8",
+        "SC-12",
+        "SC-13",
+        "IA-2",
+        "AC-3"
+      ],
+      "match_reason": "Resolved via PURL ecosystem (pypi): Python application dependency (PyPI)",
+      "match_type": "PURL_ECOSYSTEM"
+    },
+    {
+      "component_name": "/workspace/requirements.txt",
+      "component_version": "Unknown",
+      "component_type": "file",
+      "purl": "",
+      "stig_id": "U_ASD_V5R1_STIG",
+      "stig_title": "Application Security and Development (ASD) STIG",
+      "benchmark_id": "Application_Security_and_Development_STIG",
+      "version": "Version 5, Release 1",
+      "max_severity": "CAT I",
+      "nist_controls": [
+        "SI-2",
+        "SI-4",
+        "SI-7",
+        "SI-10",
+        "SI-16",
+        "SC-8",
+        "SC-12",
+        "SC-13",
+        "IA-2",
+        "AC-3"
+      ],
+      "match_reason": "Application dependency governed by General Application Security and Development (ASD) STIG",
+      "match_type": "FALLBACK"
+    }
+  ]
+}

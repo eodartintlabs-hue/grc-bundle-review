@@ -1,0 +1,180 @@
+{
+    "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.7",
+    "serialNumber": "urn:uuid:2794409a-4867-4d5a-9c40-279b093b8f55",
+    "version": 1,
+    "metadata": {
+        "timestamp": "2026-10-19T14:29:46Z",
+        "tools": {
+            "components": [
+                {
+                    "type": "application",
+                    "author": "anchore",
+                    "name": "syft",
+                    "version": "1.54.1"
+                }
+            ]
+        },
+        "component": {
+            "bom-ref": "8dcbd803f369ec9f",
+            "type": "file",
+            "name": "/workspace"
+        }
+    },
+    "components": [
+        {
+            "bom-ref": "pkg:pypi/cryptography@38.0.1?package-id=7e00e8a1be584ef5",
+            "type": "library",
+            "name": "cryptography",
+            "version": "38.0.1",
+            "cpe": "cpe:2.3:a:cryptography.io:cryptography:38.0.1:*:*:*:*:python:*:*",
+            "purl": "pkg:pypi/cryptography@38.0.1",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:cryptography.io:cryptography:38.0.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:pypi/pycrypto@2.6.1?package-id=97e417ee999fbde8",
+            "type": "library",
+            "name": "pycrypto",
+            "version": "2.6.1",
+            "cpe": "cpe:2.3:a:python-pycrypto:python-pycrypto:2.6.1:*:*:*:*:*:*:*",
+            "purl": "pkg:pypi/pycrypto@2.6.1",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-pycrypto:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_pycrypto:python-pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_pycrypto:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:pycrypto:python-pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:pycrypto:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python-pycrypto:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python_pycrypto:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python-pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:python_pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:pycrypto:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:cpe23",
+                    "value": "cpe:2.3:a:python:pycrypto:2.6.1:*:*:*:*:*:*:*"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "pkg:pypi/requests@2.31.0?package-id=21ce5e236ab6b5c2",
+            "type": "library",
+            "name": "requests",
+            "version": "2.31.0",
+            "cpe": "cpe:2.3:a:python:requests:2.31.0:*:*:*:*:*:*:*",
+            "purl": "pkg:pypi/requests@2.31.0",
+            "properties": [
+                {
+                    "name": "syft:package:foundBy",
+                    "value": "python-package-cataloger"
+                },
+                {
+                    "name": "syft:package:language",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:type",
+                    "value": "python"
+                },
+                {
+                    "name": "syft:package:metadataType",
+                    "value": "python-pip-requirements-entry"
+                },
+                {
+                    "name": "syft:location:0:path",
+                    "value": "/requirements.txt"
+                }
+            ]
+        },
+        {
+            "bom-ref": "26ca2b7dc025d550",
+            "type": "file",
+            "name": "/workspace/requirements.txt",
+            "hashes": [
+                {
+                    "alg": "SHA-1",
+                    "content": "ad1e4830622c0e46580ca9a38712a54d9657a867"
+                },
+                {
+                    "alg": "SHA-256",
+                    "content": "d335360f2d94db91c17f0d601e3507dd98d937f1cea07f5d9a538087cc2106a3"
+                }
+            ]
+        }
+    ]
+}

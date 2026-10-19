@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "scan_time": "2026-10-19T14:29:47.063960+00:00",
+    "workspace": "/Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace",
+    "tool": "crypto_lib_scan.py",
+    "framework": "NIST SP 800-53 Rev. 5 (SI-7, SC-12, SC-13)",
+    "aoc_coverage": [
+      "AOC-09",
+      "AOC-03"
+    ]
+  },
+  "summary": {
+    "total_crypto_libraries": 2,
+    "critical_eol_count": 1,
+    "high_severity_count": 1,
+    "compliant_count": 0
+  },
+  "findings": [
+    {
+      "library_name": "pycrypto",
+      "detected_version": "2.6.1",
+      "manifest_file": "requirements.txt",
+      "ecosystem": "python",
+      "compliance_status": "FAIL_DEPRECATED",
+      "severity": "CRITICAL",
+      "description": "PyCrypto has been unmaintained since 2013 and contains unpatched vulnerabilities.",
+      "remediation": "Migrate all cryptographic operations to 'cryptography' (pyca/cryptography) or 'pycryptodome'.",
+      "nist_controls": [
+        "SI-7",
+        "SC-13"
+      ],
+      "area_of_concern": "AOC-09: Crypto Dependencies on Unsupported Libraries",
+      "matched_rule": "pycrypto"
+    },
+    {
+      "library_name": "cryptography",
+      "detected_version": "38.0.1",
+      "manifest_file": "requirements.txt",
+      "ecosystem": "python",
+      "compliance_status": "WARN_OUTDATED",
+      "severity": "HIGH",
+      "description": "Detected version '38.0.1' is below baseline minimum '41.0.0'.",
+      "remediation": "Ensure version >= 41.0.0 to incorporate latest memory-safety improvements (Rust bindings).",
+      "nist_controls": [
+        "SI-7",
+        "SC-13"
+      ],
+      "area_of_concern": "AOC-09: Crypto Dependencies on Unsupported Libraries",
+      "matched_rule": "cryptography"
+    }
+  ]
+}
