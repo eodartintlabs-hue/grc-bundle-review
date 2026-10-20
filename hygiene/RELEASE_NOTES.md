@@ -11,12 +11,13 @@
   <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
   <a href="PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
   <a href="ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
-  <a href="../docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/scan-transform-guide.md"><b>📊 Scan-to-POA&M Guide</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Bundle Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
 > **Project**: GRCx — The GRC eXperience (`grcx`)  
-> **Active Release Series**: `v1.1.x` — Codename **Kadena** *(Restricted Beta / Integration Testing)*  
+> **Active Release Series**: `v1.2.x` — Codename **Misawa** *(Restricted Beta / Integration Testing)*  
 > **Upcoming Full Production Release (`v2.0.0`)**: **`Pearl Harbor`** *(First in the Hawaiian Military Base Cities Series — see **[`hygiene/ROADMAP.md`](ROADMAP.md)**)*  
 > **Quick Patch Ledger**: See **[`hygiene/PATCH_LOG.md`](PATCH_LOG.md)** for the condensed running table of all `v1` patches.
 
@@ -28,14 +29,40 @@ All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired 
 
 | Major Series | Lifecycle Phase | Access & Scope | Geographic Theme | Active / Candidate Codenames |
 | :--- | :--- | :--- | :--- | :--- |
-| **`v1.x`** | **Restricted Beta & Integration Testing** | Limited access for designated integration testers, security assessors, and pilot engineering teams validating end-to-end bundle & AMI workflows. | 🇯🇵 **Japan** *(U.S. Military Installations)* | **`Yokosuka`** *(`v1.0.x`)* · **`Kadena`** *(Active — `v1.1.x` `GRCx` Rebrand)* · **`Sasebo`** *(`v1.2.0` Workstation Portability)* · **`Misawa`** *(`v1.3.0` Tenable/Inspector CSV Ingest)* |
-| **`v2.x`** | **Full Production Release (GA)** | General Availability across production enclaves after Beta integration sign-off. | 🌺 **Hawaii** *(Cities with U.S. Military Bases)* | **`Pearl Harbor`** *(`v2.0.0` GA Launch)* · **`Kaneohe`** *(`v2.1.0` RAM-Adaptive LLM)* · `Wahiawa` (`v2.2.0`), `Kunia`, `Kekaha` |
+| **`v1.x`** | **Restricted Beta & Integration Testing** | Limited access for designated integration testers, security assessors, and pilot engineering teams validating end-to-end bundle & AMI workflows. | 🇯🇵 **Japan** *(U.S. Military Installations)* | **`Yokosuka`** *(`v1.0.x`)* · **`Kadena`** *(`v1.1.0` `GRCx` Rebrand)* · **`Misawa`** *(Active — `v1.2.x` Scan-to-POA&M Transformer)* · **`Sasebo`** *(`v1.3.0` Workstation Portability)* |
+| **`v2.x`** | **Full Production Release (GA)** | General Availability across production enclaves after Beta integration sign-off. | 🌺 **Hawaii** *(Cities with U.S. Military Bases)* | **`Pearl Harbor`** *(`v2.0.0` GA Launch & Helm Auditing)* · **`Kaneohe`** *(`v2.1.0+` Cloud Lift, Local LLM & RAM-Adaptive Scaling)* · `Wahiawa` (`v2.2.0`), `Kunia`, `Kekaha` |
 
 ### Semantic Versioning Rules
 * **Format**: `Release v<MAJOR>.<MINOR>.<PATCH> - <Codename>: <Summary>`
 * **MAJOR (`v1.0.0` Beta $\rightarrow$ `v2.0.0` Full Release)**: Lifecycle milestone transitions (Beta Integration Testing in `v1.x` to Full Production GA in `v2.0.0`).
 * **MINOR (`v1.x.0`)**: New backward-compatible scanners, CLI subcommands, compliance frameworks, or major platform identity milestones introduced during the series.
 * **PATCH (`v1.x.y`)**: Bug fixes, rule tuning, offline CVE database refreshes, documentation, and repository hygiene.
+
+---
+
+## 🛩️ `v1.2.0` — Misawa (Minor Release: Standalone Tenable & AWS Inspector Scan-to-FedRAMP POA&M Transformation Engine)
+**Release Date**: October 20, 2026  
+**Tag**: `v1.2.0`  
+**Type**: Minor Release (`Misawa` — Standalone Scan-to-POA&M Transformation Engine, Open $\rightarrow$ Closed Reconciliation, Remediation URL Drafter & SLA Aging Analyzer)
+
+### Highlights & Changes
+* **New Standalone Native Python Compliance Engine ([`scripts/transform_scans.py`](../scripts/transform_scans.py) & `./grc transform`)**:
+  * Engineered a 100% Python 3 Standard Library compliance transformation engine designed for direct, standalone daily use by GRC analysts (requiring no Docker container, no `.bundle` file, and no `pip` installs).
+  * Automatically detects and parses **Tenable (Nessus / Tenable.sc / Tenable.io)** and **AWS Inspector** vulnerability scan exports in both **`.csv`** and **`.xlsx`** formats, mapping each unique `(Vulnerability + Asset)` combination into its own row across the 27 columns of the official FedRAMP POA&M templates.
+* **Bundled Official OPEN & CLOSED FedRAMP POA&M Templates ([`templates/`](../templates/))**:
+  * Integrated [`templates/OPEN FedRAMP-POAM-Template.xlsx`](../templates/OPEN%20FedRAMP-POAM-Template.xlsx) (*`Open POA&M Items`, Columns `B..AB`, Row 5+*) and [`templates/CLOSED LEGACY FedRAMP-POAM-Template.xlsx`](../templates/CLOSED%20LEGACY%20FedRAMP-POAM-Template.xlsx) (*`Closed POA&M Items`, Columns `A..AA`, Row 3+*).
+  * Extended the `OPEN` template's Risk Rating dropdown validation and Column `M` (`Scheduled Completion Date`) Excel formula to support **`Critical` (`+30d`)**, **`High` (`+30d`)**, **`Moderate` (`+90d`)**, and **`Low` (`+180d`)**.
+* **Automated Open $\rightarrow$ Closed POA&M Delta Reconciliation**:
+  * Prompts for (or accepts via `--previous-open`) a previously filled-out **OPEN FedRAMP POA&M** workbook.
+  * **Carried-Over Open Findings**: Retain their existing `POAM ID`, immutable `Original Detection Date` (`Column L`), and analyst-curated fields while updating `Status Date` (`Column N`).
+  * **Remediated / Closed Findings**: Entries present in the previous OPEN POA&M that are no longer present in the new scan (or marked `False Positive = Yes`) are automatically removed from the OPEN POA&M and moved to the **CLOSED FedRAMP POA&M** template with a verification timestamp.
+* **Interactive Missing Remediation Plan Drafter (`[y/n]`) with Official Tenable & AWS URLs**:
+  * Identifies any OPEN POA&M entries missing a `Remediation Plan` (`Column K`) and asks the user (`y/n`) whether **GRCx** should draft them.
+  * When confirmed (`y`), populates `Column K` with remediation steps and authoritative URLs (`https://www.tenable.com/plugins/nessus/<Plugin_ID>`, `https://explore.alas.aws.amazon.com/<ALAS_ID>.html`, AWS Inspector remediation docs, and `https://nvd.nist.gov/vuln/detail/<CVE>`).
+* **SLA Breach Count & Finding Age Reporting**:
+  * Reports the exact count of finished OPEN POA&M entries whose `Scheduled Completion Date` (SLA) has passed and prints an itemized aging table showing how many days old each finding is from its `Original Detection Date` (also saved to `poam_transform_summary.md` for previewing in Cursor).
+* **Standalone Analyst Guide & Sample Scan Fixtures ([`docs/scan-transform-guide.md`](../docs/scan-transform-guide.md) & [`testing/sample-scans/`](../testing/sample-scans/))**:
+  * Added a dedicated standalone analyst guide ([`docs/scan-transform-guide.md`](../docs/scan-transform-guide.md)), sample Tenable & AWS Inspector CSVs, a sample previous OPEN POA&M workbook, and pre-generated transformation evidence in [`testing/demo-evidence/`](../testing/demo-evidence/).
 
 ---
 

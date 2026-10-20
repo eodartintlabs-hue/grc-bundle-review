@@ -13,7 +13,8 @@
   <a href="hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
   <a href="hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
   <a href="hygiene/ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
-  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="docs/scan-transform-guide.md"><b>📊 Scan-to-POA&M Guide</b></a> &nbsp;·&nbsp;
+  <a href="docs/grc-bundle-use-case.md"><b>📑 Bundle Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
@@ -27,13 +28,14 @@ Before downloading **GRCx**, confirm your workstation has the four required tool
 
 | Tool | Minimum Version | Purpose | Verify Command |
 | :--- | :--- | :--- | :--- |
-| **Git** | `2.30+` | Verifies and extracts `.bundle` files | `git --version` |
-| **Python 3** | `3.9+` | Runs host orchestration & report synthesis (uses `100%` standard library—no `pip install` needed) | `python3 --version` |
-| **Docker** | `24.0+` | Runs the air-gapped 9-engine scanner container (`grc-scanner:local`) | `docker info` |
+| **Git** | `2.30+` | Downloads the repo and verifies/extracts `.bundle` files | `git --version` |
+| **Python 3** | `3.9+` | Runs host orchestration & **`transform_scans.py`** (uses `100%` standard library—no `pip install` needed) | `python3 --version` *(macOS/Linux)*<br/>`python --version` *(Windows)* |
+| **Docker** *(Bundle/AMI Scans Only)* | `24.0+` | Runs the air-gapped 9-engine scanner container (`grc-scanner:local`). **Not required for `transform_scans.py` (`./grc transform`).** | `docker info` |
 | **Cursor** | Latest | Used to open the workspace and view rendered Markdown & JSON audit deliverables | `cursor --version` *(optional CLI)* |
 
-> [!IMPORTANT]
-> Make sure the **Docker Desktop** (or **OrbStack**) application is actively running before executing Step 3 or Step 4.
+> [!TIP]
+> **Only Using the Scan-to-POA&M Transformer (`transform_scans.py`)?**
+> You do **NOT** need to start or install **Docker** to run the Tenable / AWS Inspector Scan-to-FedRAMP POA&M transformation engine (`scripts/transform_scans.py`). It executes natively on **macOS, Linux, and Windows (PowerShell / Command Prompt / Git Bash / WSL2)** using only **Python 3.9+**. You only need Docker running if you are executing Step 3 (`./grc docker-build`) or Step 4B (`./grc scan`) against a `.bundle` or `AMI`.
 
 ---
 
@@ -54,11 +56,11 @@ git clone https://github.com/eodartintlabs-hue/grc-test-dummies.git GRC-Test-Dum
 ```
 
 ### Option B: Clone from a Portable `.bundle` File (Self-Hosted / Air-Gapped Transfer)
-If you received **GRCx** as a portable Git bundle file (e.g., `grcx-v1.1.0.bundle`), verify and clone directly from the file with zero network access:
+If you received **GRCx** as a portable Git bundle file (e.g., `grcx-v1.2.0.bundle`), verify and clone directly from the file with zero network access:
 
 ```bash
-git bundle verify grcx-v1.1.0.bundle
-git clone grcx-v1.1.0.bundle GRC-Bundle-Review_Pipeline
+git bundle verify grcx-v1.2.0.bundle
+git clone grcx-v1.2.0.bundle GRC-Bundle-Review_Pipeline
 ```
 
 ---
@@ -85,8 +87,42 @@ git clone grcx-v1.1.0.bundle GRC-Bundle-Review_Pipeline
 
 ---
 
-## Step 4: Run Your First Bundle Audit
+## Step 4: Run Your First Workflow
 
+**GRCx** supports two primary workflows depending on your role:
+
+### Workflow A: Standalone Scan-to-FedRAMP POA&M Transformation (`transform_scans.py`)
+> **Does NOT require Docker or a `.bundle` file**: Because `scripts/transform_scans.py` uses **100% Python 3 Standard Library** modules, you do **not** need to start the Docker container to run it. It runs directly on **macOS**, **Linux**, and **Windows**.
+
+#### 🍎 macOS / 🐧 Linux / 🪟 Windows WSL2
+Run `./grc transform` against the bundled sample Tenable scan and previous month's OPEN POA&M:
+
+```bash
+./grc transform \
+  --scan ./testing/sample-scans/tenable_monthly_scan.csv \
+  --previous-open ./testing/sample-scans/previous_open_poam.xlsx \
+  --draft-remediations y
+```
+
+#### 🪟 Windows Users (Native PowerShell, Command Prompt & Git Bash — No WSL2 or Docker Required)
+Because `./grc` is a Bash script, native Windows users in **PowerShell** or **Command Prompt (`cmd.exe`)** invoke `scripts\transform_scans.py` directly with Python 3 (`python` or `py -3`):
+
+* **Interactive Guided Mode (PowerShell or Command Prompt)** — *Prompts you step-by-step for your scan file, previous OPEN POA&M, and `[y/n]` remediation URL drafting*:
+  ```powershell
+  python .\scripts\transform_scans.py
+  ```
+* **One-Line CLI Mode (PowerShell / Command Prompt)**:
+  ```powershell
+  python .\scripts\transform_scans.py --scan .\testing\sample-scans\tenable_monthly_scan.csv --previous-open .\testing\sample-scans\previous_open_poam.xlsx --draft-remediations y
+  ```
+* **Git Bash on Windows**:
+  ```bash
+  python scripts/transform_scans.py --scan ./testing/sample-scans/tenable_monthly_scan.csv --previous-open ./testing/sample-scans/previous_open_poam.xlsx --draft-remediations y
+  ```
+
+This generates `OPEN FedRAMP-POAM.xlsx`, `CLOSED FedRAMP-POAM.xlsx`, and `poam_transform_summary.md` inside `./evidence/poam-tenable_monthly_scan/` while printing an itemized SLA Breach & Finding Age report to your terminal. *(See **[`docs/scan-transform-guide.md`](docs/scan-transform-guide.md)** for full details).*
+
+### Workflow B: 5-Phase Git `.bundle` Compliance Audit (`./grc bundle` + `./grc scan`)
 Follow the 5-phase **GRCx** workflow to audit a `.bundle` file (the example below uses the 4-in-1 synthetic test bundle from `../GRC-Test-Dummies`, or you can substitute `/path/to/your-release.bundle`):
 
 ```bash

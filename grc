@@ -21,15 +21,15 @@ print_grcfetch() {
     echo -e "  ${P}        .--.          .--.          .--.                       ${R}"
     echo -e "  ${P}  ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp,                  ${M}eodartintlabs-hue/grcx${R}"
     echo -e "  ${P} {GGG'     \`G# {GGG     \`GGG {GGG'     \`G#                   ${D}----------------------${R}"
-    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   ${G}App:${W} GRCx v1.1.0 (Kadena)${R}"
+    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   ${G}App:${W} GRCx v1.2.0 (Misawa)${R}"
     echo -e "  ${P} 'GGG   ,p#GG# @GGG#**#GGG\"  'GGG           \`GGG, ,GGG'      ${G}OS:${W} Darwin ARM64 / Linux Bookworm${R}"
     echo -e "  ${P}  GGG   \"\"\`GGG @GGG   \`GGG,   GGG             \`GGGGG'        ${G}Model:${W} Out-of-Band (OOB) / Fail-Open${R}"
     echo -e "  ${P} ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ,GGGGG,        ${G}Isolation:${W} Air-Gapped (--network none, :ro)${R}"
-    echo -e "  ${P}  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG\"  ,GGG' \`GGG,      ${G}Engines:${W} (9) Semgrep, Gitleaks, Checkov, Syft,${R}"
-    echo -e "  ${P}   \`@GGGG###G# @GGG     \`GGG   \`@GGGG###G\" dGGG'   \`GGGb     ${W}             Grype, Trivy, OpenSCAP, Crypto, SBOM${R}"
+    echo -e "  ${P}  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG\"  ,GGG' \`GGG,      ${G}Engines:${W} (10) Semgrep, Gitleaks, Checkov, Syft,${R}"
+    echo -e "  ${P}   \`@GGGG###G# @GGG     \`GGG   \`@GGGG###G\" dGGG'   \`GGGb     ${W}              Grype, Trivy, OpenSCAP, Crypto, SBOM, Transform${R}"
     echo -e "  ${P}     \`\"%N>\"\`    \`\"%NW\" \`\"%NW\"    \`\"%N>\"\`   \`\"%N\"   \"%N\"\`     ${G}Ruleset:${W} 37 AST Rules (AOC 02–140)${R}"
     echo -e "  ${P}                                                             ${G}Frameworks:${W} DISA STIG, NIST 800-53 R5, FedRAMP${R}"
-    echo -e "  ${P}       ───  T h e   G R C   e X p e r i e n c e  ───         ${G}Output:${W} POA&M, Controls, SCR/SCN, SHA-256${R}"
+    echo -e "  ${P}       ───  T h e   G R C   e X p e r i e n c e  ───         ${G}Output:${W} FedRAMP POA&M (.xlsx/.md), Controls, SCR/SCN${R}"
     echo -e ""
     echo -e "                                                               \033[40m   \033[41m   \033[42m   \033[43m   \033[44m   \033[45m   \033[46m   \033[47m   ${R}"
     echo -e "                                                               \033[100m   \033[101m   \033[102m   \033[103m   \033[104m   \033[105m   \033[106m   \033[107m   ${R}"
@@ -63,7 +63,13 @@ if [[ "$#" -eq 0 ]]; then
     print_grcfetch
     echo "Usage: ./grc <command> [arguments]"
     echo ""
-    echo "Available Commands:"
+    echo "Standalone GRC Analyst Workflow (No Docker or .bundle Required):"
+    echo "  transform      [--scan <file>] Transform Tenable / AWS Inspector (.csv/.xlsx) into"
+    echo "                                 OPEN & CLOSED FedRAMP POA&M (.xlsx) workbooks with"
+    echo "                                 Open->Closed reconciliation, remediation URL drafting,"
+    echo "                                 and SLA breach / finding age reporting"
+    echo ""
+    echo "5-Phase Bundle & AMI Audit Pipeline Commands:"
     echo "  bundle restore <file.bundle>   Extract & verify bundle into ephemeral workspace"
     echo "  bundle verify  <file.bundle>   Cryptographic (SHA-256) and Git object validation"
     echo "  bundle clean   --workspace <w> Teardown ephemeral workspace & wipe bundle"
@@ -86,6 +92,9 @@ shift
 case "${SUBCOMMAND}" in
     fetch|info|--version|-v)
         print_grcfetch
+        ;;
+    transform|ingest)
+        python3 "${SCRIPT_DIR}/scripts/transform_scans.py" "$@"
         ;;
     bundle)
         python3 "${SCRIPT_DIR}/scripts/grc_bundle.py" "$@"

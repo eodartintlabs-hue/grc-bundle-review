@@ -21,7 +21,8 @@
   <a href="hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
   <a href="hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
   <a href="hygiene/ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
-  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="docs/scan-transform-guide.md"><b>📊 Scan-to-POA&M Guide</b></a> &nbsp;·&nbsp;
+  <a href="docs/grc-bundle-use-case.md"><b>📑 Bundle Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
@@ -30,22 +31,22 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,                  eodartintlabs-hue/grcx
  {GGG'     `G# {GGG     `GGG {GGG'     `G#                   ----------------------
- @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   App: GRCx v1.1.0 (Kadena)
+ @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   App: GRCx v1.2.0 (Misawa)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG           `GGG, ,GGG'      OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG             `GGGGG'        Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ,GGGGG,        Isolation: Air-Gapped (--network none, :ro)
-  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG"  ,GGG' `GGG,      Engines: (9) Semgrep, Gitleaks, Checkov, Syft,
-   `@GGGG###G# @GGG     `GGG   `@GGGG###G" dGGG'   `GGGb                  Grype, Trivy, OpenSCAP, Crypto, SBOM
+  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG"  ,GGG' `GGG,      Engines: (10) Semgrep, Gitleaks, Checkov, Syft,
+   `@GGGG###G# @GGG     `GGG   `@GGGG###G" dGGG'   `GGGb                    Grype, Trivy, OpenSCAP, Crypto, SBOM, Transform
      `"%N>"`    `"%NW" `"%NW"    `"%N>"`   `"%N"   "%N"`     Ruleset: 37 AST Rules (AOC 02–140)
                                                              Frameworks: DISA STIG, NIST 800-53 R5, FedRAMP
-       ───  T h e   G R C   e X p e r i e n c e  ───         Deliverables: POA&M, Controls, SCR/SCN, SHA-256
+       ───  T h e   G R C   e X p e r i e n c e  ───         Output: FedRAMP POA&M (.xlsx/.md), Controls, SCR/SCN
 
                                                              ███ ███ ███ ███ ███ ███ ███ ███
                                                              ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄
 ```
 
 > **Classification**: Internal DevSecOps & Security Compliance Specification  
-> **Release Stage**: `v1.1.x — Kadena` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
+> **Release Stage**: `v1.2.0 — Misawa` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
 > **Target Frameworks**: DISA STIG, NIST SP 800-53 Rev. 5, FedRAMP High, DoD Cloud Computing SRG, OWASP Top 10  
 > **Operational Model**: Out-of-Band (OOB), Fail-Open, Zero Untrusted Execution, Ephemeral Hygiene  
 > **Companion Test Corpus**: [`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)  
@@ -63,16 +64,17 @@
 7. [Minimum & Recommended System Requirements](#7-minimum--recommended-system-requirements)
 8. [Installation, Quickstart & CLI Reference (`INSTALL.md` & `COMMANDS.md`)](#8-installation-quickstart--cli-reference-installmd--commandsmd)
 9. [Security Assurance, Negative Testing & Verification](#9-security-assurance-negative-testing--verification)
-10. [Product Roadmap (`Yokosuka` $\rightarrow$ `Kadena` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)](#10-product-roadmap-yokosuka-rightarrow-kadena-rightarrow-sasebo-rightarrow-misawa-rightarrow-pearl-harbor-ga)
+10. [Product Roadmap (`Yokosuka` $\rightarrow$ `Kadena` $\rightarrow$ `Misawa` $\rightarrow$ `Sasebo` $\rightarrow$ `Pearl Harbor` GA)](#10-product-roadmap-yokosuka-rightarrow-kadena-rightarrow-misawa-rightarrow-sasebo-rightarrow-pearl-harbor-ga)
 11. [Repository Structure & Documentation Index](#11-repository-structure--documentation-index)
 
 ---
 
 ## 1. Executive Overview
 
-**GRCx** (*The GRC eXperience*) is an automated, cryptographic verification and static security analysis platform engineered to audit **Git software release bundles (`.bundle`)**, **Amazon Machine Images (`AMI`)**, and infrastructure/security telemetry out-of-band. 
+**GRCx** (*The GRC eXperience*) is an automated, cryptographic verification, static security analysis, and Continuous Monitoring (ConMon) compliance platform engineered for **FedRAMP High**, **DISA STIG**, and **DoD RMF** environments. It supports two primary operational workflows:
 
-Designed for high-assurance federal and defense environments (**FedRAMP High**, **DISA STIG**, **DoD RMF**), the pipeline guarantees deep compliance verification and automated **Security Change Request / Security Change Notification (SCR/SCN)** evidence generation without gating or slowing down developer CI/CD velocity.
+1. **Standalone Scan-to-FedRAMP POA&M Transformation (`./grc transform` / [`scripts/transform_scans.py`](scripts/transform_scans.py))**: Built for direct, standalone daily use by GRC analysts (requiring zero Docker containers or `.bundle` files). Analysts feed in **Tenable** or **AWS Inspector** scan exports (`.csv` or `.xlsx`), reconcile them against a previously filled-out **OPEN FedRAMP POA&M** to automatically move remediated items into the **CLOSED FedRAMP POA&M** template, auto-draft missing remediation plans with official Tenable/AWS URLs, and receive an itemized **SLA Breach & Finding Age** report. *(See **[`docs/scan-transform-guide.md`](docs/scan-transform-guide.md)**).*
+2. **5-Phase Out-of-Band Release & Infrastructure Auditing (`./grc bundle`, `./grc ami`, `./grc scan`)**: Audits **Git software release bundles (`.bundle`)** and **Amazon Machine Images (`AMI`)** inside an air-gapped 9-engine scanner suite (`grc-scanner:local`) to generate **Security Change Request / Security Change Notification (SCR/SCN)** evidence packages without gating or slowing down developer CI/CD velocity.
 
 > 🏛️ **Explore the Visual Technology Stack**: View our Layered System Architecture diagram and detailed technology stack breakdown in **[`amplifying-info/ARCHITECTURE.md`](amplifying-info/ARCHITECTURE.md)**.
 
@@ -202,8 +204,9 @@ Bundled via [`docker/Dockerfile.scanner`](docker/Dockerfile.scanner) and orchest
 | **OpenSCAP** | OS STIG Engine | Evaluates cold-mounted AMI filesystems (`oscap-chroot`) against DISA STIG XCCDF profiles. | `oscap_results.xml` |
 
 ### 5.2 Native Python Compliance Engines (`scripts/`)
-Zero-dependency Python 3 engines that manage provenance, domain-specific analysis, and Phase 4 synthesis:
+Zero-dependency Python 3 engines that power both standalone GRC analyst workflows and the 5-phase `.bundle`/`AMI` audit pipeline:
 
+* **[`transform_scans.py`](scripts/transform_scans.py)** *(Standalone GRC Analyst Engine — `./grc transform`)*: Ingests **Tenable** or **AWS Inspector** vulnerability scan exports (`.csv` or `.xlsx`), populates the official **[`OPEN FedRAMP-POAM-Template.xlsx`](templates/OPEN%20FedRAMP-POAM-Template.xlsx)** and **[`CLOSED LEGACY FedRAMP-POAM-Template.xlsx`](templates/CLOSED%20LEGACY%20FedRAMP-POAM-Template.xlsx)** workbooks (1 row per `Vulnerability + Asset`), reconciles against a previous OPEN POA&M to automatically move remediated items to the CLOSED POA&M, interactively drafts missing remediation plans with official Tenable/AWS URLs, and reports passed SLAs and finding age in days.
 * **[`grc_bundle.py`](scripts/grc_bundle.py)**: Verifies SHA-256 checksums, validates `git bundle` headers, extracts read-only workspaces, and emits `bundle_provenance.json`.
 * **[`grc_ami.py`](scripts/grc_ami.py)**: Validates AWS AMI encryption, orchestrates EBS snapshot cold-mounting (`ro,noload,noexec,nosuid`), resolves `/etc/os-release` to DISA STIG benchmarks, supports `--mock` offline simulation, and emits `ami_provenance.json`.
 * **[`crypto_lib_scan.py`](scripts/crypto_lib_scan.py)**: Statically inspects manifests (`requirements.txt`, `package.json`, `pom.xml`, `go.mod`) and native libraries (`libcrypto.so*`) against [`rules/crypto_catalog.json`](rules/crypto_catalog.json).
@@ -234,10 +237,10 @@ Because all host orchestration engines ([`scripts/`](scripts/)) rely strictly on
 
 ### 7.1 Hardware Baseline
 
-| Resource | Minimum Required (`v1.x` Baseline) | Recommended (`v1.x` & `v2.0+` Local LLM) | Purpose & Sizing Notes |
+| Resource | Minimum Required (`v1.x` Baseline) | Recommended (`v1.x` & `v2.1+` Local LLM) | Purpose & Sizing Notes |
 | :--- | :--- | :--- | :--- |
 | **CPU Architecture** | `64-bit` (`arm64` / Apple Silicon or `x86_64` / `amd64`) | **4+ vCPUs / Cores** (`Apple M-Series` or `x86_64` 4+ cores) | Multi-threaded AST parsing (`Semgrep`, `Checkov`) and SBOM indexing (`Syft`). |
-| **System Memory (RAM)** | **8 GB RAM** *(4 GB allocated to Docker VM)* | **16 GB – 32 GB+ RAM** *(8 GB+ to Docker VM)* | Prevents OOM termination during large Terraform/K8s graph evaluation (`Checkov`) and supports `v2.0+` local LLM inference. |
+| **System Memory (RAM)** | **8 GB RAM** *(4 GB allocated to Docker VM)* | **16 GB – 32 GB+ RAM** *(8 GB+ to Docker VM)* | Prevents OOM termination during large Terraform/K8s graph evaluation (`Checkov`) and supports `v2.1+` local LLM inference. |
 | **Disk Space (Free)** | **10 GB Free SSD** | **25 GB+ Free NVMe SSD** | ~3.5 GB for `grc-scanner:local` image + cached NVD/CVE databases, plus headroom for ephemeral `.bundle` / AMI cold-mounts. |
 | **Network Connectivity** | **One-time build access** *(to build `grc-scanner:local`)* | **100% Offline / Air-Gapped at Runtime** | All `./grc scan` runs enforce `docker run --network none`. |
 
@@ -245,11 +248,11 @@ Because all host orchestration engines ([`scripts/`](scripts/)) rely strictly on
 
 | Component | Minimum Version | Required For | Verification Command |
 | :--- | :--- | :--- | :--- |
-| **Operating System** | **macOS 13+** (Ventura+), **Linux** (Debian 12+, Ubuntu 22.04+, RHEL/Rocky 9+), or **Windows 11 WSL2** | Host execution environment *(Full cross-OS plug-and-play hardening in `v1.2.0 — Sasebo`)* | `uname -srm` |
-| **Bash Shell** | **`bash` $\ge$ `3.2`** *(macOS default)* or **`4.0+`** *(Linux)* | Executing `./grc` CLI wrapper and [`docker/scan_orchestrator.sh`](docker/scan_orchestrator.sh) | `bash --version` |
+| **Operating System** | **macOS 13+** (Ventura+), **Linux** (Debian 12+, Ubuntu 22.04+, RHEL/Rocky 9+), or **Windows 10/11** *(Native PowerShell / `cmd.exe` / Git Bash for `transform_scans.py`; WSL2 for full `.bundle` container scans)* | Host execution environment *(Full cross-OS container hardening in `v1.3.0 — Sasebo`)* | `uname -srm` *(macOS/Linux)* |
+| **Bash Shell** | **`bash` $\ge$ `3.2`** *(macOS default)* or **`4.0+`** *(Linux / WSL2)* | Executing `./grc` CLI wrapper and [`docker/scan_orchestrator.sh`](docker/scan_orchestrator.sh) *(Windows PowerShell/CMD users can invoke `python .\scripts\transform_scans.py` directly)* | `bash --version` |
 | **Git CLI** | **`git` $\ge$ `2.30+`** | Phase 1 `git bundle verify` and Phase 2 read-only workspace extraction | `git --version` |
-| **Python 3** | **`python3` $\ge$ `3.9+`** *(Standard Library only — zero `pip` packages needed on host)* | Running [`grc_bundle.py`](scripts/grc_bundle.py), [`grc_ami.py`](scripts/grc_ami.py), [`crypto_lib_scan.py`](scripts/crypto_lib_scan.py), [`sbom_analyzer.py`](scripts/sbom_analyzer.py), and [`grc_reporter.py`](scripts/grc_reporter.py) | `python3 --version` |
-| **Container Engine** | **Docker Engine $\ge$ `24.0+`** / **Docker Desktop $\ge$ `4.25+`** *(or Colima / Podman)* | Building and running the air-gapped `grc-scanner:local` container suite | `docker info` |
+| **Python 3** | **`python3` $\ge$ `3.9+`** *(Standard Library only — zero `pip` packages needed on host)* | Running [`transform_scans.py`](scripts/transform_scans.py), [`grc_bundle.py`](scripts/grc_bundle.py), [`grc_ami.py`](scripts/grc_ami.py), [`crypto_lib_scan.py`](scripts/crypto_lib_scan.py), [`sbom_analyzer.py`](scripts/sbom_analyzer.py), and [`grc_reporter.py`](scripts/grc_reporter.py) | `python3 --version` *(or `python --version` on Windows)* |
+| **Container Engine** | **Docker Engine $\ge$ `24.0+`** / **Docker Desktop $\ge$ `4.25+`** *(or Colima / Podman)* | Building and running the air-gapped `grc-scanner:local` container suite for Phase 3 `.bundle`/`AMI` scans *(**Not required** to run `transform_scans.py` / `./grc transform`)* | `docker info` |
 | **AWS CLI & `util-linux`** *(Optional)* | **`aws-cli` v2** + Linux `mount`/`losetup` | **Live AWS AMI Cold-Mounting only** *(Not required for `.bundle` reviews or local `./grc ami --mock` simulation)* | `aws --version` |
 
 ---
@@ -258,8 +261,9 @@ Because all host orchestration engines ([`scripts/`](scripts/)) rely strictly on
 
 To keep onboarding fast and accessible for new users, step-by-step installation instructions and the full CLI command reference are maintained in dedicated root-level guides:
 
-* ⚙️ **[Installation & Quickstart Guide (`INSTALL.md`)](INSTALL.md)** — Walks new users from downloading **GRCx** off GitHub (or cloning from a portable `.bundle`), building the offline `grc-scanner:local` container, and executing a first audit all the way to opening and previewing rendered Markdown/JSON deliverables in **Cursor**.
-* ⌨️ **[CLI Command Reference (`COMMANDS.md`)](COMMANDS.md)** — Isolated, plain-English reference detailing every command and flag accepted by `./grc` (`bundle`, `ami`, `scan` across all 9 engines, `report`, `sbom`, `crypto`, `docker-build`, and `fetch`).
+* ⚙️ **[Installation & Quickstart Guide (`INSTALL.md`)](INSTALL.md)** — Walks new users from downloading **GRCx** off GitHub (or cloning from a portable `.bundle`), running standalone POA&M transformations or building the offline `grc-scanner:local` container, all the way to opening and previewing rendered Markdown/JSON deliverables in **Cursor**.
+* ⌨️ **[CLI Command Reference (`COMMANDS.md`)](COMMANDS.md)** — Isolated, plain-English reference detailing every command and flag accepted by `./grc` (`transform`, `bundle`, `ami`, `scan` across all 9 engines, `report`, `sbom`, `crypto`, `docker-build`, and `fetch`).
+* 📊 **[Standalone Scan-to-FedRAMP POA&M Guide (`docs/scan-transform-guide.md`)](docs/scan-transform-guide.md)** — Complete analyst guide for `transform_scans.py` (`./grc transform`), including Tenable & AWS Inspector `.csv`/`.xlsx` ingestion, Open $\rightarrow$ Closed POA&M reconciliation, remediation URL drafting, and SLA breach / finding age reporting.
 * 📑 **[End-to-End Bundle Review Walkthrough (`docs/grc-bundle-use-case.md`)](docs/grc-bundle-use-case.md)** & **[AMI Cold-Mount Workflow (`docs/ami-review-workflow.md`)](docs/ami-review-workflow.md)** — Deep-dive operational scenarios with sample terminal transcripts, provenance manifests, and tamper-rejection gates.
 
 ---
@@ -280,17 +284,17 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 
 ---
 
-## 10. Product Roadmap (`Yokosuka` $\rightarrow$ `Kadena` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)
+## 10. Product Roadmap (`Yokosuka` $\rightarrow$ `Kadena` $\rightarrow$ `Misawa` $\rightarrow$ `Sasebo` $\rightarrow$ `Pearl Harbor` GA)
 
 | Release Milestone | Series | Key Capabilities Planned |
 | :--- | :--- | :--- |
-| **`v1.1.0 — Kadena`** *(Active)* | 🇯🇵 Japan *(Beta)* | **Platform Rebrand to `GRCx` ("The GRC eXperience")**: Full repository rebrand to `GRCx`, dedicated [`INSTALL.md`](INSTALL.md) and [`COMMANDS.md`](COMMANDS.md) onboarding guides, theme-adaptive Light/Dark seagull-escaping-square brand lockups (`assets/logo/`), and updated `grcfetch` CLI banner. |
-| **`v1.2.0 — Sasebo`** | 🇯🇵 Japan *(Beta)* | **Universal Workstation Portability**: Out-of-the-box compatibility for any user cloning from GitHub across macOS (`arm64`/`amd64`), Linux, and Windows WSL2—fixing Linux UID/GID root volume ownership, adding SELinux/Podman support, pinning `Dockerfile.scanner` versions, and introducing `./grc doctor`. |
-| **`v1.3.0 — Misawa`** | 🇯🇵 Japan *(Beta)* | **Tenable & AWS Inspector CSV Ingest**: Ingests external Tenable and AWS Inspector vulnerability CSV reports (`./grc ingest`), deduplicates findings across static and runtime scans, and populates the **official FedRAMP POA&M spreadsheet (`.xlsx`)**. |
-| **`v2.0.0 — Pearl Harbor`** | 🌺 Hawaii *(GA Launch)* | **Cloud Enclave Lift, Helm Auditing & Local LLM Baseline**: Lifts execution from local workstations to **AWS EC2** and **AWS Bottlerocket** container hosts, adds **Helm chart compliance auditing (`./grc scan --engine helm`)**, and integrates a baseline air-gapped **Gemma / GPT-OSS** model for POA&M synthesis. |
-| **`v2.1.0 — Kaneohe`** | 🌺 Hawaii *(Post-GA)* | **RAM-Adaptive Local LLM Scaling & OSCAL**: Dynamic endpoint RAM profiler (`8GB` to `64GB+`) that automatically selects the optimal quantized `Gemma` or `GPT-OSS` model tier based on host memory, plus NIST OSCAL 1.1.x export. |
+| **`v1.1.0 — Kadena`** *(Completed)* | 🇯🇵 Japan *(Beta)* | **Platform Rebrand to `GRCx` ("The GRC eXperience")**: Full repository rebrand to `GRCx`, dedicated [`INSTALL.md`](INSTALL.md) and [`COMMANDS.md`](COMMANDS.md) onboarding guides, theme-adaptive Light/Dark seagull-escaping-square brand lockups (`assets/logo/`), and updated `grcfetch` CLI banner. |
+| **`v1.2.0 — Misawa`** *(Active)* | 🇯🇵 Japan *(Beta)* | **Standalone Tenable & AWS Inspector Scan-to-POA&M Transformer (`scripts/transform_scans.py` / `./grc transform`)**: Ingests Tenable and AWS Inspector `.csv`/`.xlsx` scans into the official **OPEN** & **CLOSED** FedRAMP POA&M `.xlsx` templates, reconciles Open $\rightarrow$ Closed transitions against previous POA&Ms, drafts missing remediation plans with official Tenable/AWS URLs, and reports passed SLA counts and finding age in days. |
+| **`v1.3.0 — Sasebo`** | 🇯🇵 Japan *(Beta)* | **Universal Workstation Portability**: Out-of-the-box compatibility for any user cloning from GitHub across macOS (`arm64`/`amd64`), Linux, and Windows WSL2—fixing Linux UID/GID root volume ownership, adding SELinux/Podman support, pinning `Dockerfile.scanner` versions, and introducing `./grc doctor`. |
+| **`v2.0.0 — Pearl Harbor`** | 🌺 Hawaii *(GA Launch)* | **Full Production GA Launch & Helm Chart Auditing**: Graduates `GRCx` to General Availability and introduces **Helm chart compliance auditing (`./grc scan --engine helm`)** with offline template rendering and DISA K8s STIG / NSA-CISA checks. |
+| **`v2.1.0+ — Kaneohe`** | 🌺 Hawaii *(Post-GA)* | **Cloud Enclave Lift, Local LLM Baseline & RAM-Adaptive Scaling, and OSCAL**: Lifts execution from local workstations to **AWS EC2** and **AWS Bottlerocket** container hosts, integrates the air-gapped **Gemma / GPT-OSS** synthesis baseline alongside a dynamic endpoint RAM profiler (`8GB` to `64GB+`), and adds NIST OSCAL 1.1.x export. |
 
-> 🗺️ **Full Architectural Specification**: See **[`hygiene/ROADMAP.md`](hygiene/ROADMAP.md)** for the complete feature breakdown across `Sasebo`, `Misawa`, `Pearl Harbor`, and `Kaneohe`.
+> 🗺️ **Full Architectural Specification**: See **[`hygiene/ROADMAP.md`](hygiene/ROADMAP.md)** for the complete feature breakdown across `Misawa`, `Sasebo`, `Pearl Harbor`, and `Kaneohe`.
 
 ---
 
@@ -305,6 +309,7 @@ grcx/
 ├── grc                               # Root CLI dispatcher wrapper
 ├── .gitignore                        # Protects against committing ephemeral workspaces and bundles
 ├── assets/logo/                      # GRCx light-mode and dark-mode brand lockups
+├── templates/                        # Official OPEN & CLOSED LEGACY FedRAMP POA&M Excel templates (.xlsx)
 │
 ├── amplifying-info/                  # Deep-dive architecture, data flow & regulatory governance
 │   ├── ARCHITECTURE.md               # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
@@ -314,14 +319,15 @@ grcx/
 ├── testing/                          # Verification test plans, live runbooks & synthetic demo outputs
 │   ├── TESTING.md                    # End-to-end audit verification test plan
 │   ├── live-demo.md                  # Step-by-step live demo runbook (AOC-09, AOC-10, AOC-04)
-│   └── demo-evidence/                # Synthetic test bundle evidence (aoc-04, aoc-07, aoc-09, aoc-10, aoc-combo-4x)
+│   ├── sample-scans/                 # Sample Tenable & AWS Inspector CSVs and previous OPEN POA&M (.xlsx)
+│   └── demo-evidence/                # Synthetic test bundle & POA&M transformation demo outputs
 │
-├── evidence/                         # Production compliance vault (reserved strictly for real bundles)
+├── evidence/                         # Production compliance vault (reserved strictly for real audits)
 │
 ├── hygiene/                          # Release engineering, versioning, patch tracking & product roadmap
-│   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka & Kadena)
+│   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka, Kadena, Misawa)
 │   ├── PATCH_LOG.md                  # Running table of all v1.x releases across the app lifecycle
-│   └── ROADMAP.md                    # v1.2 Sasebo, v1.3 Misawa & v2.0 Pearl Harbor product roadmap
+│   └── ROADMAP.md                    # v1.2 Misawa, v1.3 Sasebo & v2.x Pearl Harbor / Kaneohe product roadmap
 │
 ├── docker/                           # Containerized scanning suite (100% local, $0 cloud cost)
 │   ├── Dockerfile.scanner            # Image recipe bundling Semgrep, Checkov, Gitleaks, Syft, Grype, Trivy, OpenSCAP
@@ -332,6 +338,7 @@ grcx/
 │   ├── assets/
 │   │   ├── data-flow.svg             # Dark-mode Pipeline Data Flow presentation graphic
 │   │   └── tech-stack.svg            # Layered Technology Stack infographic
+│   ├── scan-transform-guide.md       # Standalone GRC analyst guide for ./grc transform (transform_scans.py)
 │   ├── ami-review-workflow.md        # AMI EBS snapshot cold-mount audit specification & schema
 │   ├── grc-bundle-use-case.md        # Complete 5-phase review walkthrough with sample terminal outputs
 │   └── test-dummies-guide.md         # Negative testing walkthrough, AOC cheat sheet, and jq guide
@@ -341,6 +348,7 @@ grcx/
 │   └── crypto_catalog.json           # Cryptographic library EOL, deprecation, and FIPS 140 catalog
 │
 └── scripts/                          # Zero-dependency Python 3 automation engines
+    ├── transform_scans.py            # Standalone Tenable / AWS Inspector -> OPEN & CLOSED FedRAMP POA&M (.xlsx) engine
     ├── grc_bundle.py                 # Git bundle verification, read-only restoration, and cleanup
     ├── grc_ami.py                    # AMI cold-mount restoration, STIG resolution, and cleanup
     ├── grc_reporter.py               # Phase 4 SCR/SCN synthesizer (poam_data.md, controls.md, ruleset log, sha256sum)

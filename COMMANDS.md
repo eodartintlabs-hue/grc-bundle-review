@@ -13,7 +13,8 @@
   <a href="hygiene/RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
   <a href="hygiene/PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
   <a href="hygiene/ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
-  <a href="docs/grc-bundle-use-case.md"><b>📑 Use Case Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="docs/scan-transform-guide.md"><b>📊 Scan-to-POA&M Guide</b></a> &nbsp;·&nbsp;
+  <a href="docs/grc-bundle-use-case.md"><b>📑 Bundle Walkthrough</b></a> &nbsp;·&nbsp;
   <a href="docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
@@ -21,20 +22,46 @@
 
 ---
 
-## 1. System & Environment Commands
+## 1. Standalone GRC Analyst Workflow: Scan-to-FedRAMP POA&M Transformation
+
+> [!TIP]
+> * **Does NOT Require Docker**: Unlike Phase 3 bundle/AMI scanners (`./grc scan`), **`transform_scans.py`** is written in **100% Python 3 Standard Library** (`csv`, `zipfile`, `xml.etree.ElementTree`) and runs directly on the host machine. You do **not** need to start or install the `grc-scanner:local` Docker container to use it.
+> * **Native Windows Support (No WSL2 Required)**: Windows users can run the transform engine directly in **Windows PowerShell**, **Command Prompt (`cmd.exe`)**, **Git Bash**, or **WSL2**. See the Windows command examples below and **[`docs/scan-transform-guide.md`](docs/scan-transform-guide.md)**.
+
+### `./grc transform [--scan <file.csv|.xlsx>] [--previous-open <open_poam.xlsx>] [--draft-remediations <ask|y|n>] [-o <output_dir>]` *(macOS / Linux / WSL2)*
+### `python .\scripts\transform_scans.py [--scan <file.csv|.xlsx>] [--previous-open <open_poam.xlsx>]` *(Windows PowerShell & Command Prompt)*
+Ingests a **Tenable (Nessus / Tenable.sc / Tenable.io)** or **AWS Inspector** vulnerability scan export in `.csv` or `.xlsx` format and populates the official **`OPEN FedRAMP-POAM-Template.xlsx`** and **`CLOSED LEGACY FedRAMP-POAM-Template.xlsx`** workbooks (1 row per unique `Vulnerability + Asset` pair). During execution, it performs four automated GRC functions:
+1. **Open $\rightarrow$ Closed POA&M Reconciliation**: Prompts for (or accepts via `--previous-open`) your previously filled-out OPEN FedRAMP POA&M form. Entries still present in the new scan carry over into the new OPEN POA&M with their original `POAM ID` and immutable `Original Detection Date`; entries no longer present in the new scan (or marked `False Positive = Yes`) are automatically moved to the **CLOSED FedRAMP POA&M** workbook.
+2. **Interactive Missing Remediation Plan Drafter (`[y/n]`)**: Detects any OPEN POA&M entries missing a `Remediation Plan` (`Column K`) and asks if you want **GRCx** to draft them. Entering `y` populates `Column K` with the recommended fix and official remediation URLs (`https://www.tenable.com/plugins/nessus/<Plugin_ID>`, `https://explore.alas.aws.amazon.com/<ALAS_ID>.html`, AWS Inspector docs, and `https://nvd.nist.gov/vuln/detail/<CVE>`).
+3. **SLA Breach & Finding Age Reporting**: Prints an itemized terminal report (and saves `poam_transform_summary.md` for viewing in Cursor) telling you **exactly how many OPEN POA&M entries have a `Scheduled Completion Date` (SLA) that has passed** and **how many days old every entry is from its `Original Detection Date`**.
+4. **Pure Standard-Library `.xlsx` Output**: Writes `OPEN FedRAMP-POAM.xlsx` (with live Excel SLA formulas supporting `Critical` 30d, `High` 30d, `Moderate` 90d, and `Low` 180d) and `CLOSED FedRAMP-POAM.xlsx` into the output directory.
+
+#### How Windows Users Run `transform_scans.py`
+Because `scripts/transform_scans.py` relies only on built-in Python 3 modules and cross-platform file paths, Windows users can run it in three ways without Docker:
+* **Windows PowerShell or Command Prompt (`cmd.exe`)**:
+  * Interactive Guided Mode: `python .\scripts\transform_scans.py` *(or `py -3 .\scripts\transform_scans.py`)*
+  * Direct CLI Mode: `python .\scripts\transform_scans.py --scan "C:\Users\Analyst\Downloads\tenable_scan.csv" --previous-open "C:\Users\Analyst\Documents\OPEN FedRAMP-POAM.xlsx" --draft-remediations y`
+* **Git Bash on Windows**:
+  * `python scripts/transform_scans.py --scan /c/Users/Analyst/Downloads/tenable_scan.csv`
+* **Windows Subsystem for Linux (WSL2)**:
+  * `./grc transform --scan /mnt/c/Users/Analyst/Downloads/tenable_scan.csv`
+
+---
+
+## 2. System & Environment Commands
 
 ### `./grc`
 Displays the **GRCx** ASCII system banner along with a summary of all available top-level subcommands. Use this any time you want a quick reminder of the CLI syntax right in your terminal.
 
 ### `./grc fetch` *(Aliases: `./grc info`, `./grc --version`, `./grc -v`)*
-Prints the **GRCx** `neofetch`-style terminal banner showing the active release version and codename (`v1.1.0 — Kadena`), target operating systems, air-gap isolation model (`--network none`, `:ro`), integrated scanning engines, and supported compliance frameworks.
+Prints the **GRCx** `neofetch`-style terminal banner showing the active release version and codename (`v1.2.0 — Misawa`), target operating systems, air-gap isolation model (`--network none`, `:ro`), all 10 integrated scanning and transformation engines, and supported compliance frameworks.
 
 ### `./grc docker-build`
 Builds the local `grc-scanner:local` Docker container image from `docker/Dockerfile.scanner`. This packages all containerized security scanners (Semgrep, Gitleaks, Checkov, Syft, Grype, Trivy, and OpenSCAP) along with pre-cached vulnerability databases so that all subsequent scans execute completely offline with zero network egress.
 
 ---
 
-## 2. Git Bundle Lifecycle Commands (Phases 1, 2 & 5)
+## 3. Git Bundle Lifecycle Commands (Phases 1, 2 & 5)
 
 ### `./grc bundle verify <file.bundle> [--sha256 <expected_hash>]`
 Executes **Phase 1 (Pull & Verify)** on an incoming Git bundle file without extracting any code to disk. It computes the file's SHA-256 cryptographic digest, optionally compares it against an expected baseline hash to detect tampering in transit, and runs `git bundle verify` to confirm the internal Git object graph and contained branch/tag references are valid.
@@ -47,7 +74,7 @@ Executes **Phase 5 (Ephemeral Teardown)** after an audit concludes. It unlocks a
 
 ---
 
-## 3. Cloud AMI Lifecycle Commands (Phases 1, 2 & 5)
+## 4. Cloud AMI Lifecycle Commands (Phases 1, 2 & 5)
 
 ### `./grc ami verify <ami-id> [--region <aws-region>] [--mock]`
 Executes **Phase 1 (AMI Verification)** against an Amazon Machine Image (`AMI`) before mounting. It inspects the AMI's metadata, root EBS snapshot ID, architecture, and KMS encryption status—enforcing a hard compliance gate (`NIST SP 800-53 SC-28`) that rejects unencrypted snapshots before any volume is created. Passing `--mock` simulates this workflow locally without requiring live AWS credentials or EC2 infrastructure.
@@ -60,7 +87,7 @@ Executes **Phase 5 (AMI Teardown)** by unmounting the cold-mounted guest filesys
 
 ---
 
-## 4. Compliance Scanning Commands (Phase 3)
+## 5. Compliance Scanning Commands (Phase 3)
 
 ### `./grc scan --all -w <workspace> [-e <evidence_dir>]` *(Default: `./grc scan -w <workspace>`)*
 Executes the **complete 9-engine compliance suite** against the restored workspace inside the air-gapped `grc-scanner:local` container (`--network none`), followed automatically by **Phase 4 report synthesis**. If `-e <evidence_dir>` is omitted, **GRCx** automatically creates a folder under `./evidence/<bundle-name>/` based on the workspace's provenance manifest.
@@ -97,7 +124,7 @@ Appending `--no-report` to any `./grc scan` command runs the requested scanner e
 
 ---
 
-## 5. Direct Reporting & Standalone Analyzer Commands (Phase 4)
+## 6. Direct Reporting & Standalone Analyzer Commands (Phase 4)
 
 ### `./grc report --evidence <evidence_dir> [--workspace <workspace_dir>] [--ruleset <ruleset.yaml>]`
 Executes **Phase 4 (Compliance Deliverable Synthesis)** on an existing evidence directory containing raw scanner JSON files. It normalizes findings across all engines, maps every defect to **NIST SP 800-53 Rev. 5** controls and **DISA STIG** severity categories (`CAT I` / `CAT II` / `CAT III`), calculates FedRAMP remediation SLAs (30 / 60 / 90 / 180 days), and generates `poam_data.md`, `controls.md`, `ruleset_validation.md`, `scr_scn_package.json`, and the tamper-evident `sha256sum` manifest.
