@@ -45,7 +45,7 @@
 
 Auditing unvetted software release bundles (`.bundle`) and virtual machine images (`AMI`) is inherently high-risk: the very artifacts under inspection may contain security vulnerabilities, hardcoded credentials, misconfigurations, or potentially malicious code.
 
-The **GRC Bundle Review Pipeline** is architected on a **Zero-Trust, Zero-Execution, Air-Gapped** security model. It treats every ingested bundle and AMI snapshot as untrusted data, ensuring that neither the audit workstation nor the organization's intellectual property is ever exposed during an evaluation.
+**GRCx** (*The GRC eXperience*) is architected on a **Zero-Trust, Zero-Execution, Air-Gapped** security model. It treats every ingested bundle and AMI snapshot as untrusted data, ensuring that neither the audit workstation nor the organization's intellectual property is ever exposed during an evaluation.
 
 ```mermaid
 flowchart LR
@@ -200,7 +200,7 @@ Inside [`docker/scan_orchestrator.sh`](docker/scan_orchestrator.sh), each tool i
 
 ## 5. Reporting a Security Issue
 
-If you discover a security vulnerability, isolation bypass, or rule evasion technique within the **GRC Bundle Review Pipeline**:
+If you discover a security vulnerability, isolation bypass, or rule evasion technique within **GRCx**:
 1. **Do not** open a public issue containing sensitive exploit payloads against production systems.
 2. Submit a reproductive test case using a synthetic fixture in the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository.
 3. Contact the internal **DevSecOps & GRC Engineering Team** to coordinate rule and container updates.

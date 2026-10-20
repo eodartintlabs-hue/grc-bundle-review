@@ -39,10 +39,10 @@
 
 ## 1. Visual Technology Stack Diagram
 
-The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & Compliance Domains** at the top, coordinated through a **Unified Application Dispatcher (`./grc`)**, executed inside an **Air-Gapped Container Bus**, synthesized into **Phase 4 SCR/SCN Compliance Deliverables**, and anchored on an **Apple Silicon Hardware Foundation**:
+**GRCx** (*The GRC eXperience*) is organized into **4 Core Security & Compliance Domains** at the top, coordinated through a **Unified Application Dispatcher (`./grc`)**, executed inside an **Air-Gapped Container Bus**, synthesized into **Phase 4 SCR/SCN Compliance Deliverables**, and anchored on an **Apple Silicon Hardware Foundation**:
 
 <p align="center">
-  <img src="../docs/assets/tech-stack.svg" alt="GRC Bundle Reviewer Technology Stack" width="100%" />
+  <img src="../docs/assets/tech-stack.svg" alt="GRCx Technology Stack" width="100%" />
 </p>
 
 ---
@@ -95,7 +95,7 @@ The **GRC Bundle & AMI Review Pipeline** is organized into **4 Core Security & C
 
 #### GitHub (Remote VCS & Release Repository)
 * **Classification**: `[Third-Party Service]`
-* **General Purpose**: The central upstream code repository hosting the GRC Bundle Review Pipeline source, compliance documentation, and the companion `grc-test-dummies` repository. It provides release distribution, issue tracking, and collaborative governance.
+* **General Purpose**: The central upstream code repository hosting the **GRCx** source, compliance documentation, and the companion `grc-test-dummies` repository. It provides release distribution, issue tracking, and collaborative governance.
 * **Item Produced**: Hosted Git remote endpoints (`origin`), version-tagged release archives, and companion synthetic test bundle fixtures.
 * **Individual Cost**: **$0** (GitHub Free Tier for public and private repositories).
 

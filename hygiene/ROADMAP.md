@@ -15,8 +15,8 @@
   <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
-> **Project**: GRC Bundle & AMI Review Pipeline (`grc-bundle-review`)  
-> **Active Series**: `v1.0.x — Yokosuka` *(Restricted Beta — Local Workstation Baseline)*  
+> **Project**: GRCx — The GRC eXperience (`grcx`)  
+> **Active Series**: `v1.1.x — Kadena` *(Restricted Beta — Platform Rebrand & Local Workstation Baseline)*  
 > **Upcoming `v1.x` Minor Releases (🇯🇵 Japan Series)**: `v1.2.0 — Sasebo` *(Universal Workstation Portability)* $\rightarrow$ `v1.3.0 — Misawa` *(Tenable & AWS Inspector CSV Ingest)*  
 > **Upcoming `v2.x` GA Releases (🌺 Hawaiian Series)**: `v2.0.0 — Pearl Harbor` *(Cloud Lift, Helm Auditing & Local LLM Baseline)* $\rightarrow$ `v2.1.0+` *(RAM-Adaptive LLM Scaling & OSCAL)*  
 > **Companion Release History**: See **[`hygiene/RELEASE_NOTES.md`](RELEASE_NOTES.md)** and **[`hygiene/PATCH_LOG.md`](PATCH_LOG.md)**.
@@ -25,9 +25,9 @@
 
 ## 1. Executive Release Progression: Japan Beta (`v1.x`) $\rightarrow$ Hawaii GA (`v2.x`)
 
-The **GRC Bundle & AMI Review Pipeline** follows a structured maturity progression from a single-workstation Beta prototype into an enterprise-grade, cloud-hosted, AI-enriched compliance platform:
+**GRCx** (*The GRC eXperience*) follows a structured maturity progression from a single-workstation Beta prototype into an enterprise-grade, cloud-hosted, AI-enriched compliance platform:
 
-1. **🇯🇵 `v1.0.x — Yokosuka` (Active Beta Baseline)**: Establishes the 5-phase out-of-band (`.bundle` & `AMI` cold-mount) workflow, 9-engine air-gapped Docker scanner suite, 37 AST rules, and Phase 4 Markdown/JSON synthesis.
+1. **🇯🇵 `v1.0.x — Yokosuka` & `v1.1.0 — Kadena` (Active Beta Baseline & `GRCx` Rebrand)**: Establishes the 5-phase out-of-band (`.bundle` & `AMI` cold-mount) workflow, 9-engine air-gapped Docker scanner suite, 37 AST rules, Phase 4 Markdown/JSON synthesis, and full platform rebrand to **GRCx — "The GRC eXperience"**.
 2. **🇯🇵 `v1.2.0 — Sasebo` (Universal Workstation Portability & Plug-and-Play Compatibility)**: Eliminates single-machine assumptions so any engineer or assessor pulling the repo from GitHub on **macOS (Apple Silicon / Intel)**, **Linux (`amd64` / `arm64`)**, or **Windows WSL2** can run `./grc` out-of-the-box with zero permission errors, UID/GID volume conflicts, or unpinned image build failures.
 3. **🇯🇵 `v1.3.0 — Misawa` (External Telemetry Ingestion — Tenable & AWS Inspector CSVs $\rightarrow$ Official FedRAMP POA&M `.xlsx`)**: Expands the pipeline to ingest external vulnerability CSV exports from **Tenable** and **AWS Inspector**, deduplicating findings and directly populating the **official FedRAMP POA&M spreadsheet (`.xlsx`)**.
 4. **🌺 `v2.0.0 — Pearl Harbor` (Full Production GA — Cloud Lift, Helm Chart Auditing & Local LLM Baseline)**: Launches the **Hawaiian Military Base Cities** GA series by lifting execution from local workstations into **AWS EC2 & Bottlerocket** cloud enclaves, introducing offline **Helm Chart compliance auditing**, and integrating an initial air-gapped local LLM (`Gemma` / `GPT-OSS`) synthesis tier.

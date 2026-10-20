@@ -23,7 +23,7 @@
 
 ## Scenario Overview
 
-This scenario provides a step-by-step walkthrough of the **GRC Bundle Review Pipeline** evaluating a software release bundle (`auth-service-v1.2.0.bundle`). It demonstrates the complete 5-phase lifecycle from pre-extraction cryptographic verification to containerized static analysis, Phase 4 SCR/SCN compliance reporting, and ephemeral workspace cleanup.
+This scenario provides a step-by-step walkthrough of **GRCx** (*The GRC eXperience*) evaluating a software release bundle (`auth-service-v1.2.0.bundle`). It demonstrates the complete 5-phase lifecycle from pre-extraction cryptographic verification to containerized static analysis, Phase 4 SCR/SCN compliance reporting, and ephemeral workspace cleanup.
 
 ### Scenario Baseline
 
@@ -104,7 +104,7 @@ In **Phase 2**, the analyst unpacks the verified bundle into an isolated `epheme
 
 ### Step 3: Inspecting the Generated Audit Manifest (`bundle_provenance.json`)
 
-The restore engine automatically emits [`bundle_provenance.json`](workspace-layout.md) at the root of `ephemeral_workspace/`. This manifest captures immutable cryptographic chain-of-custody metadata:
+The restore engine automatically emits [`bundle_provenance.json`](../README.md#6-phase-4-compliance-deliverables--scrscn-package) at the root of `ephemeral_workspace/`. This manifest captures immutable cryptographic chain-of-custody metadata:
 
 ```bash
 cat ./ephemeral_workspace/bundle_provenance.json | jq .
@@ -275,7 +275,7 @@ cat ./evidence/auth-service-v1.2.0/poam_data.md | head -n 25
 
 ### Step 6: Post-Audit Ephemeral Teardown (`Phase 5: Clean`)
 
-To uphold the core zero-persistence hygiene principle ([`docs/design-rules-and-aocs.md`](design-rules-and-aocs.md)), the analyst tears down the ephemeral workspace and safely purges the release bundle once deliverables are archived:
+To uphold the core zero-persistence hygiene principle ([`README.md` Section 3](../README.md#3-core-architectural-principles)), the analyst tears down the ephemeral workspace and safely purges the release bundle once deliverables are archived:
 
 ```bash
 ./grc bundle clean \

@@ -1,7 +1,17 @@
-# GRC Bundle Reviewer (`grc-bundle-review`)
+# GRCx — The GRC eXperience (`grcx`)
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo/grcx-logo-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo/grcx-logo-light.png">
+    <img alt="GRCx — The GRC eXperience" src="assets/logo/grcx-logo-dark.png" width="380">
+  </picture>
+</p>
 
 <p align="center">
   <a href="README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="INSTALL.md"><b>⚙️ Install Guide</b></a> &nbsp;·&nbsp;
+  <a href="COMMANDS.md"><b>⌨️ CLI Commands</b></a> &nbsp;·&nbsp;
   <a href="amplifying-info/ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
   <a href="amplifying-info/DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
   <a href="SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
@@ -18,24 +28,24 @@
 ```text
 > grcfetch
         .--.          .--.          .--.
-  ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,    eodartintlabs-hue/grc-bundle-reviewer
- {GGG'     `G# {GGG     `GGG {GGG'     `G#     -------------------------------------
- @GGG          @GGG     ,GGG @GGG              App: GRC Bundle Reviewer v1.0.6 (Yokosuka)
- 'GGG   ,p#GG# @GGG#**#GGG"  'GGG              OS: Darwin ARM64 / Linux Bookworm
-  GGG   ""`GGG @GGG   `GGG,   GGG              Model: Out-of-Band (OOB) / Fail-Open
- ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#     Isolation: Air-Gapped (--network none, :ro)
-  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG"     Engines: (9) Semgrep, Gitleaks, Checkov, Syft,
-   `@GGGG###G# @GGG     `GGG   `@GGGG###G"                  Grype, Trivy, OpenSCAP, Crypto, SBOM
-     `"%N>"`    `"%NW" `"%NW"    `"%N>"`       Ruleset: 37 AST Rules (AOC 02–140)
-                                               Frameworks: DISA STIG, NIST 800-53 R5, FedRAMP
-                                               Deliverables: POA&M, Controls, SCR/SCN, SHA-256
+  ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,                  eodartintlabs-hue/grcx
+ {GGG'     `G# {GGG     `GGG {GGG'     `G#                   ----------------------
+ @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   App: GRCx v1.1.0 (Kadena)
+ 'GGG   ,p#GG# @GGG#**#GGG"  'GGG           `GGG, ,GGG'      OS: Darwin ARM64 / Linux Bookworm
+  GGG   ""`GGG @GGG   `GGG,   GGG             `GGGGG'        Model: Out-of-Band (OOB) / Fail-Open
+ ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ,GGGGG,        Isolation: Air-Gapped (--network none, :ro)
+  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG"  ,GGG' `GGG,      Engines: (9) Semgrep, Gitleaks, Checkov, Syft,
+   `@GGGG###G# @GGG     `GGG   `@GGGG###G" dGGG'   `GGGb                  Grype, Trivy, OpenSCAP, Crypto, SBOM
+     `"%N>"`    `"%NW" `"%NW"    `"%N>"`   `"%N"   "%N"`     Ruleset: 37 AST Rules (AOC 02–140)
+                                                             Frameworks: DISA STIG, NIST 800-53 R5, FedRAMP
+       ───  T h e   G R C   e X p e r i e n c e  ───         Deliverables: POA&M, Controls, SCR/SCN, SHA-256
 
-                                               ███ ███ ███ ███ ███ ███ ███ ███
-                                               ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄
+                                                             ███ ███ ███ ███ ███ ███ ███ ███
+                                                             ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄
 ```
 
 > **Classification**: Internal DevSecOps & Security Compliance Specification  
-> **Release Stage**: `v1.x — Yokosuka` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
+> **Release Stage**: `v1.1.x — Kadena` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
 > **Target Frameworks**: DISA STIG, NIST SP 800-53 Rev. 5, FedRAMP High, DoD Cloud Computing SRG, OWASP Top 10  
 > **Operational Model**: Out-of-Band (OOB), Fail-Open, Zero Untrusted Execution, Ephemeral Hygiene  
 > **Companion Test Corpus**: [`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)  
@@ -51,17 +61,16 @@
 5. [Integrated Security Scanning & Synthesis Engines](#5-integrated-security-scanning--synthesis-engines)
 6. [Phase 4 Compliance Deliverables & SCR/SCN Package](#6-phase-4-compliance-deliverables--scrscn-package)
 7. [Minimum & Recommended System Requirements](#7-minimum--recommended-system-requirements)
-8. [CLI Command Reference (`./grc`)](#8-cli-command-reference-grc)
-9. [Quickstart Workflows](#9-quickstart-workflows)
-10. [Security Assurance, Negative Testing & Verification](#10-security-assurance-negative-testing--verification)
-11. [Product Roadmap (`Yokosuka` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)](#11-product-roadmap-yokosuka-rightarrow-sasebo-rightarrow-misawa-rightarrow-pearl-harbor-ga)
-12. [Repository Structure & Documentation Index](#12-repository-structure--documentation-index)
+8. [Installation, Quickstart & CLI Reference (`INSTALL.md` & `COMMANDS.md`)](#8-installation-quickstart--cli-reference-installmd--commandsmd)
+9. [Security Assurance, Negative Testing & Verification](#9-security-assurance-negative-testing--verification)
+10. [Product Roadmap (`Yokosuka` $\rightarrow$ `Kadena` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)](#10-product-roadmap-yokosuka-rightarrow-kadena-rightarrow-sasebo-rightarrow-misawa-rightarrow-pearl-harbor-ga)
+11. [Repository Structure & Documentation Index](#11-repository-structure--documentation-index)
 
 ---
 
 ## 1. Executive Overview
 
-The **GRC Bundle & AMI Review Pipeline** is an automated, cryptographic verification and static security analysis framework engineered to audit **Git software release bundles (`.bundle`)** and **Amazon Machine Images (`AMI`)** out-of-band. 
+**GRCx** (*The GRC eXperience*) is an automated, cryptographic verification and static security analysis platform engineered to audit **Git software release bundles (`.bundle`)**, **Amazon Machine Images (`AMI`)**, and infrastructure/security telemetry out-of-band. 
 
 Designed for high-assurance federal and defense environments (**FedRAMP High**, **DISA STIG**, **DoD RMF**), the pipeline guarantees deep compliance verification and automated **Security Change Request / Security Change Notification (SCR/SCN)** evidence generation without gating or slowing down developer CI/CD velocity.
 
@@ -243,75 +252,21 @@ Because all host orchestration engines ([`scripts/`](scripts/)) rely strictly on
 | **Container Engine** | **Docker Engine $\ge$ `24.0+`** / **Docker Desktop $\ge$ `4.25+`** *(or Colima / Podman)* | Building and running the air-gapped `grc-scanner:local` container suite | `docker info` |
 | **AWS CLI & `util-linux`** *(Optional)* | **`aws-cli` v2** + Linux `mount`/`losetup` | **Live AWS AMI Cold-Mounting only** *(Not required for `.bundle` reviews or local `./grc ami --mock` simulation)* | `aws --version` |
 
-> 📋 **Detailed Workstation Layout**: See **[`docs/workspace-layout.md`](docs/workspace-layout.md)** for complete auditor workstation and container runtime specifications.
+---
+
+## 8. Installation, Quickstart & CLI Reference (`INSTALL.md` & `COMMANDS.md`)
+
+To keep onboarding fast and accessible for new users, step-by-step installation instructions and the full CLI command reference are maintained in dedicated root-level guides:
+
+* ⚙️ **[Installation & Quickstart Guide (`INSTALL.md`)](INSTALL.md)** — Walks new users from downloading **GRCx** off GitHub (or cloning from a portable `.bundle`), building the offline `grc-scanner:local` container, and executing a first audit all the way to opening and previewing rendered Markdown/JSON deliverables in **Cursor**.
+* ⌨️ **[CLI Command Reference (`COMMANDS.md`)](COMMANDS.md)** — Isolated, plain-English reference detailing every command and flag accepted by `./grc` (`bundle`, `ami`, `scan` across all 9 engines, `report`, `sbom`, `crypto`, `docker-build`, and `fetch`).
+* 📑 **[End-to-End Bundle Review Walkthrough (`docs/grc-bundle-use-case.md`)](docs/grc-bundle-use-case.md)** & **[AMI Cold-Mount Workflow (`docs/ami-review-workflow.md`)](docs/ami-review-workflow.md)** — Deep-dive operational scenarios with sample terminal transcripts, provenance manifests, and tamper-rejection gates.
 
 ---
 
-## 8. CLI Command Reference (`./grc`)
+## 9. Security Assurance, Negative Testing & Verification
 
-The root `./grc` dispatcher provides a unified interface across all pipeline stages:
-
-| Command | Usage | Description |
-| :--- | :--- | :--- |
-| **`bundle verify`** | `./grc bundle verify <file.bundle> [--expected-sha256 <hash>]` | Validates bundle SHA-256 digest and `git bundle verify` object integrity prior to extraction. |
-| **`bundle restore`** | `./grc bundle restore <file.bundle> -w <dir> -r <ref> [-f] [--read-only]` | Extracts bundle into an ephemeral workspace, locks files read-only (`0444`), and writes `bundle_provenance.json`. |
-| **`bundle clean`** | `./grc bundle clean -w <dir> [--delete-bundle <file.bundle>]` | Removes read-only locks and purges the ephemeral workspace while preserving `evidence/`. |
-| **`ami verify`** | `./grc ami verify <ami-id> [--region <r>] [--mock]` | Validates AMI availability, root EBS snapshot integrity, and KMS CMK encryption compliance. |
-| **`ami restore`** | `./grc ami restore <ami-id> -w <dir> [--worker-id <id>] [--mock]` | Cold-mounts AMI root snapshot read-only (`ro,noload,noexec,nosuid`), resolves OS STIG, and writes `ami_provenance.json`. |
-| **`ami clean`** | `./grc ami clean -w <dir> [--mock]` | Unmounts cold-mounted filesystem, detaches/deletes ephemeral EBS volume, and wipes workspace. |
-| **`scan`** | `./grc scan [--all \| --engine <name>] -w <workspace> [-e <evidence_dir>] [--no-report]` | Runs all **9 compliance engines** (`all` / `--all`, default: Semgrep, Gitleaks, Checkov, Syft, Grype, Trivy, OpenSCAP, `crypto_lib_scan.py`, and `sbom_analyzer.py`) **or** any individual engine (`semgrep`, `gitleaks`, `checkov`, `syft`, `grype`, `trivy`, `oscap`, `crypto`, `sbom`) and automatically synthesizes Phase 4 deliverables. |
-| **`report`** | `./grc report -e <evidence_dir> [-w <workspace>]` | Synthesizes or refreshes `poam_data.md`, `controls.md`, `ruleset_validation.md`, `scr_scn_package.json`, and `sha256sum`. |
-| **`crypto`** | `./grc crypto -w <workspace> --format json -o <out.json>` | Direct CLI wrapper for the static cryptographic library and EOL dependency scanner. |
-| **`sbom`** | `./grc sbom --sbom <sbom.json> --format markdown -o <stig_matrix.md>` | Direct CLI wrapper mapping CycloneDX / SPDX SBOM components to DISA STIGs and DoD SRGs. |
-| **`docker-build`** | `./grc docker-build` | Builds or rebuilds the local `grc-scanner:local` Docker image from `docker/Dockerfile.scanner`. |
-
----
-
-## 9. Quickstart Workflows
-
-### 9.1 Streamlined 2-Step Git Bundle Review (Recommended)
-
-> 💡 **Detailed Step-by-Step Scenario**: See **[`docs/grc-bundle-use-case.md`](docs/grc-bundle-use-case.md)** for a complete end-to-end audit walkthrough featuring sample terminal command sessions, `bundle_provenance.json` inspections, and tampered-bundle rejection handling.
-
-```bash
-# Step 1: Restore the release bundle into an isolated, read-only ephemeral workspace
-./grc bundle restore /path/to/release-v1.0.0.bundle \
-  --workspace ./ephemeral_workspace \
-  --ref v1.0.0 \
-  --force --read-only
-
-# Step 2: Run the containerized scanner suite + automatic Phase 4 SCR/SCN synthesis
-./grc scan -w ./ephemeral_workspace
-
-# Step 3: Review generated compliance work papers in evidence/<bundle-name>/
-ls -la evidence/release-v1.0.0/
-# -> bundle_provenance.json, poam_data.md, controls.md, ruleset_validation.md, scr_scn_package.json, sha256sum
-
-# Step 4: Tear down the ephemeral workspace
-./grc bundle clean --workspace ./ephemeral_workspace
-```
-
-### 9.2 AMI Cold-Mount Review (Cloud & Zero-Cost Local `--mock` Mode)
-
-```bash
-# 1. Verify AMI metadata, KMS encryption & root snapshot integrity (use --mock for $0 local testing)
-./grc ami verify ami-0123456789abcdef0 --region us-east-1 --mock
-
-# 2. Cold-mount AMI snapshot into ephemeral read-only workspace
-./grc ami restore ami-0123456789abcdef0 --workspace ./ephemeral_ami_workspace --mock --force
-
-# 3. Scan the cold-mounted rootfs and generate Phase 4 compliance deliverables
-./grc scan -w ./ephemeral_ami_workspace/mnt -e ./evidence/ami-0123456789abcdef0
-
-# 4. Tear down ephemeral volume and audit mount
-./grc ami clean --workspace ./ephemeral_ami_workspace --mock
-```
-
----
-
-## 10. Security Assurance, Negative Testing & Verification
-
-In high-assurance compliance automation, a scanner that outputs zero findings is untrusted until proven capable of failing. This pipeline is paired with the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository containing 8 pre-compiled synthetic release bundles (`aoc-02` through `aoc-12`) and flawed AMI fixtures engineered to trigger every control in the pipeline:
+In high-assurance compliance automation, a scanner that outputs zero findings is untrusted until proven capable of failing. This pipeline is paired with the companion **[`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)** repository containing 12 pre-compiled synthetic release bundles (`aoc-02` through `aoc-combo-4x`) and flawed AMI fixtures engineered to trigger every control in the pipeline:
 
 * 🏛️ **[System Architecture & Technology Stack (`amplifying-info/ARCHITECTURE.md`)](amplifying-info/ARCHITECTURE.md)** — Architectural showcase containing the **Layered Technology Stack Presentation Graphic (`docs/assets/tech-stack.svg`)** and detailed breakdowns of every subsystem, purpose, deliverables, and cost.
 * 🔄 **[Pipeline Data Flow & Telemetry Lineage (`amplifying-info/DATAFLOW.md`)](amplifying-info/DATAFLOW.md)** — Visual data-flow architecture (`docs/assets/data-flow.svg`), trust boundary isolation zones, SBOM-to-CVE fan-out, and master artifact I/O lineage matrix.
@@ -321,14 +276,15 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`testing/TESTING.md`)](testing/TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
 * 🎬 **[Live Demo Presentation Runbook (`testing/live-demo.md`)](testing/live-demo.md)** — Step-by-step live demo script covering AOC-09, AOC-10, and AOC-04.
-* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)**, **[v1 Patch Ledger (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)** & **[Product Roadmap (`hygiene/ROADMAP.md`)](hygiene/ROADMAP.md)** — Version history, `Yokosuka` release notes, running `v1.x` patch table, and the upcoming **`v2.0.0 — Pearl Harbor`** GA roadmap.
+* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)**, **[v1 Patch Ledger (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)** & **[Product Roadmap (`hygiene/ROADMAP.md`)](hygiene/ROADMAP.md)** — Version history, `Yokosuka` & `Kadena` release notes, running `v1.x` release table, and the upcoming **`v2.0.0 — Pearl Harbor`** GA roadmap.
 
 ---
 
-## 11. Product Roadmap (`Yokosuka` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)
+## 10. Product Roadmap (`Yokosuka` $\rightarrow$ `Kadena` $\rightarrow$ `Sasebo` $\rightarrow$ `Misawa` $\rightarrow$ `Pearl Harbor` GA)
 
 | Release Milestone | Series | Key Capabilities Planned |
 | :--- | :--- | :--- |
+| **`v1.1.0 — Kadena`** *(Active)* | 🇯🇵 Japan *(Beta)* | **Platform Rebrand to `GRCx` ("The GRC eXperience")**: Full repository rebrand to `GRCx`, dedicated [`INSTALL.md`](INSTALL.md) and [`COMMANDS.md`](COMMANDS.md) onboarding guides, theme-adaptive Light/Dark seagull-escaping-square brand lockups (`assets/logo/`), and updated `grcfetch` CLI banner. |
 | **`v1.2.0 — Sasebo`** | 🇯🇵 Japan *(Beta)* | **Universal Workstation Portability**: Out-of-the-box compatibility for any user cloning from GitHub across macOS (`arm64`/`amd64`), Linux, and Windows WSL2—fixing Linux UID/GID root volume ownership, adding SELinux/Podman support, pinning `Dockerfile.scanner` versions, and introducing `./grc doctor`. |
 | **`v1.3.0 — Misawa`** | 🇯🇵 Japan *(Beta)* | **Tenable & AWS Inspector CSV Ingest**: Ingests external Tenable and AWS Inspector vulnerability CSV reports (`./grc ingest`), deduplicates findings across static and runtime scans, and populates the **official FedRAMP POA&M spreadsheet (`.xlsx`)**. |
 | **`v2.0.0 — Pearl Harbor`** | 🌺 Hawaii *(GA Launch)* | **Cloud Enclave Lift, Helm Auditing & Local LLM Baseline**: Lifts execution from local workstations to **AWS EC2** and **AWS Bottlerocket** container hosts, adds **Helm chart compliance auditing (`./grc scan --engine helm`)**, and integrates a baseline air-gapped **Gemma / GPT-OSS** model for POA&M synthesis. |
@@ -338,14 +294,17 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 
 ---
 
-## 12. Repository Structure & Documentation Index
+## 11. Repository Structure & Documentation Index
 
 ```text
-grc-bundle-review/
-├── README.md                         # Master project overview, lifecycle, and CLI reference
+grcx/
+├── README.md                         # Master project overview, lifecycle, and architecture
+├── INSTALL.md                        # Step-by-step onboarding from GitHub download to viewing outputs in Cursor
+├── COMMANDS.md                       # Complete plain-English reference of every ./grc CLI command
 ├── SECURITY.md                       # Air-gap security policy, threat model, and telemetry controls
 ├── grc                               # Root CLI dispatcher wrapper
 ├── .gitignore                        # Protects against committing ephemeral workspaces and bundles
+├── assets/logo/                      # GRCx light-mode and dark-mode brand lockups
 │
 ├── amplifying-info/                  # Deep-dive architecture, data flow & regulatory governance
 │   ├── ARCHITECTURE.md               # Visual Technology Stack (Layered Stack, Subsystems, Deliverables & Costs)
@@ -360,8 +319,8 @@ grc-bundle-review/
 ├── evidence/                         # Production compliance vault (reserved strictly for real bundles)
 │
 ├── hygiene/                          # Release engineering, versioning, patch tracking & product roadmap
-│   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka)
-│   ├── PATCH_LOG.md                  # Running table of all v1.x patches across the app lifecycle
+│   ├── RELEASE_NOTES.md              # Narrative release notes and version naming convention (Yokosuka & Kadena)
+│   ├── PATCH_LOG.md                  # Running table of all v1.x releases across the app lifecycle
 │   └── ROADMAP.md                    # v1.2 Sasebo, v1.3 Misawa & v2.0 Pearl Harbor product roadmap
 │
 ├── docker/                           # Containerized scanning suite (100% local, $0 cloud cost)
@@ -374,11 +333,8 @@ grc-bundle-review/
 │   │   ├── data-flow.svg             # Dark-mode Pipeline Data Flow presentation graphic
 │   │   └── tech-stack.svg            # Layered Technology Stack infographic
 │   ├── ami-review-workflow.md        # AMI EBS snapshot cold-mount audit specification & schema
-│   ├── design-rules-and-aocs.md      # Core design principles and AOC 01–140 traceability matrix
 │   ├── grc-bundle-use-case.md        # Complete 5-phase review walkthrough with sample terminal outputs
-│   ├── review-workflow.md            # 5-stage Git bundle review & SCR/SCN lifecycle
-│   ├── test-dummies-guide.md         # Negative testing walkthrough, AOC cheat sheet, and jq guide
-│   └── workspace-layout.md           # Minimum & recommended hardware/software requirements and layout
+│   └── test-dummies-guide.md         # Negative testing walkthrough, AOC cheat sheet, and jq guide
 │
 ├── rules/                            # Declarative compliance policies
 │   ├── custom-baseline-ruleset.yaml  # 37-rule Semgrep AST baseline covering Go, Java, Python, JS

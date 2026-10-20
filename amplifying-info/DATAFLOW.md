@@ -22,7 +22,7 @@
 ---
 
 <p align="center">
-  <img src="../docs/assets/data-flow.svg" alt="GRC Bundle Reviewer Pipeline Data Flow" width="100%" />
+  <img src="../docs/assets/data-flow.svg" alt="GRCx Pipeline Data Flow" width="100%" />
 </p>
 
 ---
@@ -44,7 +44,7 @@
 
 ## 1. Executive Data Flow Overview
 
-The **GRC Bundle & AMI Review Pipeline** enforces a strictly unidirectional, tamper-evident data flow from **untrusted artifact ingestion** to **cryptographically sealed compliance deliverables**. 
+**GRCx** (*The GRC eXperience*) enforces a strictly unidirectional, tamper-evident data flow from **untrusted artifact ingestion** to **cryptographically sealed compliance deliverables**. 
 
 At no point in the lifecycle is ingested code executed, nor does any scanner communicate over a network interface. Data moves across four distinct stages:
 1. **Raw Binary Stream** (`.bundle` archive or cold-mounted EBS block device)
@@ -92,7 +92,7 @@ Once Phase 1 passes, the verified artifact is materialized into **Zone 1 (Epheme
   * `grc_ami.py` attaches the EBS volume to a non-boot block device and cold-mounts the filesystem using `mount -o ro,noload,noexec,nosuid`.
 * **Provenance Emission**:
   * Extracts Git commit metadata (`commit_hash`, `author_name`, `author_email`, `author_date`, `subject`) or AMI OS metadata (`/etc/os-release`).
-  * Writes [`bundle_provenance.json`](../docs/workspace-layout.md) (or `ami_provenance.json`) into the workspace root, establishing the formal **Artifact Identifier** that links all downstream scanner findings to the exact cryptographic digest of the release.
+  * Writes [`bundle_provenance.json`](../README.md#6-phase-4-compliance-deliverables--scrscn-package) (or `ami_provenance.json`) into the workspace root, establishing the formal **Artifact Identifier** that links all downstream scanner findings to the exact cryptographic digest of the release.
 
 ---
 

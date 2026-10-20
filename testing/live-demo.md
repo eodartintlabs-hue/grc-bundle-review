@@ -1,4 +1,4 @@
-# GRC Bundle Reviewer — Live Demo Runbook (`testing/live-demo.md`)
+# GRCx — Live Demo Runbook (`testing/live-demo.md`)
 
 <p align="center">
   <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
@@ -15,7 +15,7 @@
   <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
-> **Purpose**: Step-by-step live presentation script for demonstrating the 5-phase GRC Bundle Review Pipeline across **AOC-09 (EOL Cryptographic Libraries)**, **AOC-10 (Critical CVEs)**, and **AOC-04 (OS Command Injection)**.
+> **Purpose**: Step-by-step live presentation script for demonstrating the 5-phase **GRCx** (*The GRC eXperience*) pipeline across **AOC-09 (EOL Cryptographic Libraries)**, **AOC-10 (Critical CVEs)**, and **AOC-04 (OS Command Injection)**.
 
 ---
 
@@ -23,7 +23,7 @@
 
 1. **`./grc` vs `grc`**: Always prefix the command with **`./grc`** (not `grc`), otherwise macOS `zsh` will return `zsh: command not found: grc`.
 2. **Docker Desktop Must Be Running**: The `scan` command runs inside the air-gapped `grc-scanner:local` container. Verify the **Docker Desktop** whale icon is running in your Mac menu bar before starting.
-3. **Bundle Path Location**: The `.bundle` test fixtures live in the companion directory **`/Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/`**, not inside `GRC-Bundle-Review_Pipeline`.
+3. **Bundle Path Location**: The `.bundle` test fixtures live in the companion directory **`../GRC-Test-Dummies/bundles/`**, not inside `GRC-Bundle-Review_Pipeline`.
 4. **Always Pass `-f` (`--force`) on Restore**: Because previous runs lock `./ephemeral_workspace` to read-only (`chmod 0444`), restoring a new bundle without `-f` will error out if `./ephemeral_workspace` wasn't cleaned first.
 
 ---
@@ -45,12 +45,12 @@ cd ~/Desktop/GRC-Bundle-Review_Pipeline
 
 ### Phase 1: Cryptographic Bundle Verification
 ```bash
-./grc bundle verify /Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-09-eol-libraries.bundle
+./grc bundle verify ../GRC-Test-Dummies/bundles/aoc-09-eol-libraries.bundle
 ```
 
 ### Phase 2: Ephemeral Read-Only Restoration (`chmod 0444`)
 ```bash
-./grc bundle restore /Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-09-eol-libraries.bundle \
+./grc bundle restore ../GRC-Test-Dummies/bundles/aoc-09-eol-libraries.bundle \
   -w ./ephemeral_workspace \
   -r v1.0.0 \
   -f \
@@ -94,12 +94,12 @@ cat testing/demo-evidence/aoc-09-eol-libraries/controls.md
 
 ### Phase 1: Cryptographic Bundle Verification
 ```bash
-./grc bundle verify /Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-10-critical-cves.bundle
+./grc bundle verify ../GRC-Test-Dummies/bundles/aoc-10-critical-cves.bundle
 ```
 
 ### Phase 2: Ephemeral Read-Only Restoration (`chmod 0444`)
 ```bash
-./grc bundle restore /Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-10-critical-cves.bundle \
+./grc bundle restore ../GRC-Test-Dummies/bundles/aoc-10-critical-cves.bundle \
   -w ./ephemeral_workspace \
   -r v1.0.0 \
   -f \
@@ -134,12 +134,12 @@ cat testing/demo-evidence/aoc-10-critical-cves/controls.md
 
 ### Phase 1: Cryptographic Bundle Verification
 ```bash
-./grc bundle verify /Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-04-command-injection.bundle
+./grc bundle verify ../GRC-Test-Dummies/bundles/aoc-04-command-injection.bundle
 ```
 
 ### Phase 2: Ephemeral Read-Only Restoration (`chmod 0444`)
 ```bash
-./grc bundle restore /Users/byronturner-pro/Desktop/GRC-Test-Dummies/bundles/aoc-04-command-injection.bundle \
+./grc bundle restore ../GRC-Test-Dummies/bundles/aoc-04-command-injection.bundle \
   -w ./ephemeral_workspace \
   -r v1.0.0 \
   -f \

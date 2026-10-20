@@ -8,7 +8,7 @@ Pipeline Role: Phase 1 (Pull & Verify) & Phase 2 (Restore) Core Orchestrator
 Target Frameworks: NIST SP 800-53 (SI-7, CM-6, SC-12), FedRAMP, DISA STIG
 
 Purpose:
-  Provides the operational CLI implementation for the GRC Bundle Review Pipeline:
+  Provides the operational CLI implementation for GRCx ("The GRC eXperience"):
     - Verifies cryptographic integrity (SHA-256) of incoming release bundles.
     - Validates bundle structure via `git bundle verify`.
     - Restores and unpacks the Git bundle into an isolated, ephemeral workspace.
@@ -303,7 +303,7 @@ class GRCBundleManager:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="grc bundle",
-        description="GRC Bundle Review Lifecycle Manager (Pull, Verify, Restore, and Clean)",
+        description="GRCx Bundle Lifecycle Manager (Pull, Verify, Restore, and Clean)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Commands:

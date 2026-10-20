@@ -46,7 +46,7 @@
 
 ## 1. Executive Governance Charter
 
-The **GRC Bundle & AMI Review Pipeline** and its companion test harness **`GRC-Test-Dummies`** establish an automated, mathematically verifiable governance system for releasing software into federal, defense, and national security environments. 
+**GRCx** (*The GRC eXperience*) and its companion test harness **`GRC-Test-Dummies`** establish an automated, mathematically verifiable governance system for releasing software into federal, defense, and national security environments. 
 
 Traditional compliance frameworks rely on self-attestation questionnaires and manual auditor sampling, which introduce latency, human error, and security blind spots. This pipeline replaces subjective assertions with **cryptographic provenance, air-gapped static analysis, automated STIG mapping, and programmatic FedRAMP/DoD deliverable generation**.
 
@@ -113,7 +113,7 @@ NIST SP 800-53 Rev. 5 Control Family Implementation:
 
 ### 3.2 NIST SP 800-218: Secure Software Development Framework (SSDF v1.1)
 
-Pursuant to **Executive Order 14028** and **OMB M-22-18**, federal agencies and commercial vendors must attest to compliance with NIST SP 800-218. The GRC Bundle Review Pipeline automates evidence collection for the core SSDF practice groups:
+Pursuant to **Executive Order 14028** and **OMB M-22-18**, federal agencies and commercial vendors must attest to compliance with NIST SP 800-218. **GRCx** automates evidence collection for the core SSDF practice groups:
 
 ```mermaid
 flowchart TD

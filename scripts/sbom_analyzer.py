@@ -706,7 +706,7 @@ class ReportGenerator:
 
         md.append("")
         md.append("---")
-        md.append("*Artifact produced by GRC Bundle Review Pipeline (`sbom_analyzer.py`)*")
+        md.append("*Artifact produced by GRCx (`sbom_analyzer.py`)*")
         return "\n".join(md)
 
     @staticmethod
@@ -719,7 +719,7 @@ class ReportGenerator:
             "metadata": {
                 "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 "source_sbom": os.path.basename(sbom_filename),
-                "analyzer": "sbom_analyzer.py (GRC Bundle Review Pipeline)",
+                "analyzer": "sbom_analyzer.py (GRCx)",
             },
             "summary": summary,
             "mappings": [m.to_dict() for m in mappings],
@@ -769,7 +769,7 @@ class ReportGenerator:
 
 def build_cli() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="DISA STIG & SRG SBOM Applicability Analyzer (GRC Bundle Review Pipeline)",
+        description="DISA STIG & SRG SBOM Applicability Analyzer (GRCx)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

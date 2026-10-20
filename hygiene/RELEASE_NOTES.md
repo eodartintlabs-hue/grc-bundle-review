@@ -15,8 +15,8 @@
   <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
 </p>
 
-> **Project**: GRC Bundle & AMI Review Pipeline (`grc-bundle-review`)  
-> **Active Release Series**: `v1.x` — Codename **Yokosuka** *(Restricted Beta / Integration Testing)*  
+> **Project**: GRCx — The GRC eXperience (`grcx`)  
+> **Active Release Series**: `v1.1.x` — Codename **Kadena** *(Restricted Beta / Integration Testing)*  
 > **Upcoming Full Production Release (`v2.0.0`)**: **`Pearl Harbor`** *(First in the Hawaiian Military Base Cities Series — see **[`hygiene/ROADMAP.md`](ROADMAP.md)**)*  
 > **Quick Patch Ledger**: See **[`hygiene/PATCH_LOG.md`](PATCH_LOG.md)** for the condensed running table of all `v1` patches.
 
@@ -28,20 +28,41 @@ All releases follow **Semantic Versioning (`v<MAJOR>.<MINOR>.<PATCH>`)** paired 
 
 | Major Series | Lifecycle Phase | Access & Scope | Geographic Theme | Active / Candidate Codenames |
 | :--- | :--- | :--- | :--- | :--- |
-| **`v1.x`** | **Restricted Beta & Integration Testing** | Limited access for designated integration testers, security assessors, and pilot engineering teams validating end-to-end bundle & AMI workflows. | 🇯🇵 **Japan** *(U.S. Military Installations)* | **`Yokosuka`** *(Active — `v1.0.x`)* · **`Sasebo`** *(`v1.2.0` Workstation Portability)* · **`Misawa`** *(`v1.3.0` Tenable/Inspector CSV Ingest)* |
+| **`v1.x`** | **Restricted Beta & Integration Testing** | Limited access for designated integration testers, security assessors, and pilot engineering teams validating end-to-end bundle & AMI workflows. | 🇯🇵 **Japan** *(U.S. Military Installations)* | **`Yokosuka`** *(`v1.0.x`)* · **`Kadena`** *(Active — `v1.1.x` `GRCx` Rebrand)* · **`Sasebo`** *(`v1.2.0` Workstation Portability)* · **`Misawa`** *(`v1.3.0` Tenable/Inspector CSV Ingest)* |
 | **`v2.x`** | **Full Production Release (GA)** | General Availability across production enclaves after Beta integration sign-off. | 🌺 **Hawaii** *(Cities with U.S. Military Bases)* | **`Pearl Harbor`** *(`v2.0.0` GA Launch)* · **`Kaneohe`** *(`v2.1.0` RAM-Adaptive LLM)* · `Wahiawa` (`v2.2.0`), `Kunia`, `Kekaha` |
 
 ### Semantic Versioning Rules
 * **Format**: `Release v<MAJOR>.<MINOR>.<PATCH> - <Codename>: <Summary>`
 * **MAJOR (`v1.0.0` Beta $\rightarrow$ `v2.0.0` Full Release)**: Lifecycle milestone transitions (Beta Integration Testing in `v1.x` to Full Production GA in `v2.0.0`).
-* **MINOR (`v1.x.0`)**: New backward-compatible scanners, CLI subcommands, or compliance frameworks introduced during the series.
-* **PATCH (`v1.0.x`)**: Bug fixes, rule tuning, offline CVE database refreshes, documentation, and repository hygiene.
+* **MINOR (`v1.x.0`)**: New backward-compatible scanners, CLI subcommands, compliance frameworks, or major platform identity milestones introduced during the series.
+* **PATCH (`v1.x.y`)**: Bug fixes, rule tuning, offline CVE database refreshes, documentation, and repository hygiene.
+
+---
+
+## 🦅 `v1.1.0` — Kadena (Minor Release: Platform Rebrand to `GRCx — "The GRC eXperience"` & New Brand Identity)
+**Release Date**: October 20, 2026  
+**Tag**: `v1.1.0`  
+**Type**: Minor Release (`Kadena` — Platform Rebrand, Visual Identity & CLI Standardization)
+
+### Highlights & Changes
+* **Platform Rebrand to `GRCx` ("The GRC eXperience")**:
+  * Transitioned the platform identity from *GRC Bundle Review Pipeline* to **`GRCx` (*The GRC eXperience*)**, reflecting the application's evolution beyond `.bundle` inspection into a comprehensive, multi-engine, air-gapped compliance automation and synthesis platform.
+  * Standardized all active documentation, architectural specifications, test plans, runbooks, and Python CLI analyzer metadata (`scripts/sbom_analyzer.py`, `scripts/grc_bundle.py`) to `GRCx`.
+* **New Brand Logo Lockups ([`assets/logo/`](../assets/logo/))**:
+  * Added high-contrast monochrome Light Mode ([`assets/logo/grcx-logo-light.png`](../assets/logo/grcx-logo-light.png)) and Dark Mode ([`assets/logo/grcx-logo-dark.png`](../assets/logo/grcx-logo-dark.png)) brand lockups featuring a soaring seagull silhouette escaping a receding square enclosure above slab-serif **`GRCx`** and **`The GRC eXperience`** typography.
+  * Integrated a GitHub theme-adaptive `<picture>` header (`prefers-color-scheme: dark` / `light`) at the top of [`README.md`](../README.md).
+* **Upgraded `grcfetch` Terminal Banner ([`./grc`](../grc) & [`README.md`](../README.md))**:
+  * Extended the `@GGG` ASCII art banner in [`./grc`](../grc) (`./grc fetch`) and [`README.md`](../README.md) to render **`GRCx`** with the centered slogan **`───  T h e   G R C   e X p e r i e n c e  ───`** and bumped the version string to `GRCx v1.1.0 (Kadena)`.
+* **Dedicated Onboarding & Command Guides ([`INSTALL.md`](../INSTALL.md) & [`COMMANDS.md`](../COMMANDS.md)) & Documentation Consolidation**:
+  * Added [`INSTALL.md`](../INSTALL.md) at the repository root to guide new users step-by-step from downloading `GRCx` off GitHub and building `grc-scanner:local` to executing their first bundle scan and viewing rendered Markdown/JSON deliverables in **Cursor**.
+  * Added [`COMMANDS.md`](../COMMANDS.md) at the repository root providing an isolated, plain-English reference of every command and flag accepted by `./grc`.
+  * Removed 3 redundant legacy files in `docs/` (`workspace-layout.md`, `review-workflow.md`, and `design-rules-and-aocs.md`) and slimmed down [`README.md`](../README.md) Section 8 to link directly to `INSTALL.md` and `COMMANDS.md`.
 
 ---
 
 ## 🖥️ `v1.0.6` — Yokosuka (Patch 6: Minimum & Recommended System Requirements & 4-AOC Combo Verification)
 **Release Date**: October 19, 2026  
-**Tag**: `v1.0.6`  
+**Tag**: `v1.0.6` (`bf1c799`)  
 **Type**: Patch Release (`Hygiene & Docs` — System Requirements & Multi-AOC Verification Evidence)
 
 ### Highlights & Changes

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# grc - CLI wrapper for the GRC Bundle Review Pipeline
+# grc - CLI wrapper for GRCx ("The GRC eXperience")
 # Allows executing: `grc bundle restore ...` directly as documented in the review workflow.
 
 set -euo pipefail
@@ -18,21 +18,21 @@ print_grcfetch() {
     local R="\033[0m"          # Reset
 
     echo -e ""
-    echo -e "  ${P}        .--.          .--.          .--.        ${R}"
-    echo -e "  ${P}  ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp,   ${M}eodartintlabs-hue/grc-bundle-reviewer${R}"
-    echo -e "  ${P} {GGG'     \`G# {GGG     \`GGG {GGG'     \`G#    ${D}-------------------------------------${R}"
-    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG             ${G}App:${W} GRC Bundle Reviewer v1.0.6 (Yokosuka)${R}"
-    echo -e "  ${P} 'GGG   ,p#GG# @GGG#**#GGG\"  'GGG             ${G}OS:${W} Darwin ARM64 / Linux Bookworm${R}"
-    echo -e "  ${P}  GGG   \"\"\`GGG @GGG   \`GGG,   GGG             ${G}Model:${W} Out-of-Band (OOB) / Fail-Open${R}"
-    echo -e "  ${P} ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ${G}Isolation:${W} Air-Gapped (--network none, :ro)${R}"
-    echo -e "  ${P}  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG\"    ${G}Engines:${W} (9) Semgrep, Gitleaks, Checkov, Syft,${R}"
-    echo -e "  ${P}   \`@GGGG###G# @GGG     \`GGG   \`@GGGG###G\"    ${W}             Grype, Trivy, OpenSCAP, Crypto, SBOM${R}"
-    echo -e "  ${P}     \`\"%N>\"\`    \`\"%NW\" \`\"%NW\"    \`\"%N>\"\`      ${G}Ruleset:${W} 37 AST Rules (AOC 02–140)${R}"
-    echo -e "  ${P}                                              ${G}Frameworks:${W} DISA STIG, NIST 800-53 R5, FedRAMP${R}"
-    echo -e "  ${P}                                              ${G}Output:${W} POA&M, Controls, SCR/SCN, SHA-256${R}"
+    echo -e "  ${P}        .--.          .--.          .--.                       ${R}"
+    echo -e "  ${P}  ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp, ,p#G*\"\"TG#Gp,                  ${M}eodartintlabs-hue/grcx${R}"
+    echo -e "  ${P} {GGG'     \`G# {GGG     \`GGG {GGG'     \`G#                   ${D}----------------------${R}"
+    echo -e "  ${P} @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   ${G}App:${W} GRCx v1.1.0 (Kadena)${R}"
+    echo -e "  ${P} 'GGG   ,p#GG# @GGG#**#GGG\"  'GGG           \`GGG, ,GGG'      ${G}OS:${W} Darwin ARM64 / Linux Bookworm${R}"
+    echo -e "  ${P}  GGG   \"\"\`GGG @GGG   \`GGG,   GGG             \`GGGGG'        ${G}Model:${W} Out-of-Band (OOB) / Fail-Open${R}"
+    echo -e "  ${P} ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ,GGGGG,        ${G}Isolation:${W} Air-Gapped (--network none, :ro)${R}"
+    echo -e "  ${P}  @GGGb,,,dGGG @GGG     GGG,  @GGGb,,,dGG\"  ,GGG' \`GGG,      ${G}Engines:${W} (9) Semgrep, Gitleaks, Checkov, Syft,${R}"
+    echo -e "  ${P}   \`@GGGG###G# @GGG     \`GGG   \`@GGGG###G\" dGGG'   \`GGGb     ${W}             Grype, Trivy, OpenSCAP, Crypto, SBOM${R}"
+    echo -e "  ${P}     \`\"%N>\"\`    \`\"%NW\" \`\"%NW\"    \`\"%N>\"\`   \`\"%N\"   \"%N\"\`     ${G}Ruleset:${W} 37 AST Rules (AOC 02–140)${R}"
+    echo -e "  ${P}                                                             ${G}Frameworks:${W} DISA STIG, NIST 800-53 R5, FedRAMP${R}"
+    echo -e "  ${P}       ───  T h e   G R C   e X p e r i e n c e  ───         ${G}Output:${W} POA&M, Controls, SCR/SCN, SHA-256${R}"
     echo -e ""
-    echo -e "                                                \033[40m   \033[41m   \033[42m   \033[43m   \033[44m   \033[45m   \033[46m   \033[47m   ${R}"
-    echo -e "                                                \033[100m   \033[101m   \033[102m   \033[103m   \033[104m   \033[105m   \033[106m   \033[107m   ${R}"
+    echo -e "                                                               \033[40m   \033[41m   \033[42m   \033[43m   \033[44m   \033[45m   \033[46m   \033[47m   ${R}"
+    echo -e "                                                               \033[100m   \033[101m   \033[102m   \033[103m   \033[104m   \033[105m   \033[106m   \033[107m   ${R}"
     echo -e ""
 }
 
@@ -75,7 +75,7 @@ if [[ "$#" -eq 0 ]]; then
     echo "  sbom           --sbom <file>   Direct CLI wrapper for DISA STIG / SRG SBOM analyzer"
     echo "  crypto         -w <workspace>  Direct CLI wrapper for cryptographic & EOL library scanner"
     echo "  docker-build                   Build the local grc-scanner:local Docker image"
-    echo "  fetch | info                   Display the GRC Bundle Reviewer neofetch banner"
+    echo "  fetch | info                   Display the GRCx neofetch banner"
     echo "=========================================================="
     exit 1
 fi

@@ -1,4 +1,4 @@
-# GRC Bundle Review Pipeline — Test Plan & Verification Guide (`testing/TESTING.md`)
+# GRCx — Test Plan & Verification Guide (`testing/TESTING.md`)
 
 <p align="center">
   <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
@@ -23,11 +23,11 @@
 
 ## 1. Overview & Verification Strategy
 
-This document outlines the end-to-end verification and testing procedures for the **GRC Bundle Review Pipeline**. It exercises the complete lifecycle of a software release bundle without requiring access to production systems or halting developer deployment pipelines.
+This document outlines the end-to-end verification and testing procedures for **GRCx** (*The GRC eXperience*). It exercises the complete lifecycle of a software release bundle without requiring access to production systems or halting developer deployment pipelines.
 
 > [!TIP]
 > **Fast-Track Testing with Pre-Built Test Bundles**:  
-> If you are verifying the pipeline using the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository, refer to the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](../docs/test-dummies-guide.md)** for an interactive cheat sheet and copy-pasteable scan commands for each AOC (`aoc-02` through `aoc-12`).
+> If you are verifying the pipeline using the companion [`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies) (`../GRC-Test-Dummies`) repository, refer to the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](../docs/test-dummies-guide.md)** for an interactive cheat sheet and copy-pasteable scan commands for all 12 test bundles (`aoc-02` through `aoc-combo-4x`).
 
 ```mermaid
 flowchart TD
@@ -94,7 +94,7 @@ chmod +x ./grc ./scripts/grc_bundle.py ./scripts/sbom_analyzer.py ./scripts/cryp
 ## 4. Stage 2: Synthetic Test Bundle Generation
 
 To safely test detection capabilities without risking proprietary source code, you can either:
-1. **Use Pre-Built Dummies (Recommended)**: Use the companion [`GRC-Test-Dummies`](file:///Users/byronturner-pro/Desktop/GRC-Test-Dummies) repository and follow the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](../docs/test-dummies-guide.md)**.
+1. **Use Pre-Built Dummies (Recommended)**: Use the companion [`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies) (`../GRC-Test-Dummies`) repository and follow the **[Negative Testing & Scanner Verification Help Guide (docs/test-dummies-guide.md)](../docs/test-dummies-guide.md)**.
 2. **Generate Manually in `/tmp`**: Follow the steps below to construct a synthetic scratch bundle from scratch:
 
 ```bash
@@ -168,7 +168,7 @@ echo "Baseline Bundle SHA-256: ${TEST_SHA256}"
 Navigate back to your pipeline repository root:
 
 ```bash
-cd /Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline
+cd /path/to/GRC-Bundle-Review_Pipeline
 ```
 
 ---
