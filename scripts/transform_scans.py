@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GRCx (The GRC eXperience) — Standalone Scan-to-POA&M Transformation Engine
-Engine: scripts/transform_scans.py (v1.2.0 — Misawa)
+Engine: scripts/transform_scans.py (v1.3.0 — Sasebo)
 
 Purpose:
   Standalone Continuous Monitoring (ConMon) engine for GRC analysts.
@@ -29,13 +29,14 @@ Key Capabilities:
 import argparse
 import csv
 import datetime
+import io
+import json
 import os
 import re
-import shutil
 import sys
 import zipfile
 import xml.etree.ElementTree as ET
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 # ---------------------------------------------------------------------------
 # Constants & FedRAMP Column Definitions
@@ -43,15 +44,26 @@ from typing import Dict, List, Optional, Tuple
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(SCRIPT_DIR)
+DEFAULT_SCANS_DIR = os.path.join(REPO_ROOT, "scans")
+SAMPLE_SCANS_DIR = os.path.join(REPO_ROOT, "testing", "sample-scans")
 DEFAULT_OPEN_TEMPLATE = os.path.join(REPO_ROOT, "templates", "OPEN FedRAMP-POAM-Template.xlsx")
 DEFAULT_CLOSED_TEMPLATE = os.path.join(REPO_ROOT, "templates", "CLOSED LEGACY FedRAMP-POAM-Template.xlsx")
+DEFAULT_KEV_CATALOG = os.path.join(REPO_ROOT, "rules", "cisa_kev_catalog.json")
+
+SCAN_EXTENSIONS = (".csv", ".xlsx", ".xlsm")
+POAM_EXTENSIONS = (".xlsx", ".xlsm")
 
 EXCEL_EPOCH = datetime.date(1899, 12, 30)
+EXCEL_MAX_CELL_CHARS = 32767
 MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
 ET.register_namespace("", MAIN_NS)
 ET.register_namespace("r", REL_NS)
+
+# Matches ASCII/Unicode control characters forbidden by the XML 1.0 specification:
+# Allowed: #x9 (TAB), #xA (LF), #xD (CR), [#x20-#xD7FF], [#xE000-#xFFFD]
+_ILLEGAL_XML_CHARS_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\ud800-\udfff\ufffe\uffff]")
 
 # 27 logical FedRAMP POA&M fields in canonical order:
 # In OPEN FedRAMP-POAM-Template.xlsx:   Columns B .. AB (Row 5+)
@@ -86,15 +98,28 @@ POAM_FIELDS = [
     "cve",                      # OPEN: AB | CLOSED: AA | CVE
 ]
 
-OPEN_COL_LETTERS = [
-    "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-    "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB"
-]
 
-CLOSED_COL_LETTERS = [
-    "A", "B", "C", "D", "F" if False else "E", "F", "G", "H", "I", "J", "K", "L", "M",
-    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA"
-]
+def col_to_idx(col_str: str) -> int:
+    """Convert Excel column letters (e.g., 'A' -> 0, 'Z' -> 25, 'AA' -> 26)."""
+    res = 0
+    for ch in col_str:
+        if "A" <= ch <= "Z":
+            res = res * 26 + (ord(ch) - ord("A") + 1)
+    return res - 1
+
+
+def idx_to_col(idx: int) -> str:
+    """Convert 0-based column index to Excel column letters (0 -> 'A', 25 -> 'Z', 26 -> 'AA')."""
+    res = ""
+    n = idx + 1
+    while n > 0:
+        n, rem = divmod(n - 1, 26)
+        res = chr(ord("A") + rem) + res
+    return res
+
+
+OPEN_COL_LETTERS = [idx_to_col(i) for i in range(1, 1 + len(POAM_FIELDS))]    # B .. AB
+CLOSED_COL_LETTERS = [idx_to_col(i) for i in range(0, len(POAM_FIELDS))]      # A .. AA
 
 DATE_FIELDS = {
     "original_detection_date",
@@ -115,16 +140,114 @@ RISK_ORDER = {"Critical": 0, "High": 1, "Moderate": 2, "Low": 3}
 
 
 # ---------------------------------------------------------------------------
-# Date & Excel Helper Utilities
+# Date, XML Sanitization & Excel Helper Utilities
 # ---------------------------------------------------------------------------
 
-def col_to_idx(col_str: str) -> int:
-    """Convert Excel column letters (e.g., 'A' -> 0, 'Z' -> 25, 'AA' -> 26)."""
-    res = 0
-    for ch in col_str:
-        if "A" <= ch <= "Z":
-            res = res * 26 + (ord(ch) - ord("A") + 1)
-    return res - 1
+def sanitize_excel_string(val: str, max_len: int = EXCEL_MAX_CELL_CHARS) -> str:
+    """
+    Strip control characters forbidden by XML 1.0 and enforce Excel's 32,767-character
+    per-cell limit so scanner outputs never corrupt sharedStrings.xml.
+    """
+    if val is None:
+        return ""
+    cleaned = _ILLEGAL_XML_CHARS_RE.sub("", str(val))
+    if len(cleaned) > max_len:
+        suffix = "... [truncated]"
+        cleaned = cleaned[: max_len - len(suffix)] + suffix
+    return cleaned
+
+
+def register_xml_namespaces(xml_bytes: bytes) -> Dict[str, str]:
+    """
+    Read all xmlns declarations from an XML byte stream and register their original
+    prefixes with ElementTree so serialization never renames them to ns0, ns1, etc.
+    """
+    ns_map: Dict[str, str] = {}
+    try:
+        for _, (prefix, uri) in ET.iterparse(io.BytesIO(xml_bytes), events=("start-ns",)):
+            p = prefix or ""
+            ns_map[p] = uri
+            ET.register_namespace(p, uri)
+    except ET.ParseError:
+        pass
+    return ns_map
+
+
+def serialize_xml_preserving_root_ns(root_el: ET.Element, original_xml_bytes: bytes) -> bytes:
+    """
+    Serialize an ElementTree root element to UTF-8 XML bytes while preserving all
+    original root-element xmlns:<prefix> declarations (such as those referenced
+    by mc:Ignorable="x14ac xr ...") that ElementTree omits if unused on child tags.
+    """
+    register_xml_namespaces(original_xml_bytes)
+    xml_out = ET.tostring(root_el, encoding="utf-8", xml_declaration=True)
+
+    # Extract xmlns:prefix="uri" declarations from the original root opening tag
+    m_orig_root = re.search(rb"<([A-Za-z0-9_:]+)(\s[^>]*?)?>", original_xml_bytes)
+    if not m_orig_root or not m_orig_root.group(2):
+        return xml_out
+
+    orig_attrs = m_orig_root.group(2).decode("utf-8", errors="replace")
+    orig_xmlns = re.findall(r'(xmlns(?::[A-Za-z0-9_-]+)?="[^"]+")', orig_attrs)
+    if not orig_xmlns:
+        return xml_out
+
+    root_tag_name = m_orig_root.group(1)
+    m_new_root = re.search(rb"<" + re.escape(root_tag_name) + rb"(\s[^>]*?)?>", xml_out)
+    if not m_new_root:
+        return xml_out
+
+    new_root_str = m_new_root.group(0).decode("utf-8", errors="replace")
+    missing_decls = []
+    for decl in orig_xmlns:
+        prefix_part = decl.split("=", 1)[0]
+        if f" {prefix_part}=" not in new_root_str:
+            missing_decls.append(decl)
+
+    if missing_decls:
+        injected = new_root_str[:-1] + " " + " ".join(missing_decls) + ">"
+        xml_out = xml_out[: m_new_root.start()] + injected.encode("utf-8") + xml_out[m_new_root.end() :]
+
+    return xml_out
+
+
+def resolve_sheet_path(z: zipfile.ZipFile, sheet_index: int = 0) -> str:
+    """
+    Resolve the archive path of worksheet `sheet_index` via xl/workbook.xml and
+    xl/_rels/workbook.xml.rels, handling both relative ('worksheets/sheet1.xml')
+    and root-relative ('/xl/worksheets/sheet1.xml') relationship targets.
+    """
+    ns = {"main": MAIN_NS, "r": REL_NS}
+    names = set(z.namelist())
+    if "xl/workbook.xml" in names and "xl/_rels/workbook.xml.rels" in names:
+        try:
+            wb_root = ET.fromstring(z.read("xl/workbook.xml"))
+            rels_root = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
+            rel_map = {
+                rel.attrib["Id"]: rel.attrib["Target"]
+                for rel in rels_root
+                if "Id" in rel.attrib and "Target" in rel.attrib
+            }
+            sheets = wb_root.findall(".//main:sheet", ns)
+            if sheets:
+                chosen_sheet = sheets[min(sheet_index, len(sheets) - 1)]
+                rid = chosen_sheet.attrib.get(f"{{{REL_NS}}}id", "")
+                raw_target = rel_map.get(rid, "")
+                if raw_target:
+                    clean_target = raw_target.lstrip("/")
+                    if not clean_target.startswith("xl/"):
+                        clean_target = "xl/" + clean_target
+                    if clean_target in names:
+                        return clean_target
+        except ET.ParseError:
+            pass
+
+    if "xl/worksheets/sheet1.xml" in names:
+        return "xl/worksheets/sheet1.xml"
+    for name in sorted(names):
+        if name.startswith("xl/worksheets/sheet") and name.endswith(".xml"):
+            return name
+    return "xl/worksheets/sheet1.xml"
 
 
 def split_cell_ref(cell_ref: str) -> Tuple[str, int]:
@@ -237,54 +360,59 @@ def compute_sla_date(detection_date: datetime.date, risk_rating: str, adjusted_r
 
 def read_xlsx_rows(xlsx_path: str, sheet_index: int = 0) -> List[Dict[str, str]]:
     """
-    Read an .xlsx worksheet into a list of dicts keyed by column letter ('A', 'B', ..., 'AB').
+    Stream-read an .xlsx worksheet into a list of dicts keyed by column letter ('A', 'B', ..., 'AB')
+    using ET.iterparse so large Tenable.sc / Inspector workbooks load with minimal memory overhead.
     Each dict also includes '_row_num' (1-based Excel row index).
     """
-    ns = {"main": MAIN_NS, "r": REL_NS}
+    si_tag = f"{{{MAIN_NS}}}si"
+    t_tag = f"{{{MAIN_NS}}}t"
+    row_tag = f"{{{MAIN_NS}}}row"
+    c_tag = f"{{{MAIN_NS}}}c"
+    v_tag = f"{{{MAIN_NS}}}v"
+    is_tag = f"{{{MAIN_NS}}}is"
+
     rows_out: List[Dict[str, str]] = []
 
     with zipfile.ZipFile(xlsx_path, "r") as z:
         shared_strings: List[str] = []
         if "xl/sharedStrings.xml" in z.namelist():
-            ss_root = ET.fromstring(z.read("xl/sharedStrings.xml"))
-            for si in ss_root.findall("main:si", ns):
-                texts = [t.text or "" for t in si.findall(".//main:t", ns)]
-                shared_strings.append("".join(texts))
+            with z.open("xl/sharedStrings.xml") as ss_stream:
+                for _, elem in ET.iterparse(ss_stream, events=("end",)):
+                    if elem.tag == si_tag:
+                        texts = [t.text or "" for t in elem.iter(t_tag)]
+                        shared_strings.append("".join(texts))
+                        elem.clear()
 
-        wb_root = ET.fromstring(z.read("xl/workbook.xml"))
-        rels_root = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
-        rel_map = {rel.attrib["Id"]: rel.attrib["Target"] for rel in rels_root}
-
-        sheets = wb_root.findall(".//main:sheet", ns)
-        if not sheets:
-            return []
-        chosen_sheet = sheets[min(sheet_index, len(sheets) - 1)]
-        rid = chosen_sheet.attrib[f"{{{REL_NS}}}id"]
-        target = "xl/" + rel_map[rid].lstrip("/")
+        target = resolve_sheet_path(z, sheet_index=sheet_index)
         if target not in z.namelist():
-            target = "xl/worksheets/sheet1.xml"
+            return []
 
-        s_root = ET.fromstring(z.read(target))
-        for r in s_root.findall(".//main:row", ns):
-            r_num = int(r.attrib.get("r", "0"))
-            row_dict: Dict[str, str] = {"_row_num": str(r_num)}
-            for c in r.findall("main:c", ns):
-                c_ref = c.attrib.get("r", "")
-                col_let, _ = split_cell_ref(c_ref)
-                c_type = c.attrib.get("t", "")
-                v = c.find("main:v", ns)
-                is_elem = c.find("main:is", ns)
-                val = ""
-                if v is not None and v.text is not None:
-                    if c_type == "s":
-                        idx = int(v.text)
-                        val = shared_strings[idx] if 0 <= idx < len(shared_strings) else v.text
-                    else:
-                        val = v.text
-                elif is_elem is not None:
-                    val = "".join([t.text or "" for t in is_elem.findall(".//main:t", ns)])
-                row_dict[col_let] = val.strip()
-            rows_out.append(row_dict)
+        with z.open(target) as sheet_stream:
+            for _, elem in ET.iterparse(sheet_stream, events=("end",)):
+                if elem.tag == row_tag:
+                    r_num = int(elem.attrib.get("r", "0"))
+                    row_dict: Dict[str, str] = {"_row_num": str(r_num)}
+                    for c in elem.findall(c_tag):
+                        c_ref = c.attrib.get("r", "")
+                        col_let, _ = split_cell_ref(c_ref)
+                        c_type = c.attrib.get("t", "")
+                        v = c.find(v_tag)
+                        is_elem = c.find(is_tag)
+                        val = ""
+                        if v is not None and v.text is not None:
+                            if c_type == "s":
+                                try:
+                                    idx = int(v.text)
+                                    val = shared_strings[idx] if 0 <= idx < len(shared_strings) else v.text
+                                except ValueError:
+                                    val = v.text
+                            else:
+                                val = v.text
+                        elif is_elem is not None:
+                            val = "".join([t.text or "" for t in is_elem.iter(t_tag)])
+                        row_dict[col_let] = val.strip()
+                    rows_out.append(row_dict)
+                    elem.clear()
 
     return rows_out
 
@@ -369,19 +497,26 @@ def get_first_field(row: Dict[str, str], candidates: List[str], default: str = "
     return default
 
 
-def infer_nist_controls(weakness_name: str, description: str, cve: str) -> str:
-    """Infer governing NIST SP 800-53 Rev 5 controls based on finding characteristics."""
-    text = f"{weakness_name} {description}".lower()
+def infer_nist_controls(weakness_name: str, description: str, cve: str = "") -> str:
+    """
+    Infer suggested NIST SP 800-53 Rev 5 controls based on finding characteristics
+    (and CVE identifiers). Analysts can override this column in the OPEN POA&M, and
+    carried-over items preserve analyst-curated control mappings.
+    """
+    text = f"{weakness_name} {description} {cve}".lower()
     controls = ["RA-5", "SI-2"]
-    if any(k in text for k in ("tls", "ssl", "certificate", "cipher", "rc4", "3des", "CBC")):
+    if any(k in text for k in ("tls", "ssl", "certificate", "cipher", "rc4", "3des", "cbc", "cleartext")):
         controls.append("SC-8")
         controls.append("SC-13")
     elif any(k in text for k in ("fips", "openssl", "crypto", "md5", "sha-1", "sha1")):
         controls.append("SC-13")
+    if any(k in text for k in ("unencrypted", "encryption at rest", "ebs", "s3", "kms")):
+        controls.append("SC-28")
+        controls.append("SC-8")
     if any(k in text for k in ("ssh", "password", "authentication", "credential", "default account")):
         controls.append("IA-2")
         controls.append("AC-6")
-    if any(k in text for k in ("cis ", "stig", "configuration", "permission", "world-writable", "unencrypted")):
+    if any(k in text for k in ("cis ", "stig", "configuration", "permission", "world-writable")):
         controls.append("CM-6")
     # Preserve order while deduplicating
     seen = set()
@@ -391,6 +526,87 @@ def infer_nist_controls(weakness_name: str, description: str, cve: str) -> str:
             seen.add(c)
             dedup.append(c)
     return ", ".join(dedup)
+
+
+def load_cisa_kev_catalog(catalog_path: Optional[str] = None) -> Dict[str, Dict[str, str]]:
+    """
+    Load a local CISA Known Exploited Vulnerabilities (KEV) JSON catalog
+    (default: rules/cisa_kev_catalog.json) into a CVE -> metadata dict.
+    """
+    path = catalog_path or DEFAULT_KEV_CATALOG
+    if not path or not os.path.isfile(path):
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        vulns = data.get("vulnerabilities", []) if isinstance(data, dict) else []
+        out: Dict[str, Dict[str, str]] = {}
+        for item in vulns:
+            if not isinstance(item, dict):
+                continue
+            cid = str(item.get("cveID", "")).strip().upper()
+            if cid:
+                out[cid] = {
+                    "dateAdded": str(item.get("dateAdded", "")).strip(),
+                    "dueDate": str(item.get("dueDate", "")).strip(),
+                }
+        return out
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
+def resolve_bod_22_01_status(
+    row: Dict[str, str],
+    cves_str: str,
+    det_date: datetime.date,
+    kev_catalog: Dict[str, Dict[str, str]],
+) -> Tuple[str, str]:
+    """
+    Determine BOD 22-01 tracking ('Yes' or '') and BOD 22-01 Due Date ('YYYY-MM-DD' or ''):
+      - Never conflates Tenable/Inspector 'Exploit Available' with CISA KEV.
+      - Checks explicit KEV/BOD 22-01 columns and matches CVEs against the local CISA KEV catalog.
+      - Uses explicit 'BOD 22-01 Due Date' / 'KEV Due Date' column or CISA's catalog 'dueDate'
+        (or det_date + 14d when detected after CISA's catalog dateAdded).
+    """
+    explicit_kev_raw = get_first_field(
+        row,
+        ["CISA KEV", "KEV", "BOD 22-01", "Known Exploited Vulnerability", "CISA Known Exploited"],
+    )
+    explicit_due_raw = get_first_field(
+        row,
+        ["BOD 22-01 Due Date", "KEV Due Date", "CISA KEV Due Date"],
+    )
+    explicit_is_kev = explicit_kev_raw.strip().lower() in ("yes", "true", "1", "kev")
+    explicit_is_not_kev = explicit_kev_raw.strip().lower() in ("no", "false", "0")
+
+    cves = [c.strip().upper() for c in cves_str.split(",") if c.strip()]
+    matched_kev_meta: Optional[Dict[str, str]] = None
+    for c in cves:
+        if c in kev_catalog:
+            matched_kev_meta = kev_catalog[c]
+            break
+
+    is_kev = explicit_is_kev or (matched_kev_meta is not None and not explicit_is_not_kev)
+    if not is_kev:
+        return ("", "")
+
+    # 1. Explicit due date column in scan export
+    if explicit_due_raw:
+        parsed_explicit_due = parse_any_date(explicit_due_raw)
+        if parsed_explicit_due:
+            return ("Yes", format_date_iso(parsed_explicit_due))
+
+    # 2. CISA KEV catalog dueDate / dateAdded logic (BOD 22-01 authoritative catalog dueDate)
+    if matched_kev_meta:
+        cat_due = parse_any_date(matched_kev_meta.get("dueDate", ""))
+        if cat_due:
+            return ("Yes", format_date_iso(cat_due))
+        cat_added = parse_any_date(matched_kev_meta.get("dateAdded", ""))
+        if cat_added:
+            return ("Yes", format_date_iso(cat_added + datetime.timedelta(days=14)))
+
+    # 3. Fallback when marked CISA KEV = Yes in CSV without catalog entry
+    return ("Yes", format_date_iso(det_date + datetime.timedelta(days=14)))
 
 
 def extract_cves(raw_cve_text: str, fallback_text: str = "") -> str:
@@ -422,6 +638,67 @@ def extract_urls(text: str) -> List[str]:
     return out
 
 
+def extract_base_asset(asset_str: str) -> str:
+    """Normalize asset identifier (strip port/protocol or resource type suffix) for matching."""
+    if not asset_str:
+        return ""
+    first_line = asset_str.strip().splitlines()[0].strip()
+    base = re.sub(r"\s*\([^\)]*\)\s*$", "", first_line).strip()
+    return base.lower()
+
+
+def extract_row_asset_aliases(row: Dict[str, str]) -> List[str]:
+    """
+    Extract all non-empty normalized asset identifiers (IP, DNS, FQDN, Host, Resource ID)
+    present on a single scan row.
+    """
+    candidate_cols = [
+        "Host",
+        "IP Address",
+        "DNS Name",
+        "FQDN",
+        "Asset",
+        "NetBIOS Name",
+        "Resource ID",
+        "Instance ID",
+        "Asset Identifier",
+        "Asset ID",
+    ]
+    aliases: List[str] = []
+    seen: Set[str] = set()
+    for col in candidate_cols:
+        raw_val = get_first_field(row, [col])
+        if raw_val:
+            norm = extract_base_asset(raw_val)
+            if norm and norm not in seen:
+                seen.add(norm)
+                aliases.append(norm)
+    return aliases
+
+
+def collect_scanned_assets(records: List[Dict[str, str]]) -> Tuple[Set[str], Dict[str, Set[str]]]:
+    """
+    Inspect ALL rows in the scan export (including Informational / None rows such as
+    Tenable Plugin 19506 'Nessus Scan Information') BEFORE severity filtering to build:
+      1. `scanned_assets`: Every asset identifier confirmed scanned in this run.
+      2. `asset_alias_map`: Maps any identifier of a host (e.g. IP) to all co-occurring
+         identifiers on the same scan row (e.g. DNS Name / FQDN / Instance ID).
+    """
+    scanned_assets: Set[str] = set()
+    asset_alias_map: Dict[str, Set[str]] = {}
+
+    for row in records:
+        aliases = extract_row_asset_aliases(row)
+        if not aliases:
+            continue
+        for a in aliases:
+            scanned_assets.add(a)
+            bucket = asset_alias_map.setdefault(a, set())
+            bucket.update(aliases)
+
+    return scanned_assets, asset_alias_map
+
+
 # ---------------------------------------------------------------------------
 # Normalization of Tenable & AWS Inspector Rows -> Logical POA&M Entries
 # ---------------------------------------------------------------------------
@@ -432,19 +709,25 @@ def normalize_scan_rows(
     scan_filename: str,
     today: datetime.date,
     default_poc: str,
+    kev_catalog: Optional[Dict[str, Dict[str, str]]] = None,
+    strict_fedramp_risk: bool = False,
 ) -> List[Dict[str, object]]:
     """
     Convert raw Tenable or AWS Inspector rows into normalized POA&M entry dicts.
     Enforces 1 POA&M row per unique (Vulnerability + Asset) combination.
     """
     grouped: Dict[Tuple[str, str], Dict[str, object]] = {}
+    kev_db = kev_catalog if kev_catalog is not None else load_cisa_kev_catalog()
 
     for row in records:
+        row_aliases = extract_row_asset_aliases(row)
         if scanner_type == "tenable":
             raw_risk = get_first_field(row, ["Risk", "Severity", "Risk Factor", "VPR Severity"])
             risk = normalize_risk(raw_risk)
             if not risk:
                 continue
+            if strict_fedramp_risk and risk == "Critical":
+                risk = "High"
 
             plugin_id = get_first_field(row, ["Plugin ID", "Plugin", "PluginID"])
             if plugin_id.endswith(".0"):
@@ -468,16 +751,16 @@ def normalize_scan_rows(
             raw_cve = get_first_field(row, ["CVE", "CVEs"])
             cves = extract_cves(raw_cve, f"{name} {desc}")
 
-            first_seen_str = get_first_field(row, ["First Discovered", "First Seen", "Discovery Date", "Original Detection Date", "Plugin Publication Date"])
+            # Note: Never use 'Plugin Publication Date' here (that is when Tenable authored the plugin, not host detection)
+            first_seen_str = get_first_field(row, ["First Discovered", "First Seen", "Discovery Date", "Original Detection Date"])
             last_seen_str = get_first_field(row, ["Last Observed", "Last Seen", "Status Date"])
-            det_date = parse_any_date(first_seen_str, fallback=today) or today
+            det_date = parse_any_date(first_seen_str) or parse_any_date(last_seen_str, fallback=today) or today
             stat_date = parse_any_date(last_seen_str, fallback=today) or today
 
-            kev_raw = get_first_field(row, ["CISA KEV", "KEV", "Exploit Available", "BOD 22-01"])
-            is_kev = "Yes" if kev_raw.lower() in ("yes", "true", "1", "kev") else ""
+            is_kev, kev_due_str = resolve_bod_22_01_status(row, cves, det_date, kev_db)
 
             source_id = plugin_id or cves.split(",")[0].strip() or name
-            asset_base = host
+            asset_base = extract_base_asset(host) or host.strip().lower()
             asset_display = f"{host} ({port}/{proto.upper()})" if (port and port != "0" and proto) else host
             detector_source = "Tenable Nessus"
             vendor_dep = "No"
@@ -489,6 +772,8 @@ def normalize_scan_rows(
             risk = normalize_risk(raw_risk)
             if not risk:
                 continue
+            if strict_fedramp_risk and risk == "Critical":
+                risk = "High"
 
             vuln_id = get_first_field(row, ["Vulnerability ID", "CVE", "Plugin ID", "Finding ID"])
             finding_arn = get_first_field(row, ["Finding ARN", "ARN"])
@@ -504,7 +789,7 @@ def normalize_scan_rows(
 
             resource_id = get_first_field(row, ["Resource ID", "Instance ID", "Asset Identifier", "Asset ID", "AWS Account ID"], default="aws-resource")
             resource_type = get_first_field(row, ["Resource Type"])
-            asset_base = resource_id
+            asset_base = extract_base_asset(resource_id) or resource_id.strip().lower()
             asset_display = f"{resource_id} ({resource_type})" if resource_type and resource_type not in resource_id else resource_id
 
             solution = get_first_field(row, ["Remediation", "Recommendation", "Remediation Plan", "Fixed Version"])
@@ -519,8 +804,7 @@ def normalize_scan_rows(
             det_date = parse_any_date(first_seen_str, fallback=today) or today
             stat_date = parse_any_date(last_seen_str, fallback=today) or today
 
-            kev_raw = get_first_field(row, ["CISA KEV", "Exploit Available", "BOD 22-01"])
-            is_kev = "Yes" if kev_raw.lower() in ("yes", "true", "1") else ""
+            is_kev, kev_due_str = resolve_bod_22_01_status(row, cves, det_date, kev_db)
 
             source_id = vuln_id or finding_arn or cves.split(",")[0].strip() or title
             name = title
@@ -541,13 +825,25 @@ def normalize_scan_rows(
             curr_asset = str(existing["asset_identifier"])
             if asset_display not in curr_asset.split("\n"):
                 existing["asset_identifier"] = f"{curr_asset}\n{asset_display}"
+            existing_aliases: Set[str] = set(existing.get("_asset_aliases", set()))
+            existing_aliases.update(row_aliases or [asset_base])
+            existing["_asset_aliases"] = existing_aliases
+
+            needs_sla_recalc = False
             # Keep earliest detection date
             if det_date < existing["_det_date_obj"]:
                 existing["_det_date_obj"] = det_date
                 existing["original_detection_date"] = format_date_iso(det_date)
+                needs_sla_recalc = True
             # Keep highest severity if multiple records for same vuln+asset
             if RISK_ORDER.get(risk, 99) < RISK_ORDER.get(str(existing["original_risk_rating"]), 99):
                 existing["original_risk_rating"] = risk
+                needs_sla_recalc = True
+            # Recompute SLA date whenever detection date or severity changed during merge
+            if needs_sla_recalc:
+                new_sla = compute_sla_date(existing["_det_date_obj"], str(existing["original_risk_rating"]))
+                existing["_sla_date_obj"] = new_sla
+                existing["scheduled_completion_date"] = format_date_iso(new_sla)
             continue
 
         sla_date = compute_sla_date(det_date, risk)
@@ -555,6 +851,7 @@ def normalize_scan_rows(
 
         grouped[dedup_key] = {
             "_dedup_key": dedup_key,
+            "_asset_aliases": set(row_aliases or [asset_base]),
             "_scanner_type": scanner_type,
             "_raw_solution": solution,
             "_see_also": see_also,
@@ -586,7 +883,7 @@ def normalize_scan_rows(
             "supporting_documents": scan_filename,
             "comments": "",
             "bod_22_01_tracking": is_kev,
-            "bod_22_01_due_date": format_date_iso(det_date + datetime.timedelta(days=14)) if is_kev == "Yes" else "",
+            "bod_22_01_due_date": kev_due_str,
             "cve": cves,
         }
 
@@ -596,15 +893,6 @@ def normalize_scan_rows(
 # ---------------------------------------------------------------------------
 # Reading Previous OPEN & CLOSED FedRAMP POA&M Workbooks
 # ---------------------------------------------------------------------------
-
-def extract_base_asset(asset_str: str) -> str:
-    """Normalize asset identifier (strip port/protocol or resource type suffix) for matching."""
-    if not asset_str:
-        return ""
-    first_line = asset_str.strip().splitlines()[0].strip()
-    base = re.sub(r"\s*\([^\)]*\)\s*$", "", first_line).strip()
-    return base.lower()
-
 
 def load_existing_poam_workbook(xlsx_path: str, is_closed_template: bool = False) -> List[Dict[str, object]]:
     """
@@ -682,42 +970,84 @@ def reconcile_poam_entries(
     prev_open_entries: List[Dict[str, object]],
     new_scan_entries: List[Dict[str, object]],
     today: datetime.date,
+    prev_closed_entries: Optional[List[Dict[str, object]]] = None,
+    scanned_assets: Optional[Set[str]] = None,
+    asset_alias_map: Optional[Dict[str, Set[str]]] = None,
+    close_unscanned_hosts: bool = False,
 ) -> Tuple[List[Dict[str, object]], List[Dict[str, object]], Dict[str, int]]:
     """
     Reconcile previous OPEN POA&M rows with new scan findings:
       - Carry-Over Open: In Previous OPEN and still present in New Scan (and not False Positive = Yes)
-      - Newly Detected Open: In New Scan only
-      - Moved to Closed: In Previous OPEN, absent from New Scan (or marked False Positive = Yes)
+      - Newly Detected Open: In New Scan only (numbered sequentially after the max ID across BOTH
+        previous OPEN and previous CLOSED workbooks so POA&M IDs are never reused)
+      - Moved to Closed: In Previous OPEN, absent from New Scan AND its asset was confirmed
+        scanned (present in `scanned_assets`), or marked False Positive = Yes
+      - Unverified (Asset Not in Scan): In Previous OPEN, absent from New Scan, and its asset
+        was NOT observed anywhere in the scan -> retained in OPEN and flagged for review.
     """
-    prev_by_key: Dict[Tuple[str, str], Dict[str, object]] = {}
-    prev_by_alt_key: Dict[Tuple[str, str], Dict[str, object]] = {}
+    prev_by_key: Dict[Tuple[str, str], List[Dict[str, object]]] = {}
+    prev_by_alt_key: Dict[Tuple[str, str], List[Dict[str, object]]] = {}
 
+    # Compute highest existing POA&M ID across BOTH previous OPEN and previous CLOSED workbooks
     max_poam_seq = 0
-    for p in prev_open_entries:
-        pid = str(p.get("poam_id", ""))
-        m_seq = re.search(r"(\d+)$", pid)
-        if m_seq:
-            max_poam_seq = max(max_poam_seq, int(m_seq.group(1)))
+    uses_typed_prefix = False
+    max_by_prefix: Dict[str, int] = {"VULN": 0, "COMP": 0, "PENT": 0}
+    for p in list(prev_open_entries) + list(prev_closed_entries or []):
+        pid = str(p.get("poam_id", "")).strip()
+        m_typed = re.match(r"^(VULN|COMP|PENT)-(\d+)$", pid, flags=re.IGNORECASE)
+        if m_typed:
+            uses_typed_prefix = True
+            pfx = m_typed.group(1).upper()
+            seq_num = int(m_typed.group(2))
+            max_by_prefix[pfx] = max(max_by_prefix.get(pfx, 0), seq_num)
+            max_poam_seq = max(max_poam_seq, seq_num)
+        else:
+            m_seq = re.search(r"(\d+)$", pid)
+            if m_seq:
+                max_poam_seq = max(max_poam_seq, int(m_seq.group(1)))
 
+    for p in prev_open_entries:
         k = p["_dedup_key"]
-        prev_by_key[k] = p
+        prev_by_key.setdefault(k, []).append(p)
         wname = str(p.get("weakness_name", "")).strip().lower()
         asset_k = k[1]
         if wname:
-            prev_by_alt_key[(wname, asset_k)] = p
+            prev_by_alt_key.setdefault((wname, asset_k), []).append(p)
 
-    matched_prev_ids = set()
+    matched_prev_ids: Set[int] = set()
     final_open: List[Dict[str, object]] = []
     newly_closed: List[Dict[str, object]] = []
 
     carry_over_count = 0
     new_open_count = 0
+    unverified_unscanned_count = 0
+
+    def find_unclaimed_prev(
+        src_id: str,
+        wname: str,
+        candidate_assets: Set[str],
+    ) -> Optional[Dict[str, object]]:
+        """Find an unclaimed previous OPEN entry by primary (source_id, asset) or fallback (weakness_name, asset)."""
+        for a in candidate_assets:
+            for cand in prev_by_key.get((src_id, a), []):
+                if id(cand) not in matched_prev_ids:
+                    return cand
+        if wname:
+            for a in candidate_assets:
+                for cand in prev_by_alt_key.get((wname, a), []):
+                    if id(cand) not in matched_prev_ids:
+                        return cand
+        return None
 
     for scan_item in new_scan_entries:
-        s_key = scan_item["_dedup_key"]
-        s_wname_key = (str(scan_item.get("weakness_name", "")).strip().lower(), s_key[1])
+        s_src, s_asset = scan_item["_dedup_key"]
+        s_wname = str(scan_item.get("weakness_name", "")).strip().lower()
+        item_aliases: Set[str] = {s_asset}
+        item_aliases.update(scan_item.get("_asset_aliases", set()))
+        if asset_alias_map and s_asset in asset_alias_map:
+            item_aliases.update(asset_alias_map[s_asset])
 
-        matched_prev = prev_by_key.get(s_key) or prev_by_alt_key.get(s_wname_key)
+        matched_prev = find_unclaimed_prev(s_src, s_wname, item_aliases)
 
         if matched_prev is not None:
             matched_prev_ids.add(id(matched_prev))
@@ -783,32 +1113,84 @@ def reconcile_poam_entries(
             merged["status_date"] = format_date_iso(today)
             merged["_stat_date_obj"] = today
             merged["_is_carry_over"] = True
+            merged["_unverified_host"] = False
 
             final_open.append(merged)
             carry_over_count += 1
         else:
             # Newly detected Open POA&M item
-            max_poam_seq += 1
             new_item = dict(scan_item)
-            new_item["poam_id"] = f"POAM-{today.year}-{max_poam_seq:04d}"
+            if uses_typed_prefix:
+                w_lower = str(new_item.get("weakness_name", "")).lower()
+                is_comp = (not str(new_item.get("cve", "")).strip()) or any(
+                    kw in w_lower for kw in ("cipher", "tls", "stig", "cis ", "compliance", "policy", "banner", "configuration")
+                )
+                pfx = "COMP" if is_comp else "VULN"
+                max_by_prefix[pfx] = max_by_prefix.get(pfx, 0) + 1
+                new_item["poam_id"] = f"{pfx}-{max_by_prefix[pfx]:05d}"
+            else:
+                max_poam_seq += 1
+                new_item["poam_id"] = f"POAM-{today.year}-{max_poam_seq:04d}"
             new_item["_is_carry_over"] = False
+            new_item["_unverified_host"] = False
             final_open.append(new_item)
             new_open_count += 1
 
-    # Any entry in prev_open_entries that was NOT matched in the new scan is remediated -> move to CLOSED!
+    # Evaluate previous OPEN entries that did not appear in the new scan:
     for p in prev_open_entries:
-        if id(p) not in matched_prev_ids:
+        if id(p) in matched_prev_ids:
+            continue
+
+        # Approved False Positives always move to CLOSED
+        if str(p.get("false_positive", "")).strip().lower() == "yes":
             closed_item = dict(p)
             closed_item["status_date"] = format_date_iso(today)
             closed_item["_stat_date_obj"] = today
             prev_comment = str(closed_item.get("comments", "")).strip()
-            note = f"[Closed {format_date_iso(today)}: Verified remediated — finding no longer present in latest scan]"
+            note = f"[Closed {format_date_iso(today)}: Approved False Positive moved to Closed POA&M]"
             closed_item["comments"] = f"{prev_comment}\n{note}".strip() if prev_comment else note
             newly_closed.append(closed_item)
+            continue
+
+        _, p_asset = p["_dedup_key"]
+        p_aliases: Set[str] = {p_asset}
+        if asset_alias_map and p_asset in asset_alias_map:
+            p_aliases.update(asset_alias_map[p_asset])
+
+        # Was this asset actually scanned in the current export?
+        asset_was_scanned = (
+            close_unscanned_hosts
+            or (scanned_assets is not None and bool(p_aliases & scanned_assets))
+        )
+
+        if asset_was_scanned:
+            closed_item = dict(p)
+            closed_item["status_date"] = format_date_iso(today)
+            closed_item["_stat_date_obj"] = today
+            prev_comment = str(closed_item.get("comments", "")).strip()
+            note = f"[Closed {format_date_iso(today)}: Verified remediated — asset scanned and finding no longer present]"
+            closed_item["comments"] = f"{prev_comment}\n{note}".strip() if prev_comment else note
+            newly_closed.append(closed_item)
+        else:
+            # Asset was NOT seen in the scan at all -> do NOT blindly close; retain in OPEN and flag for review!
+            unverified_item = dict(p)
+            unverified_item["_is_carry_over"] = True
+            unverified_item["_unverified_host"] = True
+            prev_comment = str(unverified_item.get("comments", "")).strip()
+            review_note = (
+                f"[Review Required {format_date_iso(today)}: Asset '{p.get('asset_identifier', p_asset)}' was not observed "
+                f"in the latest scan — retained in OPEN POA&M pending host/scope verification]"
+            )
+            if review_note not in prev_comment:
+                unverified_item["comments"] = f"{prev_comment}\n{review_note}".strip() if prev_comment else review_note
+            final_open.append(unverified_item)
+            carry_over_count += 1
+            unverified_unscanned_count += 1
 
     stats = {
         "carry_over_open": carry_over_count,
         "new_open": new_open_count,
+        "unverified_unscanned_open": unverified_unscanned_count,
         "total_open": len(final_open),
         "moved_to_closed": len(newly_closed),
     }
@@ -896,20 +1278,95 @@ def build_remediation_plan_with_urls(entry: Dict[str, object]) -> str:
 # Pure-Python Standard Library .xlsx Template Writer
 # ---------------------------------------------------------------------------
 
+def discover_template_styles(
+    zin: zipfile.ZipFile,
+    s_root: ET.Element,
+    start_row: int,
+    is_closed_template: bool,
+) -> Dict[str, str]:
+    """
+    Inspect the template's existing data row (`start_row`) and `xl/styles.xml` before
+    rebuilding rows so style indices (`default`, `date`, `sla`, and `row_ht`) are
+    discovered dynamically from the template rather than blindly hard-coded.
+    """
+    ns = {"main": MAIN_NS}
+    date_num_fmts = {"14", "15", "16", "17", "22", "164", "165", "166"}
+    style_is_date: Dict[str, bool] = {}
+
+    if "xl/styles.xml" in zin.namelist():
+        try:
+            st_root = ET.fromstring(zin.read("xl/styles.xml"))
+            cell_xfs = st_root.find("main:cellXfs", ns)
+            if cell_xfs is not None:
+                for idx, xf in enumerate(cell_xfs.findall("main:xf", ns)):
+                    nf = xf.attrib.get("numFmtId", "0")
+                    style_is_date[str(idx)] = nf in date_num_fmts
+        except ET.ParseError:
+            pass
+
+    default_style = "2"
+    date_style = "2" if is_closed_template else "21"
+    sla_style = "2" if is_closed_template else "22"
+    row_ht = "15.75" if is_closed_template else "18.0"
+
+    sheet_data = s_root.find("main:sheetData", ns)
+    if sheet_data is not None:
+        for r_el in sheet_data.findall("main:row", ns):
+            r_num = int(r_el.attrib.get("r", "0"))
+            if r_num == start_row:
+                if r_el.attrib.get("ht"):
+                    row_ht = r_el.attrib["ht"]
+                cell_styles = {}
+                for c_el in r_el.findall("main:c", ns):
+                    col_let, _ = split_cell_ref(c_el.attrib.get("r", ""))
+                    if "s" in c_el.attrib:
+                        cell_styles[col_let] = c_el.attrib["s"]
+                if not is_closed_template:
+                    default_style = cell_styles.get("B", default_style)
+                    l_style = cell_styles.get("L", "")
+                    m_style = cell_styles.get("M", "")
+                    if l_style and style_is_date.get(l_style, True):
+                        date_style = l_style
+                    if m_style and style_is_date.get(m_style, True):
+                        sla_style = m_style
+                else:
+                    # In CLOSED template, Row 3 is an example row (s="4") and Row 4+ uses s="2"
+                    default_style = cell_styles.get("A", default_style)
+                break
+
+        if is_closed_template:
+            # Prefer Row 4's clean data cell style in CLOSED template if present
+            for r_el in sheet_data.findall("main:row", ns):
+                if int(r_el.attrib.get("r", "0")) == start_row + 1:
+                    for c_el in r_el.findall("main:c", ns):
+                        col_let, _ = split_cell_ref(c_el.attrib.get("r", ""))
+                        if col_let == "A" and "s" in c_el.attrib:
+                            default_style = c_el.attrib["s"]
+                            date_style = default_style
+                            sla_style = default_style
+                            break
+                    break
+
+    return {
+        "default": default_style,
+        "date": date_style,
+        "sla": sla_style,
+        "row_ht": row_ht,
+        "date_is_numeric": "1" if (not is_closed_template and style_is_date.get(date_style, True)) else "0",
+    }
+
+
 def write_poam_workbook(
     template_path: str,
     output_path: str,
     entries: List[Dict[str, object]],
     is_closed_template: bool = False,
+    strict_fedramp_risk: bool = False,
 ) -> None:
     """
     Populate either the OPEN FedRAMP POA&M template (Row 5+, Cols B..AB) or the
     CLOSED LEGACY FedRAMP POA&M template (Row 3+, Cols A..AA) while preserving
-    all native formatting, styles, drawings, and data validations.
-
-    In the OPEN template, also extends the Risk Rating dropdown and Column M
-    Scheduled Completion Date formula to support 'Critical' (30d), 'High' (30d),
-    'Moderate' (90d), and 'Low' (180d).
+    all native XML namespaces, formatting, styles, drawings, and data validations.
     """
     ns = {"main": MAIN_NS, "r": REL_NS}
     col_letters = CLOSED_COL_LETTERS if is_closed_template else OPEN_COL_LETTERS
@@ -918,11 +1375,16 @@ def write_poam_workbook(
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
     with zipfile.ZipFile(template_path, "r") as zin:
-        # Load sharedStrings.xml
+        target_sheet_path = resolve_sheet_path(zin, sheet_index=0)
+
+        # Load sharedStrings.xml with full namespace preservation
         shared_strings: List[str] = []
         ss_index_map: Dict[str, int] = {}
+        orig_ss_bytes = b""
         if "xl/sharedStrings.xml" in zin.namelist():
-            ss_root = ET.fromstring(zin.read("xl/sharedStrings.xml"))
+            orig_ss_bytes = zin.read("xl/sharedStrings.xml")
+            register_xml_namespaces(orig_ss_bytes)
+            ss_root = ET.fromstring(orig_ss_bytes)
             for si in ss_root.findall("main:si", ns):
                 texts = [t.text or "" for t in si.findall(".//main:t", ns)]
                 full_str = "".join(texts)
@@ -932,7 +1394,8 @@ def write_poam_workbook(
         else:
             ss_root = ET.Element(f"{{{MAIN_NS}}}sst", {"count": "0", "uniqueCount": "0"})
 
-        def get_or_add_shared_string(s_val: str) -> int:
+        def get_or_add_shared_string(raw_s_val: str) -> int:
+            s_val = sanitize_excel_string(raw_s_val)
             if s_val in ss_index_map:
                 return ss_index_map[s_val]
             idx = len(shared_strings)
@@ -940,15 +1403,24 @@ def write_poam_workbook(
             ss_index_map[s_val] = idx
             si_el = ET.SubElement(ss_root, f"{{{MAIN_NS}}}si")
             t_el = ET.SubElement(si_el, f"{{{MAIN_NS}}}t")
-            if s_val.startswith(" ") or s_val.endswith(" ") or "\n" in s_val:
+            if s_val.startswith(" ") or s_val.endswith(" ") or "\n" in s_val or "\t" in s_val:
                 t_el.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
             t_el.text = s_val
             return idx
 
-        # Parse sheet1.xml
-        sheet_xml_bytes = zin.read("xl/worksheets/sheet1.xml")
+        # Parse target worksheet XML with full namespace preservation
+        sheet_xml_bytes = zin.read(target_sheet_path)
+        register_xml_namespaces(sheet_xml_bytes)
         s_root = ET.fromstring(sheet_xml_bytes)
         sheet_data = s_root.find("main:sheetData", ns)
+
+        # Discover cell styles and row height from template before removing rows >= start_row
+        tpl_styles = discover_template_styles(zin, s_root, start_row, is_closed_template)
+        default_style = tpl_styles["default"]
+        date_style = tpl_styles["date"]
+        sla_style = tpl_styles["sla"]
+        row_ht = tpl_styles["row_ht"]
+        store_numeric_dates = tpl_styles["date_is_numeric"] == "1"
 
         # Keep header rows (< start_row) intact, remove existing blank/template rows >= start_row
         existing_rows = list(sheet_data.findall("main:row", ns))
@@ -959,43 +1431,52 @@ def write_poam_workbook(
 
         # Build populated rows + a buffer of clean blank formatted rows
         total_rows_to_write = max(len(entries) + 25, 100)
+        last_written_row = start_row + total_rows_to_write - 1
+
         for offset in range(total_rows_to_write):
             r_num = start_row + offset
-            row_attribs = {"r": str(r_num), "ht": "15.75" if is_closed_template else "18.0", "customHeight": "1"}
+            row_attribs = {"r": str(r_num), "ht": row_ht, "customHeight": "1"}
             r_el = ET.SubElement(sheet_data, f"{{{MAIN_NS}}}row", row_attribs)
 
             entry = entries[offset] if offset < len(entries) else None
 
             if not is_closed_template:
-                # Column A in OPEN template (blank cell with style s="2")
-                ET.SubElement(r_el, f"{{{MAIN_NS}}}c", {"r": f"A{r_num}", "s": "2"})
+                # Column A in OPEN template (blank cell with default style)
+                ET.SubElement(r_el, f"{{{MAIN_NS}}}c", {"r": f"A{r_num}", "s": default_style})
 
             for field_name, col_let in zip(POAM_FIELDS, col_letters):
                 cell_ref = f"{col_let}{r_num}"
 
-                # Choose cell style
                 if is_closed_template:
-                    c_style = "2"
+                    c_style = default_style
                 else:
                     if field_name == "scheduled_completion_date":
-                        c_style = "22"  # Date format + SLA formula column
+                        c_style = sla_style
                     elif field_name in DATE_FIELDS:
-                        c_style = "21"  # Date format (numFmtId=14)
+                        c_style = date_style
                     else:
-                        c_style = "2"
+                        c_style = default_style
 
                 c_el = ET.SubElement(r_el, f"{{{MAIN_NS}}}c", {"r": cell_ref, "s": c_style})
 
                 if not is_closed_template and field_name == "scheduled_completion_date":
-                    # Write Excel SLA formula supporting Critical (30d), High (30d), Moderate (90d), Low (180d)
                     f_el = ET.SubElement(c_el, f"{{{MAIN_NS}}}f")
-                    f_el.text = (
-                        f'IF(OR(S{r_num}="N/A",ISBLANK(S{r_num}),T{r_num}<>"Yes"),'
-                        f'IF(OR(R{r_num}="Critical",R{r_num}="High"),L{r_num}+30,'
-                        f'IF(R{r_num}="Moderate",L{r_num}+90,IF(R{r_num}="Low",L{r_num}+180,""))),'
-                        f'IF(OR(S{r_num}="Critical",S{r_num}="High"),L{r_num}+30,'
-                        f'IF(S{r_num}="Moderate",L{r_num}+90,IF(S{r_num}="Low",L{r_num}+180,""))))'
-                    )
+                    if strict_fedramp_risk:
+                        f_el.text = (
+                            f'IF(OR(S{r_num}="N/A",ISBLANK(S{r_num}),T{r_num}<>"Yes"),'
+                            f'IF(R{r_num}="High",L{r_num}+30,'
+                            f'IF(R{r_num}="Moderate",L{r_num}+90,IF(R{r_num}="Low",L{r_num}+180,""))),'
+                            f'IF(S{r_num}="High",L{r_num}+30,'
+                            f'IF(S{r_num}="Moderate",L{r_num}+90,IF(S{r_num}="Low",L{r_num}+180,""))))'
+                        )
+                    else:
+                        f_el.text = (
+                            f'IF(OR(S{r_num}="N/A",ISBLANK(S{r_num}),T{r_num}<>"Yes"),'
+                            f'IF(OR(R{r_num}="Critical",R{r_num}="High"),L{r_num}+30,'
+                            f'IF(R{r_num}="Moderate",L{r_num}+90,IF(R{r_num}="Low",L{r_num}+180,""))),'
+                            f'IF(OR(S{r_num}="Critical",S{r_num}="High"),L{r_num}+30,'
+                            f'IF(S{r_num}="Moderate",L{r_num}+90,IF(S{r_num}="Low",L{r_num}+180,""))))'
+                        )
                     if entry is not None:
                         d_obj = parse_any_date(str(entry.get(field_name, "")))
                         if d_obj:
@@ -1012,18 +1493,15 @@ def write_poam_workbook(
 
                 if field_name in DATE_FIELDS:
                     d_obj = parse_any_date(raw_val)
-                    if d_obj and not is_closed_template:
-                        # Store as numeric Excel serial date so formulas & date formatting work natively
+                    if d_obj and store_numeric_dates:
                         v_el = ET.SubElement(c_el, f"{{{MAIN_NS}}}v")
                         v_el.text = str(date_to_excel_serial(d_obj))
                     else:
-                        # Store formatted YYYY-MM-DD string in CLOSED template (where s=2 has numFmtId=0)
                         str_val = format_date_iso(d_obj) if d_obj else raw_val
                         c_el.set("t", "s")
                         v_el = ET.SubElement(c_el, f"{{{MAIN_NS}}}v")
                         v_el.text = str(get_or_add_shared_string(str_val))
                 elif field_name == "source_identifier" and re.match(r"^\d+$", raw_val):
-                    # Numeric Plugin ID
                     v_el = ET.SubElement(c_el, f"{{{MAIN_NS}}}v")
                     v_el.text = raw_val
                 else:
@@ -1031,8 +1509,13 @@ def write_poam_workbook(
                     v_el = ET.SubElement(c_el, f"{{{MAIN_NS}}}v")
                     v_el.text = str(get_or_add_shared_string(raw_val))
 
-        # In OPEN template, extend DataValidation dropdown for Column R and Column S to include Critical
-        if not is_closed_template:
+        # Update <dimension ref="..."/> if present on worksheet
+        dim_el = s_root.find("main:dimension", ns)
+        if dim_el is not None:
+            dim_el.set("ref", f"A1:{col_letters[-1]}{last_written_row}")
+
+        # In OPEN template, unless --strict-fedramp-risk is enabled, allow 'Critical' in Risk Rating dropdowns
+        if not is_closed_template and not strict_fedramp_risk:
             dvs = s_root.find("main:dataValidations", ns)
             if dvs is not None:
                 for dv in dvs.findall("main:dataValidation", ns):
@@ -1050,15 +1533,33 @@ def write_poam_workbook(
         ss_root.set("count", str(len(shared_strings)))
         ss_root.set("uniqueCount", str(len(shared_strings)))
 
+        # Ensure fullCalcOnLoad="1" on <calcPr> in xl/workbook.xml so Excel recalculates formulas on open
+        updated_wb_bytes: Optional[bytes] = None
+        if "xl/workbook.xml" in zin.namelist():
+            orig_wb_bytes = zin.read("xl/workbook.xml")
+            register_xml_namespaces(orig_wb_bytes)
+            wb_root = ET.fromstring(orig_wb_bytes)
+            calc_pr = wb_root.find("main:calcPr", ns)
+            if calc_pr is None:
+                calc_pr = ET.SubElement(wb_root, f"{{{MAIN_NS}}}calcPr")
+            calc_pr.set("fullCalcOnLoad", "1")
+            updated_wb_bytes = serialize_xml_preserving_root_ns(wb_root, orig_wb_bytes)
+
         # Write updated archive
         with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zout:
             for item in zin.infolist():
-                if item.filename == "xl/worksheets/sheet1.xml":
-                    xml_bytes = ET.tostring(s_root, encoding="utf-8", xml_declaration=True)
+                if item.filename == target_sheet_path:
+                    xml_bytes = serialize_xml_preserving_root_ns(s_root, sheet_xml_bytes)
                     zout.writestr(item, xml_bytes)
                 elif item.filename == "xl/sharedStrings.xml":
-                    ss_bytes = ET.tostring(ss_root, encoding="utf-8", xml_declaration=True)
+                    ss_bytes = (
+                        serialize_xml_preserving_root_ns(ss_root, orig_ss_bytes)
+                        if orig_ss_bytes
+                        else ET.tostring(ss_root, encoding="utf-8", xml_declaration=True)
+                    )
                     zout.writestr(item, ss_bytes)
+                elif item.filename == "xl/workbook.xml" and updated_wb_bytes is not None:
+                    zout.writestr(item, updated_wb_bytes)
                 elif item.filename == "xl/calcChain.xml":
                     # Omit stale calcChain.xml so Excel recalculates cleanly on open
                     continue
@@ -1079,6 +1580,7 @@ def analyze_and_report_sla(
     open_out_path: str,
     closed_out_path: str,
     summary_md_path: Optional[str] = None,
+    dry_run: bool = False,
 ) -> Dict[str, object]:
     """
     Calculate finding age (days from Original Detection Date) and SLA breach status
@@ -1086,6 +1588,7 @@ def analyze_and_report_sla(
     """
     overdue_entries = []
     within_sla_entries = []
+    unverified_entries = [e for e in open_entries if e.get("_unverified_host")]
 
     for e in open_entries:
         det_d = e.get("_det_date_obj") or parse_any_date(str(e.get("original_detection_date", ""))) or today
@@ -1108,15 +1611,19 @@ def analyze_and_report_sla(
         key=lambda x: (0 if x.get("_is_overdue") else 1, -int(x.get("_age_days", 0))),
     )
 
+    mode_banner = " [DRY-RUN PREVIEW — NO FILES WRITTEN]" if dry_run else ""
     print("\n" + "=" * 96)
-    print("  GRCx (v1.2.0 — Misawa) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT")
+    print(f"  GRCx (v1.3.0 — Sasebo) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT{mode_banner}")
     print("=" * 96)
     print(f"  Analysis Reference Date : {format_date_iso(today)}")
-    print(f"  Finished OPEN POA&M     : {open_out_path}")
-    print(f"  Finished CLOSED POA&M   : {closed_out_path}")
+    print(f"  Finished OPEN POA&M     : {open_out_path}{' (dry-run)' if dry_run else ''}")
+    print(f"  Finished CLOSED POA&M   : {closed_out_path}{' (dry-run)' if dry_run else ''}")
     print("-" * 96)
     print(f"  • Total Active OPEN POA&M Entries   : {len(open_entries)}  "
           f"({stats['carry_over_open']} Carried Over, {stats['new_open']} Newly Detected)")
+    if stats.get("unverified_unscanned_open", 0) > 0:
+        print(f"  • Unverified (Host Not in Scan)     : {stats['unverified_unscanned_open']}  "
+              f"(Retained in OPEN & flagged for host/scope review)")
     print(f"  • Entries Moved OPEN -> CLOSED      : {len(closed_entries_moved)}  "
           f"(Total in Closed Workbook: {len(all_closed_entries)})")
     print(f"  • OPEN Entries w/ PASSED SLA Date   : {len(overdue_entries)} of {len(open_entries)} "
@@ -1134,13 +1641,19 @@ def analyze_and_report_sla(
             sla_s = str(e.get("scheduled_completion_date", ""))
             age_d = int(e.get("_age_days", 0))
             past_d = int(e.get("_days_past_sla", 0))
+            unv_tag = " [HOST NOT IN SCAN]" if e.get("_unverified_host") else ""
             if e.get("_is_overdue"):
-                sla_status = f"🚨 PASSED SLA ({past_d} days overdue)"
+                sla_status = f"🚨 PASSED SLA ({past_d} days overdue){unv_tag}"
             else:
-                sla_status = f"✅ Within SLA ({abs(past_d)} days remaining)"
+                sla_status = f"✅ Within SLA ({abs(past_d)} days remaining){unv_tag}"
             print(f"  {pid:<15} | {risk:<8} | {det_s:<14} | {f'{age_d} days old':<16} | {sla_s:<12} | {sla_status}")
     else:
         print("\n  [✓] Zero Open POA&M findings remain in the workbook.")
+
+    if unverified_entries:
+        print("\n  [!] FLAGGED FOR REVIEW — PREVIOUS OPEN ITEMS WHOSE ASSET WAS NOT OBSERVED IN THIS SCAN:")
+        for u in unverified_entries:
+            print(f"    • {u.get('poam_id', 'N/A')} | {u.get('weakness_name', '')[:45]} | Asset: {u.get('asset_identifier', '')} (Retained in OPEN)")
 
     if closed_entries_moved:
         print("\n  ENTRIES MOVED FROM OPEN -> CLOSED FEDRAMP POA&M IN THIS CYCLE:")
@@ -1149,7 +1662,7 @@ def analyze_and_report_sla(
 
     print("=" * 96 + "\n")
 
-    if summary_md_path:
+    if summary_md_path and not dry_run:
         os.makedirs(os.path.dirname(os.path.abspath(summary_md_path)), exist_ok=True)
         lines = [
             "# GRCx FedRAMP POA&M Scan Transformation & SLA Aging Report",
@@ -1158,6 +1671,7 @@ def analyze_and_report_sla(
             f"- **Generated OPEN FedRAMP POA&M**: `{os.path.basename(open_out_path)}`",
             f"- **Generated CLOSED FedRAMP POA&M**: `{os.path.basename(closed_out_path)}`",
             f"- **Total Active OPEN Entries**: **{len(open_entries)}** (*{stats['carry_over_open']} Carried Over, {stats['new_open']} Newly Detected*)",
+            f"- **Unverified (Asset Not Observed in Scan)**: **{stats.get('unverified_unscanned_open', 0)}** (*Retained in OPEN pending review*)",
             f"- **Entries Moved from OPEN to CLOSED**: **{len(closed_entries_moved)}** (*Total Closed Rows: {len(all_closed_entries)}*)",
             f"- **OPEN Entries with Passed SLA Date**: **{len(overdue_entries)}** of **{len(open_entries)}**",
             "",
@@ -1169,7 +1683,12 @@ def analyze_and_report_sla(
         for e in sorted_open:
             age_d = int(e.get("_age_days", 0))
             past_d = int(e.get("_days_past_sla", 0))
-            status_str = f"**PASSED SLA ({past_d} days overdue)**" if e.get("_is_overdue") else f"Within SLA ({abs(past_d)} days left)"
+            unv_note = " *(Host Not in Scan)*" if e.get("_unverified_host") else ""
+            status_str = (
+                f"**PASSED SLA ({past_d} days overdue)**{unv_note}"
+                if e.get("_is_overdue")
+                else f"Within SLA ({abs(past_d)} days left){unv_note}"
+            )
             wname = str(e.get("weakness_name", "")).replace("|", "\\|").replace("\n", " ")
             asset = str(e.get("asset_identifier", "")).replace("|", "\\|").replace("\n", ", ")
             lines.append(
@@ -1200,7 +1719,145 @@ def analyze_and_report_sla(
         "total_open": len(open_entries),
         "overdue_count": len(overdue_entries),
         "moved_to_closed": len(closed_entries_moved),
+        "unverified_unscanned_open": stats.get("unverified_unscanned_open", 0),
     }
+
+
+# ---------------------------------------------------------------------------
+# Drop-In Folder (scans/) File Discovery & Resolution Helpers
+# ---------------------------------------------------------------------------
+
+def list_eligible_files(
+    directory: str,
+    extensions: Tuple[str, ...],
+    exclude_paths: Optional[List[str]] = None,
+) -> List[str]:
+    """
+    Return sorted absolute file paths inside `directory` matching `extensions`,
+    ignoring hidden dotfiles and temporary Office lock files (~$...).
+    """
+    if not directory or not os.path.isdir(directory):
+        return []
+    excl_abs = {os.path.abspath(p) for p in (exclude_paths or []) if p}
+    ext_lower = tuple(e.lower() for e in extensions)
+    matched: List[str] = []
+    try:
+        for fname in sorted(os.listdir(directory), key=lambda s: s.lower()):
+            if fname.startswith(".") or fname.startswith("~$"):
+                continue
+            full_p = os.path.abspath(os.path.join(directory, fname))
+            if full_p in excl_abs or not os.path.isfile(full_p):
+                continue
+            if fname.lower().endswith(ext_lower):
+                matched.append(full_p)
+    except OSError:
+        pass
+    return matched
+
+
+def resolve_input_file(
+    user_input: str,
+    scans_dir: str,
+    extensions: Tuple[str, ...],
+    numbered_choices: Optional[List[str]] = None,
+    fallback_dirs: Optional[List[str]] = None,
+) -> Optional[str]:
+    """
+    Resolve a user-supplied file reference via:
+      1. Numbered selection (e.g. '1' or '[1]') from `numbered_choices`
+      2. Direct file path (relative to CWD or absolute)
+      3. Filename inside `scans_dir` (or `fallback_dirs`) — exact, case-insensitive,
+         or filename without extension (e.g. 'my_scan' -> 'scans/my_scan.csv').
+    """
+    if not user_input:
+        return None
+    raw = user_input.strip().strip("'\"")
+    if not raw:
+        return None
+
+    # 1. Check numbered choice selection (e.g., "1" or "[1]")
+    if numbered_choices:
+        m_num = re.match(r"^\[?\s*(\d+)\s*\]?$", raw)
+        if m_num:
+            idx = int(m_num.group(1))
+            if 1 <= idx <= len(numbered_choices):
+                return numbered_choices[idx - 1]
+
+    # 2. Direct path as entered (relative to CWD or absolute)
+    expanded = os.path.expanduser(raw)
+    if os.path.isfile(expanded):
+        return os.path.abspath(expanded)
+
+    # 3. Search inside designated drop-in directory (scans/) then fallback dirs
+    search_dirs = [scans_dir] + (fallback_dirs or [])
+    ext_lower = tuple(e.lower() for e in extensions)
+
+    for d in search_dirs:
+        if not d or not os.path.isdir(d):
+            continue
+        # 3a. Exact filename join
+        candidate = os.path.join(d, raw)
+        if os.path.isfile(candidate):
+            return os.path.abspath(candidate)
+
+        # 3b. Try appending supported extensions if omitted
+        for ext in extensions:
+            if not raw.lower().endswith(ext.lower()):
+                cand_ext = os.path.join(d, raw + ext)
+                if os.path.isfile(cand_ext):
+                    return os.path.abspath(cand_ext)
+
+        # 3c. Case-insensitive filename or stem match inside directory
+        try:
+            entries = sorted(os.listdir(d), key=lambda s: s.lower())
+        except OSError:
+            continue
+
+        raw_lower = raw.lower()
+        for fname in entries:
+            if fname.startswith(".") or fname.startswith("~$"):
+                continue
+            full_p = os.path.join(d, fname)
+            if not os.path.isfile(full_p):
+                continue
+            fname_lower = fname.lower()
+            stem_lower, f_ext_lower = os.path.splitext(fname_lower)
+            if f_ext_lower not in ext_lower:
+                continue
+            if fname_lower == raw_lower or stem_lower == raw_lower:
+                return os.path.abspath(full_p)
+
+    return None
+
+
+def display_detected_files(
+    scans_dir: str,
+    extensions: Tuple[str, ...],
+    label: str,
+    exclude_paths: Optional[List[str]] = None,
+) -> List[str]:
+    """
+    Display a numbered list of eligible files in `scans_dir` (or sample fallback if empty)
+    and return their paths.
+    """
+    rel_scans = os.path.relpath(scans_dir, REPO_ROOT)
+    rel_display = f"{rel_scans}/" if not rel_scans.startswith("..") else scans_dir
+    files = list_eligible_files(scans_dir, extensions, exclude_paths=exclude_paths)
+
+    if files:
+        print(f"  [*] {label} detected in '{rel_display}':")
+        for idx, fpath in enumerate(files, start=1):
+            print(f"      [{idx}] {os.path.basename(fpath)}")
+        return files
+
+    print(f"  [*] Designated drop-in folder '{rel_display}' is currently empty (drop {'/'.join(extensions)} files into '{rel_display}' any time).")
+    sample_files = list_eligible_files(SAMPLE_SCANS_DIR, extensions, exclude_paths=exclude_paths)
+    if sample_files:
+        print(f"  [*] Sample files available in 'testing/sample-scans/':")
+        for idx, fpath in enumerate(sample_files, start=1):
+            print(f"      [{idx}] {os.path.basename(fpath)}  (sample)")
+        return sample_files
+    return []
 
 
 # ---------------------------------------------------------------------------
@@ -1212,15 +1869,27 @@ def main() -> int:
         prog="grc transform",
         description=(
             "GRCx Standalone Scan-to-POA&M Transformer (transform_scans.py): "
-            "Ingests Tenable or AWS Inspector (.csv or .xlsx) scan results, reconciles "
-            "against a previous OPEN FedRAMP POA&M, moves resolved items to the CLOSED "
-            "FedRAMP POA&M template, drafts missing remediation plans with official "
-            "Tenable/AWS URLs, and reports SLA breaches and finding age."
+            "Drop your scan exports (.csv/.xlsx) and previous POA&M (.xlsx) into the "
+            "'scans/' folder and pass just the filename (or run interactively to pick "
+            "from a numbered list). Reconciles Open -> Closed items, drafts missing "
+            "remediation plans with official Tenable/AWS URLs, and reports SLA breaches."
         ),
     )
     parser.add_argument(
+        "scan_pos",
+        nargs="?",
+        default=None,
+        metavar="SCAN_FILE",
+        help="Optional scan filename in scans/ (e.g. 'tenable_scan.csv' or 'tenable_scan') or path.",
+    )
+    parser.add_argument(
         "--scan", "-s",
-        help="Path to Tenable or AWS Inspector scan results file (.csv or .xlsx).",
+        help="Scan filename in scans/ (or path to Tenable / AWS Inspector .csv or .xlsx file).",
+    )
+    parser.add_argument(
+        "--scans-dir",
+        default=DEFAULT_SCANS_DIR,
+        help="Designated drop-in directory for scan exports and previous POA&M files (default: ./scans/).",
     )
     parser.add_argument(
         "--scanner",
@@ -1231,7 +1900,7 @@ def main() -> int:
     parser.add_argument(
         "--previous-open", "-p",
         default=None,
-        help="Path to previously filled-out OPEN FedRAMP POA&M (.xlsx) for Open->Closed delta reconciliation (or 'none' for initial baseline).",
+        help="Filename in scans/ (or path) of previously filled-out OPEN FedRAMP POA&M (.xlsx) for Open->Closed delta reconciliation (or 'none' for initial baseline).",
     )
     parser.add_argument(
         "--no-previous",
@@ -1241,12 +1910,12 @@ def main() -> int:
     parser.add_argument(
         "--previous-closed",
         default=None,
-        help="Optional path to existing CLOSED FedRAMP POA&M (.xlsx) to append newly closed entries.",
+        help="Optional filename in scans/ (or path) of existing CLOSED FedRAMP POA&M (.xlsx) to append newly closed entries.",
     )
     parser.add_argument(
         "--output-dir", "-o",
         default=None,
-        help="Directory where finished OPEN and CLOSED FedRAMP POA&M .xlsx files will be saved (default: evidence/poam-transform/).",
+        help="Directory where finished OPEN and CLOSED FedRAMP POA&M .xlsx files will be saved (default: evidence/poam-<scan>/).",
     )
     parser.add_argument(
         "--open-template",
@@ -1279,46 +1948,150 @@ def main() -> int:
         default=None,
         help="Override reference date (YYYY-MM-DD) for SLA and finding age calculation (default: today).",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Preview Carry-Over, New, Closed, and Unscanned-Host items in the terminal without writing .xlsx or .md files.",
+    )
+    parser.add_argument(
+        "--kev-catalog",
+        default=DEFAULT_KEV_CATALOG,
+        help="Path to local CISA KEV JSON catalog for BOD 22-01 lookup (default: ./rules/cisa_kev_catalog.json).",
+    )
+    parser.add_argument(
+        "--close-unscanned-hosts",
+        action="store_true",
+        help="Force auto-closure of absent findings even when their host/asset was not observed in the current scan.",
+    )
+    parser.add_argument(
+        "--strict-fedramp-risk",
+        action="store_true",
+        help="Use strict 3-tier FedRAMP risk rating (High/Moderate/Low; maps Critical -> High 30d SLA) and preserve original template data validations.",
+    )
 
     args = parser.parse_args()
+
+    scans_dir = os.path.abspath(args.scans_dir)
+    os.makedirs(scans_dir, exist_ok=True)
+    fallback_dirs = [SAMPLE_SCANS_DIR, REPO_ROOT]
 
     today = parse_any_date(args.reference_date) if args.reference_date else datetime.date.today()
     if not today:
         today = datetime.date.today()
 
-    # 1. Resolve Scan Input Path (interactive prompt if not passed via --scan)
-    scan_path = args.scan
-    if not scan_path:
+    # 1. Resolve Scan Input Path (from CLI argument or interactive prompt in scans/)
+    raw_scan_arg = args.scan or args.scan_pos
+    scan_path: Optional[str] = None
+
+    if raw_scan_arg:
+        scan_path = resolve_input_file(
+            raw_scan_arg,
+            scans_dir=scans_dir,
+            extensions=SCAN_EXTENSIONS,
+            fallback_dirs=fallback_dirs,
+        )
+        if not scan_path:
+            avail = [os.path.basename(p) for p in list_eligible_files(scans_dir, SCAN_EXTENSIONS)]
+            avail_hint = f" Available in scans/: {', '.join(avail)}" if avail else " Drop your file into the 'scans/' folder and pass just its filename."
+            print(f"[ERROR] Scan file not found: '{raw_scan_arg}' (searched ./scans/ and direct path).{avail_hint}", file=sys.stderr)
+            return 1
+    else:
         if sys.stdin.isatty():
             print("\n=== GRCx Standalone FedRAMP POA&M Scan Transformer ===")
-            scan_path = input("[?] Enter path to Tenable or AWS Inspector scan file (.csv or .xlsx): ").strip().strip("'\"")
+            choices = display_detected_files(
+                scans_dir=scans_dir,
+                extensions=SCAN_EXTENSIONS,
+                label="Scan / Workbook files (.csv, .xlsx)",
+            )
+            prompt_msg = (
+                f"[?] Select scan file by number [1-{len(choices)}] or enter filename in scans/ (.csv/.xlsx): "
+                if choices
+                else "[?] Enter scan filename in scans/ (with or without .csv/.xlsx extension): "
+            )
+            user_scan = input(prompt_msg).strip()
+            if user_scan:
+                # Re-scan scans_dir dynamically in case the user dropped a file while at the prompt
+                live_choices = choices or list_eligible_files(scans_dir, SCAN_EXTENSIONS)
+                scan_path = resolve_input_file(
+                    user_scan,
+                    scans_dir=scans_dir,
+                    extensions=SCAN_EXTENSIONS,
+                    numbered_choices=live_choices,
+                    fallback_dirs=fallback_dirs,
+                )
+                if not scan_path:
+                    print(f"[ERROR] Scan file not found in scans/: '{user_scan}'", file=sys.stderr)
+                    return 1
         if not scan_path:
-            parser.error("A scan file (.csv or .xlsx) is required. Pass --scan <path> or enter it interactively.")
-
-    if not os.path.isfile(scan_path):
-        print(f"[ERROR] Scan file not found: {scan_path}", file=sys.stderr)
-        return 1
+            parser.error("A scan file (.csv or .xlsx) is required. Drop it in 'scans/' and pass --scan <filename> or run interactively.")
 
     # 2. Request Previously Filled-Out OPEN FedRAMP POA&M Form (if not provided via flag)
-    prev_open_path = args.previous_open
-    if prev_open_path and prev_open_path.strip().lower() in ("none", "null", "false", "-"):
-        prev_open_path = ""
-    elif prev_open_path is None and not args.no_previous and sys.stdin.isatty():
-        user_prev = input(
-            "[?] Enter path to previously filled-out OPEN FedRAMP POA&M (.xlsx) to reconcile\n"
-            "    Open -> Closed transitions (or press Enter if none / initial baseline): "
-        ).strip().strip("'\"")
-        if user_prev:
-            prev_open_path = user_prev
+    prev_open_path = ""
+    if args.previous_open is not None:
+        if args.previous_open.strip().lower() not in ("", "none", "null", "false", "-"):
+            resolved_prev = resolve_input_file(
+                args.previous_open,
+                scans_dir=scans_dir,
+                extensions=POAM_EXTENSIONS,
+                fallback_dirs=fallback_dirs,
+            )
+            if not resolved_prev:
+                print(f"[ERROR] Previous OPEN POA&M file not found in scans/: '{args.previous_open}'", file=sys.stderr)
+                return 1
+            prev_open_path = resolved_prev
+    elif not args.no_previous and sys.stdin.isatty():
+        print("")
+        poam_choices = display_detected_files(
+            scans_dir=scans_dir,
+            extensions=POAM_EXTENSIONS,
+            label="Previous POA&M workbooks (.xlsx)",
+            exclude_paths=[scan_path],
+        )
+        prev_prompt = (
+            f"[?] Select previous OPEN FedRAMP POA&M by number [1-{len(poam_choices)}], enter filename in scans/,\n"
+            f"    or press Enter if none (initial baseline): "
+            if poam_choices
+            else "[?] Enter previous OPEN FedRAMP POA&M filename in scans/ (.xlsx) to reconcile\n"
+                 "    Open -> Closed transitions (or press Enter if none / initial baseline): "
+        )
+        user_prev = input(prev_prompt).strip()
+        if user_prev and user_prev.lower() not in ("none", "null", "false", "-"):
+            live_poam_choices = poam_choices or list_eligible_files(scans_dir, POAM_EXTENSIONS, exclude_paths=[scan_path])
+            resolved_prev = resolve_input_file(
+                user_prev,
+                scans_dir=scans_dir,
+                extensions=POAM_EXTENSIONS,
+                numbered_choices=live_poam_choices,
+                fallback_dirs=fallback_dirs,
+            )
+            if not resolved_prev:
+                print(f"[ERROR] Previous OPEN POA&M file not found in scans/: '{user_prev}'", file=sys.stderr)
+                return 1
+            prev_open_path = resolved_prev
 
-    if prev_open_path and not os.path.isfile(prev_open_path):
-        print(f"[ERROR] Previous OPEN POA&M file not found: {prev_open_path}", file=sys.stderr)
-        return 1
+    # Also resolve --previous-closed through scans/ if provided
+    prev_closed_path = ""
+    if args.previous_closed:
+        resolved_closed = resolve_input_file(
+            args.previous_closed,
+            scans_dir=scans_dir,
+            extensions=POAM_EXTENSIONS,
+            fallback_dirs=fallback_dirs,
+        )
+        if not resolved_closed:
+            print(f"[ERROR] Previous CLOSED POA&M file not found in scans/: '{args.previous_closed}'", file=sys.stderr)
+            return 1
+        prev_closed_path = resolved_closed
 
     # 3. Load and Normalize Scan Findings
     records = load_scan_records(scan_path)
     scanner_type = detect_scanner_type(records, None if args.scanner == "auto" else args.scanner)
-    print(f"[*] Loaded {len(records)} scan rows from '{os.path.basename(scan_path)}' (Detected source: {scanner_type.upper()})")
+    scanned_assets, asset_alias_map = collect_scanned_assets(records)
+    kev_catalog = load_cisa_kev_catalog(args.kev_catalog)
+    print(
+        f"[*] Loaded {len(records)} scan rows from '{os.path.basename(scan_path)}' "
+        f"(Detected source: {scanner_type.upper()}, Scanned host identifiers: {len(scanned_assets)})"
+    )
 
     scan_entries = normalize_scan_rows(
         records=records,
@@ -1326,6 +2099,8 @@ def main() -> int:
         scan_filename=os.path.basename(scan_path),
         today=today,
         default_poc=args.poc,
+        kev_catalog=kev_catalog,
+        strict_fedramp_risk=args.strict_fedramp_risk,
     )
 
     # Unless --include-scanner-solutions is explicitly passed, treat new scan entries without
@@ -1339,17 +2114,29 @@ def main() -> int:
     prev_open_entries = load_existing_poam_workbook(prev_open_path, is_closed_template=False) if prev_open_path else []
     if prev_open_path:
         print(f"[*] Loaded {len(prev_open_entries)} existing entries from previous OPEN POA&M: {os.path.basename(prev_open_path)}")
+    else:
+        print(
+            "[WARNING] No previous OPEN FedRAMP POA&M provided! Treating this run as an initial baseline: "
+            "POA&M IDs will start at 0001 (unless --previous-closed is supplied) and no Open -> Closed "
+            "reconciliation will occur. Pass -p <filename> to reconcile against an existing POA&M."
+        )
 
     prev_closed_entries = (
-        load_existing_poam_workbook(args.previous_closed, is_closed_template=True)
-        if args.previous_closed and os.path.isfile(args.previous_closed)
+        load_existing_poam_workbook(prev_closed_path, is_closed_template=True)
+        if prev_closed_path and os.path.isfile(prev_closed_path)
         else []
     )
+    if prev_closed_path and prev_closed_entries:
+        print(f"[*] Loaded {len(prev_closed_entries)} existing entries from previous CLOSED POA&M: {os.path.basename(prev_closed_path)}")
 
     final_open, newly_closed, stats = reconcile_poam_entries(
         prev_open_entries=prev_open_entries,
         new_scan_entries=scan_entries,
         today=today,
+        prev_closed_entries=prev_closed_entries,
+        scanned_assets=scanned_assets,
+        asset_alias_map=asset_alias_map,
+        close_unscanned_hosts=args.close_unscanned_hosts,
     )
     all_closed = prev_closed_entries + newly_closed
 
@@ -1368,6 +2155,11 @@ def main() -> int:
                 ).strip().lower()
                 choice = "y" if ans.startswith("y") else "n"
             else:
+                print(
+                    f"[*] Non-interactive session detected with --draft-remediations=ask: "
+                    f"auto-drafting {len(missing_remediation_entries)} missing Remediation Plans "
+                    f"(pass --draft-remediations n to leave blank)."
+                )
                 choice = "y"
 
         if choice == "y":
@@ -1377,27 +2169,30 @@ def main() -> int:
         else:
             print(f"[*] Left {len(missing_remediation_entries)} missing Remediation Plans blank per user selection.")
 
-    # 6. Write Finished OPEN and CLOSED FedRAMP POA&M Workbooks
+    # 6. Write Finished OPEN and CLOSED FedRAMP POA&M Workbooks (skipped in --dry-run mode)
     scan_stem = os.path.splitext(os.path.basename(scan_path))[0]
     out_dir = args.output_dir or os.path.join(REPO_ROOT, "evidence", f"poam-{scan_stem}")
-    os.makedirs(out_dir, exist_ok=True)
 
     open_out_path = os.path.join(out_dir, "OPEN FedRAMP-POAM.xlsx")
     closed_out_path = os.path.join(out_dir, "CLOSED FedRAMP-POAM.xlsx")
     summary_md_path = os.path.join(out_dir, "poam_transform_summary.md")
 
-    write_poam_workbook(
-        template_path=args.open_template,
-        output_path=open_out_path,
-        entries=final_open,
-        is_closed_template=False,
-    )
-    write_poam_workbook(
-        template_path=args.closed_template,
-        output_path=closed_out_path,
-        entries=all_closed,
-        is_closed_template=True,
-    )
+    if not args.dry_run:
+        os.makedirs(out_dir, exist_ok=True)
+        write_poam_workbook(
+            template_path=args.open_template,
+            output_path=open_out_path,
+            entries=final_open,
+            is_closed_template=False,
+            strict_fedramp_risk=args.strict_fedramp_risk,
+        )
+        write_poam_workbook(
+            template_path=args.closed_template,
+            output_path=closed_out_path,
+            entries=all_closed,
+            is_closed_template=True,
+            strict_fedramp_risk=args.strict_fedramp_risk,
+        )
 
     # 7. Run SLA Breach & Finding Age Analysis and Print Report
     analyze_and_report_sla(
@@ -1409,6 +2204,7 @@ def main() -> int:
         open_out_path=open_out_path,
         closed_out_path=closed_out_path,
         summary_md_path=summary_md_path,
+        dry_run=args.dry_run,
     )
 
     return 0

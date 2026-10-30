@@ -1,0 +1,56 @@
+{
+  "title": "CISA Known Exploited Vulnerabilities (KEV) Catalog — GRCx Offline Baseline",
+  "catalogVersion": "2026.10.29",
+  "vulnerabilities": [
+    {
+      "cveID": "CVE-2021-44228",
+      "vendorProject": "Apache",
+      "product": "Log4j2",
+      "vulnerabilityName": "Apache Log4j2 Remote Code Execution Vulnerability",
+      "dateAdded": "2021-12-10",
+      "shortDescription": "Apache Log4j2 contains an unspecified vulnerability that allows for remote code execution.",
+      "requiredAction": "Apply updates per vendor instructions.",
+      "dueDate": "2021-12-24"
+    },
+    {
+      "cveID": "CVE-2022-42889",
+      "vendorProject": "Apache",
+      "product": "Commons Text",
+      "vulnerabilityName": "Apache Commons Text Remote Code Execution Vulnerability",
+      "dateAdded": "2022-10-20",
+      "shortDescription": "Apache Commons Text performs variable interpolation, allowing properties to be dynamically evaluated and expanded.",
+      "requiredAction": "Apply updates per vendor instructions.",
+      "dueDate": "2022-11-10"
+    },
+    {
+      "cveID": "CVE-2023-38408",
+      "vendorProject": "OpenBSD",
+      "product": "OpenSSH",
+      "vulnerabilityName": "OpenSSH ssh-agent Remote Code Execution Vulnerability",
+      "dateAdded": "2023-07-25",
+      "shortDescription": "OpenSSH ssh-agent contains a remote code execution vulnerability in PKCS#11 provider loading.",
+      "requiredAction": "Apply updates per vendor instructions.",
+      "dueDate": "2023-08-15"
+    },
+    {
+      "cveID": "CVE-2023-44487",
+      "vendorProject": "Multiple",
+      "product": "HTTP/2 Protocol",
+      "vulnerabilityName": "HTTP/2 Rapid Reset Attack Vulnerability",
+      "dateAdded": "2023-10-10",
+      "shortDescription": "The HTTP/2 protocol allows a denial of service (server resource consumption) because request cancellation can reset many streams quickly.",
+      "requiredAction": "Apply updates per vendor instructions.",
+      "dueDate": "2023-10-31"
+    },
+    {
+      "cveID": "CVE-2024-6387",
+      "vendorProject": "OpenBSD",
+      "product": "OpenSSH",
+      "vulnerabilityName": "OpenSSH Server (sshd) Signal Handler Race Condition Vulnerability (RegreSSHion)",
+      "dateAdded": "2024-07-02",
+      "shortDescription": "A signal handler race condition in OpenSSH's server (sshd) allows unauthenticated remote code execution as root on glibc-based Linux systems.",
+      "requiredAction": "Apply updates per vendor instructions.",
+      "dueDate": "2024-07-23"
+    }
+  ]
+}

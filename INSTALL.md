@@ -92,32 +92,36 @@ git clone grcx-v1.2.0.bundle GRC-Bundle-Review_Pipeline
 **GRCx** supports two primary workflows depending on your role:
 
 ### Workflow A: Standalone Scan-to-FedRAMP POA&M Transformation (`transform_scans.py`)
-> **Does NOT require Docker or a `.bundle` file**: Because `scripts/transform_scans.py` uses **100% Python 3 Standard Library** modules, you do **not** need to start the Docker container to run it. It runs directly on **macOS**, **Linux**, and **Windows**.
+> **Does NOT require Docker or a `.bundle` file**: Because `scripts/transform_scans.py` uses **100% Python 3 Standard Library** modules, you do **not** need to start the Docker container to run it. Simply drop your scan files (`.csv`/`.xlsx`) and previous OPEN POA&M (`.xlsx`) into the **`scans/`** folder at the repository root!
 
 #### 🍎 macOS / 🐧 Linux / 🪟 Windows WSL2
-Run `./grc transform` against the bundled sample Tenable scan and previous month's OPEN POA&M:
+Drop your files into **`scans/`** and run `./grc transform` interactively (or pass just the filenames):
 
 ```bash
+# Interactive Drop-In Mode (lists files in scans/ by number or accepts filename):
+./grc transform
+
+# Or One-Line CLI Mode (resolves filenames automatically from scans/):
 ./grc transform \
-  --scan ./testing/sample-scans/tenable_monthly_scan.csv \
-  --previous-open ./testing/sample-scans/previous_open_poam.xlsx \
+  --scan tenable_monthly_scan.csv \
+  --previous-open previous_open_poam.xlsx \
   --draft-remediations y
 ```
 
 #### 🪟 Windows Users (Native PowerShell, Command Prompt & Git Bash — No WSL2 or Docker Required)
-Because `./grc` is a Bash script, native Windows users in **PowerShell** or **Command Prompt (`cmd.exe`)** invoke `scripts\transform_scans.py` directly with Python 3 (`python` or `py -3`):
+Because `./grc` is a Bash script, native Windows users in **PowerShell** or **Command Prompt (`cmd.exe`)** drop their files into **`scans\`** and invoke `scripts\transform_scans.py` directly with Python 3 (`python` or `py -3`):
 
-* **Interactive Guided Mode (PowerShell or Command Prompt)** — *Prompts you step-by-step for your scan file, previous OPEN POA&M, and `[y/n]` remediation URL drafting*:
+* **Interactive Drop-In Mode (PowerShell or Command Prompt)** — *Automatically lists files in `scans\` by number (`[1]`, `[2]`) and prompts you step-by-step*:
   ```powershell
   python .\scripts\transform_scans.py
   ```
 * **One-Line CLI Mode (PowerShell / Command Prompt)**:
   ```powershell
-  python .\scripts\transform_scans.py --scan .\testing\sample-scans\tenable_monthly_scan.csv --previous-open .\testing\sample-scans\previous_open_poam.xlsx --draft-remediations y
+  python .\scripts\transform_scans.py --scan tenable_monthly_scan.csv --previous-open previous_open_poam.xlsx --draft-remediations y
   ```
 * **Git Bash on Windows**:
   ```bash
-  python scripts/transform_scans.py --scan ./testing/sample-scans/tenable_monthly_scan.csv --previous-open ./testing/sample-scans/previous_open_poam.xlsx --draft-remediations y
+  python scripts/transform_scans.py --scan tenable_monthly_scan.csv --previous-open previous_open_poam.xlsx --draft-remediations y
   ```
 
 This generates `OPEN FedRAMP-POAM.xlsx`, `CLOSED FedRAMP-POAM.xlsx`, and `poam_transform_summary.md` inside `./evidence/poam-tenable_monthly_scan/` while printing an itemized SLA Breach & Finding Age report to your terminal. *(See **[`docs/scan-transform-guide.md`](docs/scan-transform-guide.md)** for full details).*

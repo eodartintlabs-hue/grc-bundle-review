@@ -19,7 +19,7 @@
 </p>
 
 > **Engine**: [`scripts/transform_scans.py`](../scripts/transform_scans.py) · **CLI Command**: `./grc transform`  
-> **Release Series**: `v1.2.0 — Misawa`  
+> **Release Series**: `v1.3.0 — Sasebo` *(Introduced in `v1.2.0 — Misawa`, enhanced with `scans/` drop-in folder in `v1.3.0 — Sasebo`)*  
 > **Execution Mode**: **100% Standalone** *(Requires only Python 3.9+ Standard Library — no Docker container, no `.bundle` file, and no `pip install` needed)*
 
 ---
@@ -48,55 +48,74 @@ In day-to-day federal and defense compliance operations, GRC analysts frequently
 
 ---
 
+### 📁 The Designated `scans/` Drop-In Folder (Zero Path Copy-Pasting)
+Instead of hunting for file paths and copy-pasting long directory strings into the terminal, **GRCx** includes a designated **`scans/`** folder at the root of the repository:
+1. **Drop your files into `scans/`**: Drag and drop your Tenable or AWS Inspector scan export (`.csv` or `.xlsx`) and your previous month's `OPEN FedRAMP-POAM.xlsx` (if reconciling) directly into the **`scans/`** directory.
+2. **Run `./grc transform` (or `python .\scripts\transform_scans.py`)**:
+   * **GRCx** automatically scans `scans/` and displays a **numbered list** of detected files (`[1]`, `[2]`, etc.).
+   * Select a file simply by typing its **number** (e.g., `1`) OR typing its **filename** (with or without the `.csv`/`.xlsx` extension, e.g., `tenable_monthly_scan`).
+   * Even on the command line (`--scan` / `--previous-open`), you only need to pass the filename (e.g., `--scan my_scan.csv` or `--scan my_scan`)—**GRCx** automatically looks inside `scans/` first!
+
+---
+
 ### 🪟 How Windows Users Utilize the Transform Engine
 Because `scripts/transform_scans.py` uses cross-platform `os.path` handling and zero third-party packages, a Windows GRC analyst can run it in **three ways**—including **natively in Windows PowerShell or Command Prompt without WSL2 or Docker**:
 
 #### Option 1: Native Windows PowerShell or Command Prompt (`cmd.exe`) — *Simplest for GRC Analysts*
-A Windows user only needs **Python 3.9+** installed (from `python.org` or the Microsoft Store). Since `.sh` bash scripts (`./grc`) do not run natively in PowerShell or `cmd.exe`, Windows users invoke `scripts\transform_scans.py` directly with `python` (or `py -3`):
+A Windows user only needs **Python 3.9+** installed (from `python.org` or the Microsoft Store). Drop your scan and previous POA&M files into the **`scans\`** folder, then run:
 
-* **Interactive Guided Mode** *(Prompts step-by-step for the scan file, previous OPEN POA&M, and `[y/n]` remediation URL drafting)*:
+* **Interactive Guided Mode** *(Automatically lists files in `scans\` with numbers `[1]`, `[2]` and prompts for your selection and `[y/n]` remediation URL drafting)*:
   ```powershell
   python .\scripts\transform_scans.py
   ```
   *(or `py -3 .\scripts\transform_scans.py` using the Windows Python Launcher)*
-* **One-Line CLI Mode**:
+* **One-Line CLI Mode (Using Filenames in `scans\`)**:
   ```powershell
-  python .\scripts\transform_scans.py `
-    --scan "C:\Users\Analyst\Downloads\tenable_scan.csv" `
-    --previous-open "C:\Users\Analyst\Documents\OPEN FedRAMP-POAM.xlsx" `
-    --draft-remediations y
+  python .\scripts\transform_scans.py --scan tenable_scan.csv --previous-open "OPEN FedRAMP-POAM.xlsx" --draft-remediations y
   ```
 
 #### Option 2: Git Bash on Windows *(Included with Git for Windows)*
 Inside a Git Bash terminal window on Windows, run:
 ```bash
-python scripts/transform_scans.py --scan /c/Users/Analyst/Downloads/tenable_scan.csv
+python scripts/transform_scans.py --scan tenable_scan.csv
 ```
 
 #### Option 3: Windows Subsystem for Linux (WSL2)
 Inside WSL2 (Ubuntu/Debian), `./grc` works identically to macOS and Linux:
 ```bash
-./grc transform --scan /mnt/c/Users/Analyst/Downloads/tenable_scan.csv
+./grc transform --scan tenable_scan.csv
 ```
 
 ---
 
 ### 🍎 How macOS & 🐧 Linux Users Run `./grc transform`
 
-#### Option A: Interactive Guided Mode (Recommended for Daily Analyst Use)
-Run `./grc transform` with only your scan file (or no flags at all), and **GRCx** will interactively ask for your previous OPEN FedRAMP POA&M and whether you want missing remediation plans drafted:
+#### Option A: Interactive Drop-In Mode (Recommended for Daily Analyst Use)
+Drop your scan export (`.csv` or `.xlsx`) and previous OPEN POA&M (`.xlsx`) into the **`scans/`** folder and run `./grc transform` with **no arguments**:
 
 ```bash
-./grc transform --scan /path/to/scan_results.csv
+./grc transform
 ```
 
-1. **Previous POA&M Prompt**:
+1. **Scan File Selection Prompt (Numbered List or Filename in `scans/`)**:
    ```text
-   [?] Enter path to previously filled-out OPEN FedRAMP POA&M (.xlsx) to reconcile
-       Open -> Closed transitions (or press Enter if none / initial baseline):
+   === GRCx Standalone FedRAMP POA&M Scan Transformer ===
+     [*] Scan / Workbook files (.csv, .xlsx) detected in 'scans/':
+         [1] aws_inspector_scan.csv
+         [2] previous_open_poam.xlsx
+         [3] tenable_monthly_scan.csv
+   [?] Select scan file by number [1-3] or enter filename in scans/ (.csv/.xlsx): 3
    ```
-   * Provide last cycle's `OPEN FedRAMP-POAM.xlsx` to reconcile carry-overs vs. newly closed items, or press **Enter** if you are generating a brand-new POA&M baseline.
-2. **Missing Remediation Plan Prompt (`[y/n]`)**:
+   * Type **`3`** (or type `tenable_monthly_scan` / `tenable_monthly_scan.csv`).
+2. **Previous POA&M Selection Prompt**:
+   ```text
+     [*] Previous POA&M workbooks (.xlsx) detected in 'scans/':
+         [1] previous_open_poam.xlsx
+   [?] Select previous OPEN FedRAMP POA&M by number [1-1], enter filename in scans/,
+       or press Enter if none (initial baseline): 1
+   ```
+   * Type **`1`** (or `previous_open_poam`), or press **Enter** if you are generating a brand-new POA&M baseline.
+3. **Missing Remediation Plan Prompt (`[y/n]`)**:
    ```text
    [!] 5 of 6 OPEN POA&M entries are missing a Remediation Plan (Column K).
        Would you like GRCx to draft missing remediation plans with official Tenable/AWS remediation links? (y/n): y
@@ -104,12 +123,12 @@ Run `./grc transform` with only your scan file (or no flags at all), and **GRCx*
    * Enter **`y`** to automatically populate `Column K` with a structured remediation action and direct URL links to Tenable's plugin database (`https://www.tenable.com/plugins/nessus/<Plugin_ID>`), AWS ALAS advisories (`https://explore.alas.aws.amazon.com/<ALAS_ID>.html`), AWS Inspector documentation, and NVD CVE records.
 
 #### Option B: Non-Interactive / One-Line CLI Mode
-Pass all options directly on the command line for repeatable or scripted execution:
+Pass filenames in `scans/` (with or without extensions, or full paths) directly on the command line for repeatable or scripted execution:
 
 ```bash
 ./grc transform \
-  --scan ./testing/sample-scans/tenable_monthly_scan.csv \
-  --previous-open ./testing/sample-scans/previous_open_poam.xlsx \
+  --scan tenable_monthly_scan.csv \
+  --previous-open previous_open_poam.xlsx \
   --draft-remediations y \
   --output-dir ./evidence/poam-tenable-oct
 ```
@@ -118,7 +137,7 @@ For an initial baseline with no previous POA&M file, pass `--no-previous`:
 
 ```bash
 ./grc transform \
-  --scan ./testing/sample-scans/aws_inspector_scan.csv \
+  --scan aws_inspector_scan.csv \
   --no-previous \
   --draft-remediations y \
   --output-dir ./evidence/poam-inspector-oct
@@ -164,7 +183,7 @@ Try running the bundled sample Tenable reconciliation right now:
 [+] Drafted 5 Remediation Plans with official TENABLE remediation URLs.
 
 ================================================================================================
-  GRCx (v1.2.0 — Misawa) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT
+  GRCx (v1.3.0 — Sasebo) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT
 ================================================================================================
   Analysis Reference Date : 2026-10-20
   Finished OPEN POA&M     : evidence/poam-tenable_monthly_scan/OPEN FedRAMP-POAM.xlsx
