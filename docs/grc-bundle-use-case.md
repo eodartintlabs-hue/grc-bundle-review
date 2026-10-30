@@ -89,7 +89,7 @@ In **Phase 2**, the analyst unpacks the verified bundle into an isolated `epheme
     -> SHA-256 Digest: e5b7a1c93f48d02e6b7c5a91f83d2e04a7b1c3d5e7f9a2b4c6d8e0f2a4b6c8d0
     -> Cryptographic checksum verified against session baseline: MATCH
     -> Git bundle object verification: VALID
-[*] Extracting bundle into ephemeral workspace: /Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace
+[*] Extracting bundle into ephemeral workspace: /Users/byronturner-pro/Desktop/GRC-x/ephemeral_workspace
     -> Cloned bundle repository successfully.
     -> Checked out reference: v1.2.0
     -> Checked out Commit: 4a9f2bc1 (HEAD -> v1.2.0, tag: v1.2.0)
@@ -116,10 +116,10 @@ cat ./ephemeral_workspace/bundle_provenance.json | jq .
   "manifest_schema": "grc-bundle-provenance-v1",
   "session_id": "7f8b91a2-c34d-4e5f-89ab-0123456789cd",
   "bundle_identifier": "e5b7a1c93f48d02e6b7c5a91f83d2e04a7b1c3d5e7f9a2b4c6d8e0f2a4b6c8d0",
-  "bundle_source_path": "/Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/auth-service-v1.2.0.bundle",
+  "bundle_source_path": "/Users/byronturner-pro/Desktop/GRC-x/auth-service-v1.2.0.bundle",
   "bundle_size_bytes": 14829312,
   "bundle_sha256": "e5b7a1c93f48d02e6b7c5a91f83d2e04a7b1c3d5e7f9a2b4c6d8e0f2a4b6c8d0",
-  "workspace_path": "/Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace",
+  "workspace_path": "/Users/byronturner-pro/Desktop/GRC-x/ephemeral_workspace",
   "checked_out_ref": "v1.2.0",
   "commit_metadata": {
     "commit_hash": "4a9f2bc18d3e710294abcf581029384756201948",
@@ -285,9 +285,9 @@ To uphold the core zero-persistence hygiene principle ([`README.md` Section 3](.
 
 **Terminal Output:**
 ```text
-[*] Destroying ephemeral workspace: /Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/ephemeral_workspace
+[*] Destroying ephemeral workspace: /Users/byronturner-pro/Desktop/GRC-x/ephemeral_workspace
     -> Recursively removed read-only workspace directory.
-[*] Deleting processed bundle: /Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/auth-service-v1.2.0.bundle
+[*] Deleting processed bundle: /Users/byronturner-pro/Desktop/GRC-x/auth-service-v1.2.0.bundle
     -> Bundle file deleted.
 [SUCCESS] Ephemeral cleanup complete. Workspace restored to pristine state.
 ```

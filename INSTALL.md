@@ -51,16 +51,16 @@ cd ~/Desktop
 Clone the **GRCx** repository (and optionally the companion **GRC-Test-Dummies** repository if you want synthetic test bundles to practice with):
 
 ```bash
-git clone https://github.com/eodartintlabs-hue/grc-bundle-reviewer.git GRC-Bundle-Review_Pipeline
+git clone https://github.com/eodartintlabs-hue/grc-x.git GRC-x
 git clone https://github.com/eodartintlabs-hue/grc-test-dummies.git GRC-Test-Dummies
 ```
 
 ### Option B: Clone from a Portable `.bundle` File (Self-Hosted / Air-Gapped Transfer)
-If you received **GRCx** as a portable Git bundle file (e.g., `grcx-v1.2.0.bundle`), verify and clone directly from the file with zero network access:
+If you received **GRCx** as a portable Git bundle file (e.g., `grcx-v1.3.0.bundle`), verify and clone directly from the file with zero network access:
 
 ```bash
-git bundle verify grcx-v1.2.0.bundle
-git clone grcx-v1.2.0.bundle GRC-Bundle-Review_Pipeline
+git bundle verify grcx-v1.3.0.bundle
+git clone grcx-v1.3.0.bundle GRC-x
 ```
 
 ---
@@ -69,7 +69,7 @@ git clone grcx-v1.2.0.bundle GRC-Bundle-Review_Pipeline
 
 1. **Enter the repository directory and ensure `./grc` is executable**:
    ```bash
-   cd ~/Desktop/GRC-Bundle-Review_Pipeline
+   cd ~/Desktop/GRC-x
    chmod +x ./grc
    ```
 
@@ -157,10 +157,10 @@ Once your scan is complete, open the repository in **Cursor** to inspect the hum
 ### 1. Open the Project in Cursor
 * **From your terminal**:
   ```bash
-  cursor ~/Desktop/GRC-Bundle-Review_Pipeline
+  cursor ~/Desktop/GRC-x
   ```
 * **Or from the Cursor app menu**:
-  Click **File $\rightarrow$ Open Folder...**, select `GRC-Bundle-Review_Pipeline`, and click **Open**.
+  Click **File $\rightarrow$ Open Folder...**, select `GRC-x`, and click **Open**.
 
 ### 2. Locate Your Audit Deliverables in the Cursor Sidebar
 In Cursor's left-hand **Explorer** sidebar (`Cmd+Shift+E` on macOS / `Ctrl+Shift+E` on Windows & Linux), expand the **`evidence/`** folder (or **`testing/demo-evidence/`** for pre-generated sample outputs) and click into your bundle's folder (e.g., `evidence/aoc-combo-4x/`):

@@ -168,7 +168,7 @@ echo "Baseline Bundle SHA-256: ${TEST_SHA256}"
 Navigate back to your pipeline repository root:
 
 ```bash
-cd /path/to/GRC-Bundle-Review_Pipeline
+cd /path/to/GRC-x
 ```
 
 ---

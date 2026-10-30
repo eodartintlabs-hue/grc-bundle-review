@@ -286,7 +286,7 @@ Use these exact copy-pasteable commands to test any specific Area of Concern:
 
 ## 4. Automated Batch Verification (Run All Tests)
 
-To audit and verify the entire 12-bundle test corpus in a single pass without manual intervention, run this loop from the root of the `GRC-Bundle-Review_Pipeline` directory:
+To audit and verify the entire 12-bundle test corpus in a single pass without manual intervention, run this loop from the root of the `GRC-x` directory:
 
 ```bash
 DUMMY_DIR="../GRC-Test-Dummies/bundles"

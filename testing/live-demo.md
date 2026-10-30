@@ -23,7 +23,7 @@
 
 1. **`./grc` vs `grc`**: Always prefix the command with **`./grc`** (not `grc`), otherwise macOS `zsh` will return `zsh: command not found: grc`.
 2. **Docker Desktop Must Be Running**: The `scan` command runs inside the air-gapped `grc-scanner:local` container. Verify the **Docker Desktop** whale icon is running in your Mac menu bar before starting.
-3. **Bundle Path Location**: The `.bundle` test fixtures live in the companion directory **`../GRC-Test-Dummies/bundles/`**, not inside `GRC-Bundle-Review_Pipeline`.
+3. **Bundle Path Location**: The `.bundle` test fixtures live in the companion directory **`../GRC-Test-Dummies/bundles/`**, not inside `GRC-x`.
 4. **Always Pass `-f` (`--force`) on Restore**: Because previous runs lock `./ephemeral_workspace` to read-only (`chmod 0444`), restoring a new bundle without `-f` will error out if `./ephemeral_workspace` wasn't cleaned first.
 
 ---
@@ -33,7 +33,7 @@
 Open your terminal, navigate to the repository root, and display the `grcfetch` banner:
 
 ```bash
-cd ~/Desktop/GRC-Bundle-Review_Pipeline
+cd ~/Desktop/GRC-x
 ./grc fetch
 ```
 

@@ -31,7 +31,7 @@ Instead of installing dozens of tools, Python virtual environments, and Go runti
 Run the build command once from the repository root:
 
 ```bash
-cd /Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline
+cd /Users/byronturner-pro/Desktop/GRC-x
 
 # Build the local Docker image (takes ~2 minutes)
 docker build -t grc-scanner:local -f docker/Dockerfile.scanner .

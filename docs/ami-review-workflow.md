@@ -204,7 +204,7 @@ The generated `ami_sbom.cdx.json` is passed directly to the pipeline's existing 
 This identifies any application servers, runtimes, or database packages installed on the AMI (e.g., Apache HTTPD, NGINX, PostgreSQL, Java JRE) and maps them to applicable technology-specific DISA STIGs and SRGs.
 
 #### 3.3.4 Cryptographic Library & EOL Scan (`crypto_lib_scan.py`)
-The pipeline runs `crypto_lib_scan.py` across system library directories (`/usr/lib64`, `/usr/lib`, `/lib`, `/usr/local/lib`) to detect deprecated, vulnerable, or non-FIPS compliant crypto libraries against [`crypto_catalog.json`](file:///Users/byronturner-pro/Desktop/GRC-Bundle-Review_Pipeline/rules/crypto_catalog.json):
+The pipeline runs `crypto_lib_scan.py` across system library directories (`/usr/lib64`, `/usr/lib`, `/lib`, `/usr/local/lib`) to detect deprecated, vulnerable, or non-FIPS compliant crypto libraries against [`crypto_catalog.json`](../rules/crypto_catalog.json):
 
 ```bash
 ./grc crypto --workspace ./ephemeral_ami_workspace/mnt \
