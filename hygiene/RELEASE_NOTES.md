@@ -28,7 +28,7 @@
 
 | Version | Codename | Date | Type | Commit | Summary |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [`v1.3.0`](#v130--sasebo) | Sasebo | 2026-10-29 | Minor | _TBD after tagging_ | `scans/` drop-in folder and file picker; POA&M engine data-integrity hardening; unit tests |
+| [`v1.3.0`](#v130--sasebo) | Sasebo | 2026-10-29 | Minor | `3398d69` | `scans/` drop-in folder and file picker; POA&M engine data-integrity hardening; unit tests |
 | [`v1.2.0`](#v120--misawa) | Misawa | 2026-10-20 | Minor | `c510bc3` | Standalone Tenable / AWS Inspector scan-to-FedRAMP POA&M transformer |
 | [`v1.1.0`](#v110--kadena) | Kadena | 2026-10-20 | Minor | `b2eea63` | Rebrand to GRCx; `INSTALL.md` and `COMMANDS.md`; logo lockups |
 | [`v1.0.6`](#v106--yokosuka) | Yokosuka | 2026-10-19 | Docs | `bf1c799` | System requirements; 4-in-1 multi-AOC verification evidence |
