@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GRCx (The GRC eXperience) — Standalone Scan-to-POA&M Transformation Engine
-Engine: scripts/transform_scans.py (v1.3.0 — Sasebo)
+Engine: scripts/transform_scans.py (v1.3.0 — Sasebo) [LEGACY match mode build]
 
 Purpose:
   Standalone Continuous Monitoring (ConMon) engine for GRC analysts.
@@ -41,6 +41,11 @@ from typing import Dict, List, Optional, Set, Tuple
 # ---------------------------------------------------------------------------
 # Constants & FedRAMP Column Definitions
 # ---------------------------------------------------------------------------
+
+# ---- Match mode for this build (no CLI flag needed) ------------------------
+# "legacy": Apps Script behavior - match on Weakness Name + Description only.
+# "strict": plugin/source ID + host, unscanned hosts kept open for review.
+MATCH_MODE = "legacy"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(SCRIPT_DIR)
@@ -118,8 +123,57 @@ def idx_to_col(idx: int) -> str:
     return res
 
 
-OPEN_COL_LETTERS = [idx_to_col(i) for i in range(1, 1 + len(POAM_FIELDS))]    # B .. AB
-CLOSED_COL_LETTERS = [idx_to_col(i) for i in range(0, len(POAM_FIELDS))]      # A .. AA
+# Default layout: the POAM ID is in column A for BOTH the OPEN and CLOSED workbooks
+# (fields run A .. AA). The real position is detected from the sheet's header row
+# (see detect_poam_id_col) and can be forced with --poam-id-column.
+DEFAULT_POAM_ID_COL_IDX = 0
+OPEN_COL_LETTERS = [idx_to_col(DEFAULT_POAM_ID_COL_IDX + i) for i in range(len(POAM_FIELDS))]    # A .. AA
+CLOSED_COL_LETTERS = [idx_to_col(i) for i in range(0, len(POAM_FIELDS))]                         # A .. AA
+
+# Optional CLI override (column letter of the POAM ID header). None = auto-detect.
+POAM_ID_COLUMN_OVERRIDE: Optional[str] = None
+
+
+def col_letters_from_start(start_idx: int) -> List[str]:
+    """Return the 27 POA&M field column letters starting at 0-based column `start_idx`."""
+    return [idx_to_col(start_idx + i) for i in range(len(POAM_FIELDS))]
+
+
+def _norm_header(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", str(text).lower())
+
+
+def detect_poam_id_col(rows: List[Dict[str, str]], max_header_row: int = 10) -> Optional[int]:
+    """
+    Find the 0-based column index of the 'POAM ID' / 'POA&M ID' header within the first
+    `max_header_row` rows of a worksheet (rows as returned by read_xlsx_rows).
+    """
+    for r in rows:
+        r_num = int(r.get("_row_num", "0") or 0)
+        if r_num == 0 or r_num > max_header_row:
+            continue
+        for key, val in r.items():
+            if key.startswith("_"):
+                continue
+            if _norm_header(val) in ("poamid", "poamitemid"):
+                return col_to_idx(key)
+    return None
+
+
+def resolve_col_letters(rows: List[Dict[str, str]], is_closed_template: bool, label: str = "") -> List[str]:
+    """Pick the field column letters for a workbook: CLI override > header detection > default (col A)."""
+    if POAM_ID_COLUMN_OVERRIDE:
+        return col_letters_from_start(col_to_idx(POAM_ID_COLUMN_OVERRIDE))
+    idx = detect_poam_id_col(rows)
+    if idx is None:
+        print(
+            f"[WARNING] Could not find a 'POAM ID' header{' in ' + label if label else ''}; "
+            f"assuming the POAM ID is in column {idx_to_col(DEFAULT_POAM_ID_COL_IDX)} "
+            f"(use --poam-id-column to override).",
+            file=sys.stderr,
+        )
+        idx = DEFAULT_POAM_ID_COL_IDX
+    return col_letters_from_start(idx)
 
 DATE_FIELDS = {
     "original_detection_date",
@@ -902,7 +956,7 @@ def load_existing_poam_workbook(xlsx_path: str, is_closed_template: bool = False
         return []
 
     rows = read_xlsx_rows(xlsx_path, sheet_index=0)
-    col_letters = CLOSED_COL_LETTERS if is_closed_template else OPEN_COL_LETTERS
+    col_letters = resolve_col_letters(rows, is_closed_template, label=os.path.basename(xlsx_path))
     min_data_row = 3 if is_closed_template else 5
 
     entries: List[Dict[str, object]] = []
@@ -917,6 +971,10 @@ def load_existing_poam_workbook(xlsx_path: str, is_closed_template: bool = False
             if field_name == "source_identifier" and val.endswith(".0"):
                 val = val[:-2]
             entry[field_name] = val
+
+        # Never treat a repeated header row as data
+        if _norm_header(str(entry.get("poam_id", ""))) == "poamid":
+            continue
 
         # Check if this row is actually populated with a POA&M entry
         if not any([
@@ -965,6 +1023,62 @@ def load_existing_poam_workbook(xlsx_path: str, is_closed_template: bool = False
 # ---------------------------------------------------------------------------
 # Delta Reconciliation: Previous OPEN POA&M vs. New Scan Results
 # ---------------------------------------------------------------------------
+
+def _merge_carry_over(scan_item: Dict[str, object], matched_prev: Dict[str, object], today: datetime.date) -> Dict[str, object]:
+    """Build a carried-over OPEN entry: fresh scan data + immutable analyst fields from the previous POA&M row."""
+    # Carry-over Open item: preserve immutable Original Detection Date, POAM ID, and analyst fields
+    merged = dict(scan_item)
+    merged["poam_id"] = matched_prev.get("poam_id") or merged["poam_id"]
+    if matched_prev.get("controls"):
+        merged["controls"] = matched_prev["controls"]
+    if matched_prev.get("point_of_contact"):
+        merged["point_of_contact"] = matched_prev["point_of_contact"]
+    if matched_prev.get("resources_required"):
+        merged["resources_required"] = matched_prev["resources_required"]
+    # Preserve existing analyst Remediation Plan if present; if blank, leave blank so GRCx can offer to draft
+    if matched_prev.get("remediation_plan"):
+        merged["remediation_plan"] = matched_prev["remediation_plan"]
+    else:
+        merged["remediation_plan"] = ""
+
+    # Original Detection Date never changes!
+    orig_det_obj = matched_prev.get("_det_date_obj") or scan_item.get("_det_date_obj") or today
+    merged["_det_date_obj"] = orig_det_obj
+    merged["original_detection_date"] = format_date_iso(orig_det_obj)
+
+    # Carry over Risk Adjustments / Deviations
+    for carry_field in [
+        "vendor_dependency",
+        "last_vendor_checkin",
+        "vendor_product_name",
+        "adjusted_risk_rating",
+        "risk_adjustment",
+        "false_positive",
+        "operational_requirement",
+        "deviation_rationale",
+        "supporting_documents",
+        "comments",
+        "bod_22_01_tracking",
+        "bod_22_01_due_date",
+    ]:
+        if matched_prev.get(carry_field):
+            merged[carry_field] = matched_prev[carry_field]
+
+    # Recalculate or preserve Scheduled Completion Date based on immutable Original Detection Date
+    sla_obj = compute_sla_date(
+        orig_det_obj,
+        str(merged.get("original_risk_rating", "Moderate")),
+        str(merged.get("adjusted_risk_rating", "")),
+        str(merged.get("risk_adjustment", "")),
+    )
+    merged["_sla_date_obj"] = sla_obj
+    merged["scheduled_completion_date"] = format_date_iso(sla_obj)
+    merged["status_date"] = format_date_iso(today)
+    merged["_stat_date_obj"] = today
+    merged["_is_carry_over"] = True
+    merged["_unverified_host"] = False
+    return merged
+
 
 def reconcile_poam_entries(
     prev_open_entries: List[Dict[str, object]],
@@ -1063,57 +1177,7 @@ def reconcile_poam_entries(
                 newly_closed.append(closed_copy)
                 continue
 
-            # Carry-over Open item: preserve immutable Original Detection Date, POAM ID, and analyst fields
-            merged = dict(scan_item)
-            merged["poam_id"] = matched_prev.get("poam_id") or merged["poam_id"]
-            if matched_prev.get("controls"):
-                merged["controls"] = matched_prev["controls"]
-            if matched_prev.get("point_of_contact"):
-                merged["point_of_contact"] = matched_prev["point_of_contact"]
-            if matched_prev.get("resources_required"):
-                merged["resources_required"] = matched_prev["resources_required"]
-            # Preserve existing analyst Remediation Plan if present; if blank, leave blank so GRCx can offer to draft
-            if matched_prev.get("remediation_plan"):
-                merged["remediation_plan"] = matched_prev["remediation_plan"]
-            else:
-                merged["remediation_plan"] = ""
-
-            # Original Detection Date never changes!
-            orig_det_obj = matched_prev.get("_det_date_obj") or scan_item.get("_det_date_obj") or today
-            merged["_det_date_obj"] = orig_det_obj
-            merged["original_detection_date"] = format_date_iso(orig_det_obj)
-
-            # Carry over Risk Adjustments / Deviations
-            for carry_field in [
-                "vendor_dependency",
-                "last_vendor_checkin",
-                "vendor_product_name",
-                "adjusted_risk_rating",
-                "risk_adjustment",
-                "false_positive",
-                "operational_requirement",
-                "deviation_rationale",
-                "supporting_documents",
-                "comments",
-                "bod_22_01_tracking",
-                "bod_22_01_due_date",
-            ]:
-                if matched_prev.get(carry_field):
-                    merged[carry_field] = matched_prev[carry_field]
-
-            # Recalculate or preserve Scheduled Completion Date based on immutable Original Detection Date
-            sla_obj = compute_sla_date(
-                orig_det_obj,
-                str(merged.get("original_risk_rating", "Moderate")),
-                str(merged.get("adjusted_risk_rating", "")),
-                str(merged.get("risk_adjustment", "")),
-            )
-            merged["_sla_date_obj"] = sla_obj
-            merged["scheduled_completion_date"] = format_date_iso(sla_obj)
-            merged["status_date"] = format_date_iso(today)
-            merged["_stat_date_obj"] = today
-            merged["_is_carry_over"] = True
-            merged["_unverified_host"] = False
+            merged = _merge_carry_over(scan_item, matched_prev, today)
 
             final_open.append(merged)
             carry_over_count += 1
@@ -1195,6 +1259,136 @@ def reconcile_poam_entries(
         "moved_to_closed": len(newly_closed),
     }
     return final_open, newly_closed, stats
+
+
+def legacy_match_key(name: object, desc: object) -> str:
+    """
+    Apps Script-compatible key: lower-cased, trimmed Weakness Name + Weakness Description
+    (the old scripts used `${name}|||${desc}`). Volatile text GRCx appends to descriptions
+    ([Scanner Evidence] output, Affected Package lists) is stripped and whitespace collapsed
+    so the same vulnerability produces the same key from run to run.
+    """
+    n = re.sub(r"\s+", " ", str(name or "")).strip().lower()
+    d = str(desc or "")
+    d = re.split(r"\[scanner evidence\]", d, flags=re.IGNORECASE)[0]
+    d = re.split(r"affected package\(s\):", d, flags=re.IGNORECASE)[0]
+    d = re.sub(r"\s+", " ", d).strip().lower()
+    return f"{n}|||{d}"
+
+
+def reconcile_poam_entries_legacy(
+    prev_open_entries: List[Dict[str, object]],
+    new_scan_entries: List[Dict[str, object]],
+    today: datetime.date,
+    prev_closed_entries: Optional[List[Dict[str, object]]] = None,
+    scanned_assets: Optional[Set[str]] = None,
+    asset_alias_map: Optional[Dict[str, Set[str]]] = None,
+    close_unscanned_hosts: bool = False,
+) -> Tuple[List[Dict[str, object]], List[Dict[str, object]], Dict[str, int]]:
+    """
+    Reproduces the original Google Apps Script logic ("Closed Entries" + "Persisting Entries"):
+      - Matching is by Weakness Name + Description only (no host / plugin ID).
+      - A previous OPEN entry whose name+description appears ANYWHERE in the scan STAYS open.
+      - A previous OPEN entry whose name+description is absent from the scan is CLOSED, even if
+        its host was not in the scan (scanned_assets / close_unscanned_hosts are ignored).
+      - A scan finding whose name+description already exists in the previous OPEN POA&M is NOT
+        a new item (it is the same vulnerability); everything else is new.
+    Approved False Positives (False Positive = Yes) still move to CLOSED, as in strict mode.
+    """
+    max_poam_seq = 0
+    uses_typed_prefix = False
+    max_by_prefix: Dict[str, int] = {"VULN": 0, "COMP": 0, "PENT": 0}
+    for p in list(prev_open_entries) + list(prev_closed_entries or []):
+        pid = str(p.get("poam_id", "")).strip()
+        m_typed = re.match(r"^(VULN|COMP|PENT)-(\d+)$", pid, flags=re.IGNORECASE)
+        if m_typed:
+            uses_typed_prefix = True
+            pfx = m_typed.group(1).upper()
+            seq_num = int(m_typed.group(2))
+            max_by_prefix[pfx] = max(max_by_prefix.get(pfx, 0), seq_num)
+            max_poam_seq = max(max_poam_seq, seq_num)
+        else:
+            m_seq = re.search(r"(\d+)$", pid)
+            if m_seq:
+                max_poam_seq = max(max_poam_seq, int(m_seq.group(1)))
+
+    scan_by_key: Dict[str, List[Dict[str, object]]] = {}
+    for se in new_scan_entries:
+        scan_by_key.setdefault(legacy_match_key(se.get("weakness_name"), se.get("weakness_description")), []).append(se)
+    prev_keys = {
+        legacy_match_key(p.get("weakness_name"), p.get("weakness_description"))
+        for p in prev_open_entries
+        if str(p.get("weakness_name", "")).strip() or str(p.get("weakness_description", "")).strip()
+    }
+
+    final_open: List[Dict[str, object]] = []
+    newly_closed: List[Dict[str, object]] = []
+    carry_over_count = 0
+    new_open_count = 0
+
+    for p in prev_open_entries:
+        key = legacy_match_key(p.get("weakness_name"), p.get("weakness_description"))
+        fp_yes = str(p.get("false_positive", "")).strip().lower() == "yes"
+        candidates = scan_by_key.get(key, [])
+
+        if fp_yes or not candidates:
+            closed_item = dict(p)
+            closed_item["status_date"] = format_date_iso(today)
+            closed_item["_stat_date_obj"] = today
+            prev_comment = str(closed_item.get("comments", "")).strip()
+            if fp_yes:
+                note = f"[Closed {format_date_iso(today)}: Approved False Positive moved to Closed POA&M]"
+            else:
+                note = f"[Closed {format_date_iso(today)}: Not present in latest scan (legacy name+description match)]"
+            closed_item["comments"] = f"{prev_comment}\n{note}".strip() if prev_comment else note
+            newly_closed.append(closed_item)
+            continue
+
+        # STAY: prefer the scan row for the same (plugin/source id, host); otherwise any row with the same name+description
+        exact = next((c for c in candidates if c.get("_dedup_key") == p.get("_dedup_key")), None)
+        scan_item = exact or candidates[0]
+        merged = _merge_carry_over(scan_item, p, today)
+        if exact is None:
+            # Keep this POA&M row's own host / source identity instead of the other host's
+            for f in ("asset_identifier", "source_identifier"):
+                merged[f] = p.get(f, merged.get(f, ""))
+            merged["_dedup_key"] = p.get("_dedup_key", merged.get("_dedup_key"))
+            merged["_asset_aliases"] = {extract_base_asset(str(p.get("asset_identifier", "")))}
+        final_open.append(merged)
+        carry_over_count += 1
+
+    claimed_new_keys: Set[str] = set()
+    for key, items in scan_by_key.items():
+        if key in prev_keys or key in claimed_new_keys:
+            continue
+        for se in items:  # all hosts for a genuinely new vulnerability become new rows
+            new_item = dict(se)
+            if uses_typed_prefix:
+                w_lower = str(new_item.get("weakness_name", "")).lower()
+                is_comp = (not str(new_item.get("cve", "")).strip()) or any(
+                    kw in w_lower for kw in ("cipher", "tls", "stig", "cis ", "compliance", "policy", "banner", "configuration")
+                )
+                pfx = "COMP" if is_comp else "VULN"
+                max_by_prefix[pfx] = max_by_prefix.get(pfx, 0) + 1
+                new_item["poam_id"] = f"{pfx}-{max_by_prefix[pfx]:05d}"
+            else:
+                max_poam_seq += 1
+                new_item["poam_id"] = f"POAM-{today.year}-{max_poam_seq:04d}"
+            new_item["_is_carry_over"] = False
+            new_item["_unverified_host"] = False
+            final_open.append(new_item)
+            new_open_count += 1
+        claimed_new_keys.add(key)
+
+    stats = {
+        "carry_over_open": carry_over_count,
+        "new_open": new_open_count,
+        "unverified_unscanned_open": 0,
+        "total_open": len(final_open),
+        "moved_to_closed": len(newly_closed),
+    }
+    return final_open, newly_closed, stats
+
 
 
 # ---------------------------------------------------------------------------
@@ -1283,6 +1477,7 @@ def discover_template_styles(
     s_root: ET.Element,
     start_row: int,
     is_closed_template: bool,
+    field_cols: Optional[Dict[str, str]] = None,
 ) -> Dict[str, str]:
     """
     Inspect the template's existing data row (`start_row`) and `xl/styles.xml` before
@@ -1322,16 +1517,17 @@ def discover_template_styles(
                     if "s" in c_el.attrib:
                         cell_styles[col_let] = c_el.attrib["s"]
                 if not is_closed_template:
-                    default_style = cell_styles.get("B", default_style)
-                    l_style = cell_styles.get("L", "")
-                    m_style = cell_styles.get("M", "")
+                    fc = field_cols or dict(zip(POAM_FIELDS, OPEN_COL_LETTERS))
+                    default_style = cell_styles.get(fc["poam_id"], default_style)
+                    l_style = cell_styles.get(fc["original_detection_date"], "")
+                    m_style = cell_styles.get(fc["scheduled_completion_date"], "")
                     if l_style and style_is_date.get(l_style, True):
                         date_style = l_style
                     if m_style and style_is_date.get(m_style, True):
                         sla_style = m_style
                 else:
                     # In CLOSED template, Row 3 is an example row (s="4") and Row 4+ uses s="2"
-                    default_style = cell_styles.get("A", default_style)
+                    default_style = cell_styles.get((field_cols or {}).get("poam_id", "A"), default_style)
                 break
 
         if is_closed_template:
@@ -1340,7 +1536,7 @@ def discover_template_styles(
                 if int(r_el.attrib.get("r", "0")) == start_row + 1:
                     for c_el in r_el.findall("main:c", ns):
                         col_let, _ = split_cell_ref(c_el.attrib.get("r", ""))
-                        if col_let == "A" and "s" in c_el.attrib:
+                        if col_let == (field_cols or {}).get("poam_id", "A") and "s" in c_el.attrib:
                             default_style = c_el.attrib["s"]
                             date_style = default_style
                             sla_style = default_style
@@ -1369,10 +1565,16 @@ def write_poam_workbook(
     all native XML namespaces, formatting, styles, drawings, and data validations.
     """
     ns = {"main": MAIN_NS, "r": REL_NS}
-    col_letters = CLOSED_COL_LETTERS if is_closed_template else OPEN_COL_LETTERS
     start_row = 3 if is_closed_template else 5
 
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+
+    # Detect where the POAM ID column sits in THIS template so output lines up with its headers
+    col_letters = resolve_col_letters(
+        read_xlsx_rows(template_path, sheet_index=0), is_closed_template, label=os.path.basename(template_path)
+    )
+    first_col_idx = col_to_idx(col_letters[0])
+    L = dict(zip(POAM_FIELDS, col_letters))  # field name -> column letter in this template
 
     with zipfile.ZipFile(template_path, "r") as zin:
         target_sheet_path = resolve_sheet_path(zin, sheet_index=0)
@@ -1415,7 +1617,7 @@ def write_poam_workbook(
         sheet_data = s_root.find("main:sheetData", ns)
 
         # Discover cell styles and row height from template before removing rows >= start_row
-        tpl_styles = discover_template_styles(zin, s_root, start_row, is_closed_template)
+        tpl_styles = discover_template_styles(zin, s_root, start_row, is_closed_template, L)
         default_style = tpl_styles["default"]
         date_style = tpl_styles["date"]
         sla_style = tpl_styles["sla"]
@@ -1440,9 +1642,9 @@ def write_poam_workbook(
 
             entry = entries[offset] if offset < len(entries) else None
 
-            if not is_closed_template:
-                # Column A in OPEN template (blank cell with default style)
-                ET.SubElement(r_el, f"{{{MAIN_NS}}}c", {"r": f"A{r_num}", "s": default_style})
+            # Any margin columns left of the POAM ID column (none when the ID is in column A)
+            for pad_idx in range(first_col_idx):
+                ET.SubElement(r_el, f"{{{MAIN_NS}}}c", {"r": f"{idx_to_col(pad_idx)}{r_num}", "s": default_style})
 
             for field_name, col_let in zip(POAM_FIELDS, col_letters):
                 cell_ref = f"{col_let}{r_num}"
@@ -1461,21 +1663,25 @@ def write_poam_workbook(
 
                 if not is_closed_template and field_name == "scheduled_completion_date":
                     f_el = ET.SubElement(c_el, f"{{{MAIN_NS}}}f")
+                    det_c = f"{L['original_detection_date']}{r_num}"
+                    orr_c = f"{L['original_risk_rating']}{r_num}"
+                    adj_c = f"{L['adjusted_risk_rating']}{r_num}"
+                    flg_c = f"{L['risk_adjustment']}{r_num}"
                     if strict_fedramp_risk:
                         f_el.text = (
-                            f'IF(OR(S{r_num}="N/A",ISBLANK(S{r_num}),T{r_num}<>"Yes"),'
-                            f'IF(R{r_num}="High",L{r_num}+30,'
-                            f'IF(R{r_num}="Moderate",L{r_num}+90,IF(R{r_num}="Low",L{r_num}+180,""))),'
-                            f'IF(S{r_num}="High",L{r_num}+30,'
-                            f'IF(S{r_num}="Moderate",L{r_num}+90,IF(S{r_num}="Low",L{r_num}+180,""))))'
+                            f'IF(OR({adj_c}="N/A",ISBLANK({adj_c}),{flg_c}<>"Yes"),'
+                            f'IF({orr_c}="High",{det_c}+30,'
+                            f'IF({orr_c}="Moderate",{det_c}+90,IF({orr_c}="Low",{det_c}+180,""))),'
+                            f'IF({adj_c}="High",{det_c}+30,'
+                            f'IF({adj_c}="Moderate",{det_c}+90,IF({adj_c}="Low",{det_c}+180,""))))'
                         )
                     else:
                         f_el.text = (
-                            f'IF(OR(S{r_num}="N/A",ISBLANK(S{r_num}),T{r_num}<>"Yes"),'
-                            f'IF(OR(R{r_num}="Critical",R{r_num}="High"),L{r_num}+30,'
-                            f'IF(R{r_num}="Moderate",L{r_num}+90,IF(R{r_num}="Low",L{r_num}+180,""))),'
-                            f'IF(OR(S{r_num}="Critical",S{r_num}="High"),L{r_num}+30,'
-                            f'IF(S{r_num}="Moderate",L{r_num}+90,IF(S{r_num}="Low",L{r_num}+180,""))))'
+                            f'IF(OR({adj_c}="N/A",ISBLANK({adj_c}),{flg_c}<>"Yes"),'
+                            f'IF(OR({orr_c}="Critical",{orr_c}="High"),{det_c}+30,'
+                            f'IF({orr_c}="Moderate",{det_c}+90,IF({orr_c}="Low",{det_c}+180,""))),'
+                            f'IF(OR({adj_c}="Critical",{adj_c}="High"),{det_c}+30,'
+                            f'IF({adj_c}="Moderate",{det_c}+90,IF({adj_c}="Low",{det_c}+180,""))))'
                         )
                     if entry is not None:
                         d_obj = parse_any_date(str(entry.get(field_name, "")))
@@ -1522,10 +1728,10 @@ def write_poam_workbook(
                     sqref = dv.attrib.get("sqref", "")
                     f1 = dv.find("main:formula1", ns)
                     if f1 is not None and f1.text:
-                        if "R5" in sqref:
+                        if f"{L['original_risk_rating']}{start_row}" in sqref:
                             dv.set("prompt", "Low, Moderate, High, Critical")
                             f1.text = '"Low,Moderate,High,Critical"'
-                        elif "S5" in sqref:
+                        elif f"{L['adjusted_risk_rating']}{start_row}" in sqref:
                             dv.set("prompt", "Low, Moderate, High, Critical, N/A")
                             f1.text = '"Low,Moderate,High,Critical,N/A"'
 
@@ -1969,7 +2175,27 @@ def main() -> int:
         help="Use strict 3-tier FedRAMP risk rating (High/Moderate/Low; maps Critical -> High 30d SLA) and preserve original template data validations.",
     )
 
+    parser.add_argument(
+        "--match-mode",
+        choices=["strict", "legacy"],
+        default=MATCH_MODE,
+        help=(
+            "How previous OPEN entries are matched to the new scan. 'strict' (default): plugin/source ID + host, "
+            "with unscanned hosts kept open for review. 'legacy': reproduces the old Google Apps Scripts - match on "
+            "Weakness Name + Description only; anything absent from the scan is closed."
+        ),
+    )
+    parser.add_argument(
+        "--poam-id-column",
+        default=None,
+        metavar="COL",
+        help="Column letter holding the 'POAM ID' header in the POA&M workbooks/templates (default: auto-detect, falling back to A).",
+    )
+
     args = parser.parse_args()
+    global POAM_ID_COLUMN_OVERRIDE
+    if args.poam_id_column:
+        POAM_ID_COLUMN_OVERRIDE = re.sub(r"[^A-Za-z]", "", args.poam_id_column).upper() or None
 
     scans_dir = os.path.abspath(args.scans_dir)
     os.makedirs(scans_dir, exist_ok=True)
@@ -2129,7 +2355,9 @@ def main() -> int:
     if prev_closed_path and prev_closed_entries:
         print(f"[*] Loaded {len(prev_closed_entries)} existing entries from previous CLOSED POA&M: {os.path.basename(prev_closed_path)}")
 
-    final_open, newly_closed, stats = reconcile_poam_entries(
+    reconcile_fn = reconcile_poam_entries_legacy if args.match_mode == "legacy" else reconcile_poam_entries
+    print(f"[*] Match mode: {args.match_mode.upper()}")
+    final_open, newly_closed, stats = reconcile_fn(
         prev_open_entries=prev_open_entries,
         new_scan_entries=scan_entries,
         today=today,
