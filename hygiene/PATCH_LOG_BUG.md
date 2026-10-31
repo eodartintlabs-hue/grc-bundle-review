@@ -1,0 +1,46 @@
+# Bug Fixes & Maintenance Patches Ledger (`hygiene/PATCH_LOG_BUG.md`)
+
+<p align="center">
+  <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/ARCHITECTURE.md"><b>🏛️ Architecture & Tech Stack</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/DATAFLOW.md"><b>🔄 Data Flow</b></a> &nbsp;·&nbsp;
+  <a href="../SECURITY.md"><b>🛡️ Security Policy</b></a> &nbsp;·&nbsp;
+  <a href="../amplifying-info/GOVERNANCE.md"><b>⚖️ Governance & Mandates</b></a> &nbsp;·&nbsp;
+  <a href="../testing/TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
+  <a href="../testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
+  <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
+  <a href="PATCH_LOG.md"><b>🩹 Patch Log Index</b></a> &nbsp;·&nbsp;
+  <a href="ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
+  <a href="RELEASING.md"><b>🏷️ Releasing</b></a> &nbsp;·&nbsp;
+  <a href="../docs/scan-transform-guide.md"><b>📊 Scan-to-POA&M Guide</b></a> &nbsp;·&nbsp;
+  <a href="../docs/grc-bundle-use-case.md"><b>📑 Bundle Walkthrough</b></a> &nbsp;·&nbsp;
+  <a href="../docs/test-dummies-guide.md"><b>🎯 Test Dummies Guide</b></a>
+</p>
+
+<p align="center">
+  <b>Sub-Ledgers</b>: 
+  <a href="PATCH_LOG_BUG.md"><b>🐛 Bug Fixes & Patches</b></a> &nbsp;·&nbsp;
+  <a href="PATCH_LOG_MINOR.md"><b>✨ Minor Releases</b></a> &nbsp;·&nbsp;
+  <a href="PATCH_LOG_MAJOR.md"><b>🏛️ Major Releases & Baselines</b></a>
+</p>
+
+> **Ledger Scope**: **Bug Fixes, Operational Tweaks, Rule/Catalog Tuning & Hygiene Patches (`vX.Y.Z` where `Z > 0`)**  
+> **Active Series Codename**: `Sasebo` (`v1.3.x`) · Previous: `Misawa` (`v1.2.0`), `Kadena` (`v1.1.0`), `Yokosuka` (`v1.0.x`)  
+> **Companion Documents**: See [`PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md) for minor features, [`PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md) for major baselines, [`RELEASE_NOTES.md`](RELEASE_NOTES.md) for narrative notes, and [`RELEASING.md`](RELEASING.md) for release procedures.
+
+---
+
+## 1. Running Bug Fix & Maintenance Patch Table
+
+This ledger tracks all incremental bug fixes, security/container patches, rule/catalog tuning, and documentation/hygiene updates, maintaining full commit, file-scope, and **Author / POC** accountability.
+
+| Version | Commit | Date | Category | Subsystem / Files Affected | Summary of Changes | Author / POC |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **`v1.0.1`** | `d038e81` | `2026-10-18` | `Hygiene & Docs` | `./grc`, `README.md`, `docs/grc-bundle-use-case.md`, `RELEASE_NOTES.md`, `PATCH_LOG.md`, `live-demo.md` | Adopted `Yokosuka` release codename in `grcfetch` CLI banner; standardized Git author identity to GitHub `noreply`; relocated and kebab-cased `docs/grc-bundle-use-case.md`; added initial `RELEASE_NOTES.md`, `PATCH_LOG.md`, and `live-demo.md`; refreshed AOC-04, AOC-09, and AOC-10 evidence packages. | Byron Turner |
+| **`v1.0.2`** | `3445ac6` | `2026-10-18` | `Hygiene & Docs` | `amplifying-info/*`, `testing/*`, `hygiene/*`, `README.md`, `SECURITY.md`, `./grc` | Reorganized root documentation into modular domain directories (`amplifying-info/`, `testing/`, `hygiene/`) while preserving `README.md` and `SECURITY.md` at the root for native GitHub tabs; updated all cross-file navigation bars and SVG asset paths; bumped CLI banner to `v1.0.2 (Yokosuka)`. | Byron Turner |
+| **`v1.0.3`** | `48a43ff` | `2026-10-18` | `Hygiene & Docs` | `testing/demo-evidence/*`, `evidence/.gitkeep`, `hygiene/PATCH_LOG.md`, `testing/live-demo.md`, `./grc` | Segregated synthetic test outputs into `testing/demo-evidence/` so root `evidence/` is reserved exclusively for real production bundles; streamlined `PATCH_LOG.md` table to eliminate redundant version/codename columns and added `Commit` and `Author / POC` columns; bumped CLI banner to `v1.0.3 (Yokosuka)`. | Byron Turner |
+| **`v1.0.4`** | `19c41dc` | `2026-10-18` | `Bug Fix` | `./grc`, `docker/scan_orchestrator.sh`, `README.md`, `testing/live-demo.md`, `hygiene/*` | Fixed bug where `./grc scan` omitted `crypto_lib_scan.py` and `sbom_analyzer.py` prior to Phase 4 synthesis; added `--all` and `--engine <name>` (`semgrep`, `gitleaks`, `checkov`, `syft`, `grype`, `trivy`, `oscap`, `crypto`, `sbom`) flags for independent engine execution; documented `v1.x` Restricted Beta (`Yokosuka`) vs. `v2.0.0` Full Release (Hawaiian military base cities) lifecycle. | Byron Turner |
+| **`v1.0.5`** | `48d1d34` | `2026-10-19` | `Hygiene & Docs` | `hygiene/ROADMAP.md`, `hygiene/RELEASE_NOTES.md`, `hygiene/PATCH_LOG.md`, `README.md`, `SECURITY.md`, `amplifying-info/*`, `testing/*`, `docs/grc-bundle-use-case.md`, `./grc` | Added [`hygiene/ROADMAP.md`](ROADMAP.md) and `README.md` roadmap section detailing the product roadmap across Japan (`v1.2.0 — Sasebo` Universal Workstation Portability, `v1.3.0 — Misawa` Tenable & AWS Inspector CSV Ingest $\rightarrow$ Official FedRAMP POA&M `.xlsx`) and Hawaii (`v2.0.0 — Pearl Harbor` Cloud Lift, Helm Chart Auditing & Local LLM Baseline, `v2.1.0 — Kaneohe` RAM-Adaptive LLM Scaling); synchronized top navigation bars across all documentation files; bumped CLI banner to `v1.0.5 (Yokosuka)`. | Byron Turner |
+| **`v1.0.6`** | `bf1c799` | `2026-10-19` | `Hygiene & Docs` | `README.md`, `docs/workspace-layout.md`, `testing/demo-evidence/aoc-combo-4x/*`, `hygiene/RELEASE_NOTES.md`, `hygiene/PATCH_LOG.md`, `./grc` | Added **Minimum & Recommended System Requirements (Hardware & Software)** tables to `README.md` (Section 7) and `docs/workspace-layout.md` (removed in `v1.1.0`); added 4-in-1 multi-AOC synthetic verification evidence package (`testing/demo-evidence/aoc-combo-4x/` combining AOC-02, AOC-04, AOC-07, and AOC-09); bumped CLI banner to `v1.0.6 (Yokosuka)`. | Byron Turner |
+| **`v1.3.2`<br/>(`Sasebo`)** | *Pending* | `2026-10-31` | `Bug Fix` | `scripts/transform_scans.py`, `testing/test_transform_scans.py`, `docs/scan-transform-guide.md`, `COMMANDS.md`, `INSTALL.md`, `README.md`, `hygiene/*` | Multi-scan POA&M transformation bug fix & tri-ledger patch architecture: extended [`scripts/transform_scans.py`](../scripts/transform_scans.py) (`./grc transform`) to accept up to 5 scan files simultaneously into the same POA&M tracker with interactive addition prompts (`[y/N]`); added `merge_scan_entries` to consolidate findings into 1 row per unique vulnerability + asset (preserving earliest detection dates, highest risk ratings, merged aliases, and aggregated supporting documents); enabled CLI multi-scan flags (`--scan s1 --scan s2` / positional); added multi-scan unit tests (15 tests passing); partitioned patch ledger into dedicated [`PATCH_LOG_BUG.md`](PATCH_LOG_BUG.md), [`PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md), and [`PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md) files with master index. | Byron Turner |
+| *`v1.3.3`<br/>(`Sasebo`)* | *Pending* | *TBD* | *Bug Fix / Portability* | *TBD* | *Reserved for next incremental Beta integration patch in the `v1.3.x - Sasebo` series (workstation portability & `./grc doctor`).* | *TBD* |

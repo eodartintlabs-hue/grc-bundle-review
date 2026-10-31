@@ -1,4 +1,4 @@
-# v1.x Running Patch Ledger (`hygiene/PATCH_LOG.md`)
+# Patch Log Hub & Running Ledger (`hygiene/PATCH_LOG.md`)
 
 <p align="center">
   <a href="../README.md"><b>📖 README</b></a> &nbsp;·&nbsp;
@@ -9,7 +9,7 @@
   <a href="../testing/TESTING.md"><b>🧪 Verification Plan</b></a> &nbsp;·&nbsp;
   <a href="../testing/live-demo.md"><b>🎬 Live Demo</b></a> &nbsp;·&nbsp;
   <a href="RELEASE_NOTES.md"><b>🚀 Release Notes</b></a> &nbsp;·&nbsp;
-  <a href="PATCH_LOG.md"><b>🩹 v1 Patch Log</b></a> &nbsp;·&nbsp;
+  <a href="PATCH_LOG.md"><b>🩹 Patch Log Index</b></a> &nbsp;·&nbsp;
   <a href="ROADMAP.md"><b>🗺️ Roadmap</b></a> &nbsp;·&nbsp;
   <a href="RELEASING.md"><b>🏷️ Releasing</b></a> &nbsp;·&nbsp;
   <a href="../docs/scan-transform-guide.md"><b>📊 Scan-to-POA&M Guide</b></a> &nbsp;·&nbsp;
@@ -20,13 +20,25 @@
 > **Active Major Series**: `v1.x` — **Restricted Beta & Integration Testing** *(Limited Access)*  
 > **Active Series Codename**: `Sasebo` (`v1.3.x`) · Previous: `Misawa` (`v1.2.0`), `Kadena` (`v1.1.0`), `Yokosuka` (`v1.0.x`) *(Japan Military Installation Theme)*  
 > **Next Major Series (`v2.0.0`)**: **`Pearl Harbor`** — **Full Production Release (GA)** *(Hawaiian Military Base Cities Theme — see **[`hygiene/ROADMAP.md`](ROADMAP.md)**)*  
-> **Companion Documents**: See **[`hygiene/RELEASE_NOTES.md`](RELEASE_NOTES.md)** for full narrative release notes, **[`hygiene/ROADMAP.md`](ROADMAP.md)** for planned work, and **[`hygiene/RELEASING.md`](RELEASING.md)** for versioning rules and the release procedure.
+> **Companion Documents**: See **[`hygiene/RELEASE_NOTES.md`](RELEASE_NOTES.md)** for narrative release notes, **[`hygiene/ROADMAP.md`](ROADMAP.md)** for planned work, and **[`hygiene/RELEASING.md`](RELEASING.md)** for versioning rules and release procedures.
 
 ---
 
-## 1. v1.x ("Yokosuka", "Kadena", "Misawa" & "Sasebo" — Beta & Integration Testing) Running Release & Patch Table
+## 1. Running Patch Ledgers by Release Category
 
-This ledger tracks the initial Beta baseline (`v1.0.0`) and all incremental integration-testing releases (`v1.x`) across the **v1 Beta lifecycle** of **GRCx** (*The GRC eXperience*), maintaining full commit, file-scope, and **Author / POC** accountability prior to the **`v2.0.0` Full Release**.
+To provide clear accountability and auditability without cluttering patch views, the **GRCx** patch ledger is partitioned into three dedicated logs aligned with [Semantic Versioning](RELEASING.md):
+
+| Ledger | Scope & Versioning | Typical Contents | Active File |
+| :--- | :--- | :--- | :--- |
+| **🐛 Bug Fixes & Patches** | **Patch Releases (`vX.Y.Z` where `Z > 0`)** | CLI bug fixes, argument parsing, engine bug fixes, rule/catalog tuning, and documentation hygiene. | [`hygiene/PATCH_LOG_BUG.md`](PATCH_LOG_BUG.md) |
+| **✨ Minor Releases** | **Minor Releases (`vX.Y.0` where `Y > 0`)** | Backward-compatible capability additions: new scanner engines, CLI subcommands, compliance frameworks, or workstation drop-in folders. | [`hygiene/PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md) |
+| **🏛️ Major Releases & Baselines** | **Major Milestones (`vX.0.0`)** | Lifecycle transitions, foundational architecture baselines (e.g. `v1.0.0` Beta Baseline), and General Availability (`v2.0.0` GA). | [`hygiene/PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md) |
+
+---
+
+## 2. Combined v1.x Master Running Release & Patch Table
+
+For convenience during audits and cross-series reviews, the table below provides a unified chronological view of all releases across the **v1 Beta lifecycle**:
 
 | Version | Commit | Date | Category | Subsystem / Files Affected | Summary of Changes | Author / POC |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -40,6 +52,7 @@ This ledger tracks the initial Beta baseline (`v1.0.0`) and all incremental inte
 | **`v1.1.0`<br/>(`Kadena`)** | `b2eea63` | `2026-10-20` | `Minor Release` | `INSTALL.md`, `COMMANDS.md`, `assets/logo/*`, `./grc`, `README.md`, `SECURITY.md`, `docs/*`, `hygiene/*`, `amplifying-info/*`, `testing/*`, `scripts/*` | Rebranded platform to **GRCx — "The GRC eXperience"** across all active documentation, CLI wrappers, and analyzer metadata; added dedicated onboarding guide ([`INSTALL.md`](../INSTALL.md), including viewing outputs in Cursor) and CLI reference ([`COMMANDS.md`](../COMMANDS.md)); removed 3 redundant legacy `docs/` files (`workspace-layout.md`, `review-workflow.md`, `design-rules-and-aocs.md`) and slimmed down `README.md`; added Light/Dark seagull-escaping-square brand lockups (`assets/logo/`) and updated `grcfetch` CLI banner to `GRCx v1.1.0 (Kadena)`. | Byron Turner |
 | **`v1.2.0`<br/>(`Misawa`)** | `c510bc3` | `2026-10-20` | `Minor Release` | `scripts/transform_scans.py`, `templates/*`, `docs/scan-transform-guide.md`, `testing/sample-scans/*`, `testing/demo-evidence/*`, `./grc`, `COMMANDS.md`, `INSTALL.md`, `README.md`, `hygiene/*` | Added standalone Scan-to-FedRAMP POA&M Transformation Engine ([`scripts/transform_scans.py`](../scripts/transform_scans.py) / `./grc transform`) for **Tenable** and **AWS Inspector** `.csv`/`.xlsx` scan exports; bundled official [`OPEN FedRAMP-POAM-Template.xlsx`](../templates/OPEN%20FedRAMP-POAM-Template.xlsx) and [`CLOSED LEGACY FedRAMP-POAM-Template.xlsx`](../templates/CLOSED%20LEGACY%20FedRAMP-POAM-Template.xlsx); implemented Open $\rightarrow$ Closed POA&M reconciliation, interactive `[y/n]` remediation plan URL drafting (Tenable Plugin, AWS ALAS, Inspector & NVD links), and SLA breach / finding age reporting; added standalone analyst guide ([`docs/scan-transform-guide.md`](../docs/scan-transform-guide.md)); updated roadmap (swapped `Misawa` `v1.2.0` & `Sasebo` `v1.3.0`; moved Cloud Lift & Local LLM baseline to `v2.1.0+ — Kaneohe`). | Byron Turner |
 | **`v1.3.0`<br/>(`Sasebo`)** | `3398d69` | `2026-10-29` | `Minor Release` | `scans/.gitkeep`, `scripts/transform_scans.py`, `rules/cisa_kev_catalog.json`, `testing/test_transform_scans.py`, `testing/sample-scans/*`, `testing/demo-evidence/*`, `./grc`, `docs/scan-transform-guide.md`, `COMMANDS.md`, `INSTALL.md`, `README.md`, `hygiene/*` | Added designated root **`scans/`** drop-in folder with interactive numbered file selection (`[1]`, `[2]`, ...) and extensionless filename resolution; hardened [`scripts/transform_scans.py`](../scripts/transform_scans.py) for FedRAMP deliverable integrity: host-verified auto-closure (via Tenable Plugin `19506` & IP/DNS alias reconciliation) retaining unscanned hosts in OPEN for review, offline CISA KEV catalog lookup ([`rules/cisa_kev_catalog.json`](../rules/cisa_kev_catalog.json)) for BOD 22-01 due dates, monotonic POA&M ID numbering across OPEN + CLOSED workbooks, duplicate-merge SLA recalculation, full OpenXML namespace preservation (`mc`, `x14`, `x14ac`), XML control-char sanitization (`32,767` char cap), `ET.iterparse` streaming, `--dry-run`, `--strict-fedramp-risk`, and a 10-test unit suite ([`testing/test_transform_scans.py`](../testing/test_transform_scans.py)); added [`hygiene/RELEASING.md`](RELEASING.md); bumped CLI and docs to `GRCx v1.3.0 (Sasebo)`. | Byron Turner |
-| *`v1.3.1`<br/>(`Sasebo`)* | *Pending* | *TBD* | *TBD* | *TBD* | *Reserved for next incremental Beta integration patch in the `v1.3.x - Sasebo` series (workstation portability & `./grc doctor`).* | *TBD* |
+| **`v1.3.2`<br/>(`Sasebo`)** | *Pending* | `2026-10-31` | `Bug Fix` | `scripts/transform_scans.py`, `testing/test_transform_scans.py`, `docs/scan-transform-guide.md`, `COMMANDS.md`, `INSTALL.md`, `README.md`, `hygiene/*` | Multi-scan POA&M transformation bug fix & tri-ledger patch architecture: extended [`scripts/transform_scans.py`](../scripts/transform_scans.py) (`./grc transform`) to accept up to 5 scan files simultaneously into the same POA&M tracker with interactive addition prompts (`[y/N]`); added `merge_scan_entries` to consolidate findings into 1 row per unique vulnerability + asset (preserving earliest detection dates, highest risk ratings, merged aliases, and aggregated supporting documents); enabled CLI multi-scan flags (`--scan s1 --scan s2` / positional); added multi-scan unit tests (15 tests passing); partitioned patch ledger into dedicated [`PATCH_LOG_BUG.md`](PATCH_LOG_BUG.md), [`PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md), and [`PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md) files with master index. | Byron Turner |
+| *`v1.3.3`<br/>(`Sasebo`)* | *Pending* | *TBD* | *Bug Fix / Portability* | *TBD* | *Reserved for next incremental Beta integration patch in the `v1.3.x - Sasebo` series (workstation portability & `./grc doctor`).* | *TBD* |
 | *`v2.0.0`<br/>(`Pearl Harbor`)* | *Planned* | *TBD* | *Full Release (GA)* | *All Subsystems* | *Planned Full Production Release (General Availability) launching the Hawaiian military base cities series (`Pearl Harbor`) and introducing **Helm chart compliance auditing (`./grc scan --engine helm`)** with offline template rendering and DISA K8s STIG / NSA-CISA checks.* | Byron Turner |
 | *`v2.1.0+`<br/>(`Kaneohe`)* | *Planned* | *TBD* | *Post-GA Release* | *All Subsystems* | *Planned Post-GA Hawaiian series release lifting execution to cloud-hosted environments (**AWS EC2 & Bottlerocket**), integrating the air-gapped local LLM baseline (`Gemma` / `GPT-OSS`) alongside **dynamic endpoint RAM-adaptive scaling** for POA&M synthesis, and adding **NIST OSCAL 1.1.x** export (see [`hygiene/ROADMAP.md`](ROADMAP.md)).* | Byron Turner |

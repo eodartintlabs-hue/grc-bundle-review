@@ -72,7 +72,7 @@ The example below cuts `v1.3.1 — Sasebo`. Replace the version, codename, and s
 
 2. **Update the docs in `hygiene/`:**
    - In [`RELEASE_NOTES.md`](RELEASE_NOTES.md), add a row at the top of the summary table with `_TBD after tagging_` in the Commit column. Add a section for the release that describes only what actually shipped.
-   - In [`PATCH_LOG.md`](PATCH_LOG.md), add a row to the running patch ledger recording the affected files, summary of changes, and `Author / POC` accountability.
+   - In the category-specific patch log ([`PATCH_LOG_BUG.md`](PATCH_LOG_BUG.md) for bug fixes/patches, [`PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md) for minor releases, or [`PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md) for major baselines) and master index [`PATCH_LOG.md`](PATCH_LOG.md), add a row to the running patch ledger recording the affected files, summary of changes, and `Author / POC` accountability.
    - In [`ROADMAP.md`](ROADMAP.md), remove the delivered items (or the whole section) and update the status table and the "Current release" line.
 
 3. **Commit, tag, and push:**
@@ -84,7 +84,7 @@ The example below cuts `v1.3.1 — Sasebo`. Replace the version, codename, and s
    git push origin main --tags
    ```
 
-4. **Record the commit.** A commit can't contain its own hash, so fill in the Commit column in [`RELEASE_NOTES.md`](RELEASE_NOTES.md) and [`PATCH_LOG.md`](PATCH_LOG.md) afterward:
+4. **Record the commit.** A commit can't contain its own hash, so fill in the Commit column in [`RELEASE_NOTES.md`](RELEASE_NOTES.md), the category patch log ([`PATCH_LOG_BUG.md`](PATCH_LOG_BUG.md), [`PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md), or [`PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md)), and [`PATCH_LOG.md`](PATCH_LOG.md) afterward:
 
    ```bash
    git rev-parse --short v1.3.1^{commit}

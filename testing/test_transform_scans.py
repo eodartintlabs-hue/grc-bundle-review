@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unit Test Suite for GRCx (v1.3.0 — Sasebo) Scan-to-POA&M Transformation Engine
+Unit Test Suite for GRCx (v1.3.2 — Sasebo) Scan-to-POA&M Transformation Engine
 (scripts/transform_scans.py).
 
 Validates compliance-critical invariants:
@@ -22,6 +22,7 @@ import os
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -44,8 +45,8 @@ class TestTransformScansEngine(unittest.TestCase):
     # -----------------------------------------------------------------------
 
     def test_column_letters_generated_cleanly(self) -> None:
-        self.assertEqual(ts.OPEN_COL_LETTERS[0], "B")
-        self.assertEqual(ts.OPEN_COL_LETTERS[-1], "AB")
+        self.assertEqual(ts.OPEN_COL_LETTERS[0], "A")
+        self.assertEqual(ts.OPEN_COL_LETTERS[-1], "AA")
         self.assertEqual(len(ts.OPEN_COL_LETTERS), 27)
         self.assertEqual(ts.CLOSED_COL_LETTERS[0], "A")
         self.assertEqual(ts.CLOSED_COL_LETTERS[4], "E")
@@ -487,6 +488,204 @@ class TestTransformScansEngine(unittest.TestCase):
             asset_alias_map=i_aliases,
         )
         self.assertEqual(len(i_closed), 14)
+
+    # -----------------------------------------------------------------------
+    # 7. Multi-Scan Transformation & Deduplication (Up to 5 Scans)
+    # -----------------------------------------------------------------------
+
+    def test_merge_scan_entries_deduplicates_and_preserves_earliest_date_highest_risk(self) -> None:
+        """Verify merging entries across multiple scans preserves earliest detection date and highest risk."""
+        scan1_entry = {
+            "_dedup_key": ("tenable:12345", "10.0.0.1"),
+            "_asset_aliases": {"10.0.0.1"},
+            "_scanner_type": "tenable",
+            "_raw_solution": "Patch package v1",
+            "_see_also": "",
+            "_det_date_obj": datetime.date(2026, 9, 1),
+            "_sla_date_obj": datetime.date(2026, 11, 30),
+            "_stat_date_obj": datetime.date(2026, 9, 1),
+            "poam_id": "",
+            "weakness_name": "OpenSSH Vulnerability",
+            "weakness_description": "Vulnerable SSH service",
+            "detector_source": "Tenable Network Security",
+            "source_identifier": "12345",
+            "asset_identifier": "10.0.0.1 (eth0)",
+            "point_of_contact": "SecOps",
+            "remediation_plan": "Patch package v1",
+            "original_detection_date": "2026-09-01",
+            "scheduled_completion_date": "2026-11-30",
+            "status_date": "2026-09-01",
+            "original_risk_rating": "Moderate",
+            "supporting_documents": "scan1.csv",
+            "cve": "CVE-2026-1111",
+            "bod_22_01_tracking": "No",
+        }
+
+        scan2_entry = {
+            "_dedup_key": ("tenable:12345", "10.0.0.1"),
+            "_asset_aliases": {"10.0.0.1", "host-a.internal"},
+            "_scanner_type": "tenable",
+            "_raw_solution": "Patch package v2",
+            "_see_also": "https://example.com/advisory",
+            "_det_date_obj": datetime.date(2026, 8, 15),  # Earlier detection date!
+            "_sla_date_obj": datetime.date(2026, 9, 14),
+            "_stat_date_obj": datetime.date(2026, 10, 1),
+            "poam_id": "",
+            "weakness_name": "OpenSSH Vulnerability",
+            "weakness_description": "Vulnerable SSH service",
+            "detector_source": "Tenable Network Security",
+            "source_identifier": "12345",
+            "asset_identifier": "10.0.0.1:22",
+            "point_of_contact": "SecOps",
+            "remediation_plan": "Patch package v2",
+            "original_detection_date": "2026-08-15",
+            "scheduled_completion_date": "2026-09-14",
+            "status_date": "2026-10-01",
+            "original_risk_rating": "High",  # Higher risk rating!
+            "supporting_documents": "scan2.csv",
+            "cve": "CVE-2026-1111, CVE-2026-2222",
+            "bod_22_01_tracking": "Yes",
+            "bod_22_01_due_date": "2026-09-15",
+        }
+
+        scan3_entry = {
+            "_dedup_key": ("tenable:67890", "10.0.0.2"),  # Different finding and asset
+            "_asset_aliases": {"10.0.0.2"},
+            "_scanner_type": "tenable",
+            "_raw_solution": "Update Apache",
+            "_see_also": "",
+            "_det_date_obj": datetime.date(2026, 10, 10),
+            "_sla_date_obj": datetime.date(2026, 11, 9),
+            "_stat_date_obj": datetime.date(2026, 10, 10),
+            "poam_id": "",
+            "weakness_name": "Apache HTTP Server Issue",
+            "weakness_description": "Apache out of date",
+            "detector_source": "Tenable Network Security",
+            "source_identifier": "67890",
+            "asset_identifier": "10.0.0.2",
+            "point_of_contact": "SecOps",
+            "remediation_plan": "Update Apache",
+            "original_detection_date": "2026-10-10",
+            "scheduled_completion_date": "2026-11-09",
+            "status_date": "2026-10-10",
+            "original_risk_rating": "High",
+            "supporting_documents": "scan3.csv",
+            "cve": "CVE-2026-3333",
+            "bod_22_01_tracking": "No",
+        }
+
+        merged = ts.merge_scan_entries([[scan1_entry], [scan2_entry], [scan3_entry]])
+        self.assertEqual(len(merged), 2)
+
+        # Finding 1 should be consolidated
+        f1 = [e for e in merged if e["_dedup_key"] == ("tenable:12345", "10.0.0.1")][0]
+        self.assertEqual(f1["original_detection_date"], "2026-08-15")  # Earlier date
+        self.assertEqual(f1["original_risk_rating"], "High")  # Higher risk
+        self.assertIn("scan1.csv", f1["supporting_documents"])
+        self.assertIn("scan2.csv", f1["supporting_documents"])
+        self.assertIn("host-a.internal", f1["_asset_aliases"])
+        self.assertEqual(f1["bod_22_01_tracking"], "Yes")
+
+        # Finding 2 is separate
+        f2 = [e for e in merged if e["_dedup_key"] == ("tenable:67890", "10.0.0.2")][0]
+        self.assertEqual(f2["source_identifier"], "67890")
+
+    def test_merge_scan_entries_supports_up_to_five_scans(self) -> None:
+        """Verify merging works seamlessly across 5 distinct scan files."""
+        scans = []
+        for i in range(1, 6):
+            entry = {
+                "_dedup_key": (f"source:{i}", f"host-{i}"),
+                "_asset_aliases": {f"host-{i}"},
+                "_scanner_type": "tenable",
+                "_raw_solution": f"Fix {i}",
+                "_see_also": "",
+                "_det_date_obj": datetime.date(2026, 10, i),
+                "_sla_date_obj": datetime.date(2026, 11, i),
+                "_stat_date_obj": datetime.date(2026, 10, i),
+                "poam_id": "",
+                "weakness_name": f"Vuln {i}",
+                "weakness_description": f"Description {i}",
+                "detector_source": "Tenable",
+                "source_identifier": f"SRC-{i}",
+                "asset_identifier": f"10.0.0.{i}",
+                "point_of_contact": "SecOps",
+                "remediation_plan": f"Fix {i}",
+                "original_detection_date": f"2026-10-0{i}",
+                "scheduled_completion_date": f"2026-11-0{i}",
+                "status_date": f"2026-10-0{i}",
+                "original_risk_rating": "Moderate",
+                "supporting_documents": f"scan_{i}.csv",
+                "cve": f"CVE-2026-{1000 + i}",
+                "bod_22_01_tracking": "No",
+            }
+            scans.append([entry])
+
+        merged = ts.merge_scan_entries(scans)
+        self.assertEqual(len(merged), 5)
+        for i in range(1, 6):
+            self.assertTrue(any(e["source_identifier"] == f"SRC-{i}" for e in merged))
+
+    def test_interactive_multi_scan_selection_prompting(self) -> None:
+        """Simulate user selecting multiple scans interactively with y/N prompts."""
+        sample_dir = os.path.join(REPO_ROOT, "testing", "sample-scans")
+        t_path = os.path.join(sample_dir, "tenable_monthly_scan.csv")
+        i_path = os.path.join(sample_dir, "aws_inspector_scan.csv")
+
+        # Inputs:
+        # 1. Select scan 1 (tenable_monthly_scan.csv)
+        # 2. Add additional scan? 'y'
+        # 3. Select scan 2 (aws_inspector_scan.csv)
+        # 4. Add additional scan? 'n'
+        # 5. Select previous OPEN FedRAMP POA&M: "" (none)
+        # 6. Draft remediation plans? 'n'
+        simulated_inputs = [
+            t_path,
+            "y",
+            i_path,
+            "n",
+            "",
+            "n",
+        ]
+
+        with mock.patch("sys.stdin.isatty", return_value=True):
+            with mock.patch("builtins.input", side_effect=simulated_inputs):
+                with mock.patch("sys.argv", ["grc transform", "--dry-run"]):
+                    exit_code = ts.main()
+                    self.assertEqual(exit_code, 0)
+
+    def test_cli_multi_scan_flag_and_max_limit(self) -> None:
+        """Verify passing multiple --scan flags and erroring when exceeding MAX_SCAN_FILES."""
+        sample_dir = os.path.join(REPO_ROOT, "testing", "sample-scans")
+        t_path = os.path.join(sample_dir, "tenable_monthly_scan.csv")
+        i_path = os.path.join(sample_dir, "aws_inspector_scan.csv")
+
+        # Passing two scans via CLI flags
+        argv = [
+            "grc transform",
+            "--scan", t_path,
+            "--scan", i_path,
+            "--no-previous",
+            "--draft-remediations", "n",
+            "--dry-run",
+        ]
+        with mock.patch("sys.argv", argv):
+            code = ts.main()
+            self.assertEqual(code, 0)
+
+        # Passing more than 5 scans should fail with exit code 1
+        argv_excess = [
+            "grc transform",
+            "--scan", "s1.csv",
+            "--scan", "s2.csv",
+            "--scan", "s3.csv",
+            "--scan", "s4.csv",
+            "--scan", "s5.csv",
+            "--scan", "s6.csv",
+        ]
+        with mock.patch("sys.argv", argv_excess):
+            code = ts.main()
+            self.assertEqual(code, 1)
 
 
 if __name__ == "__main__":

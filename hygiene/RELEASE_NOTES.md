@@ -18,7 +18,7 @@
 </p>
 
 > **Project**: GRCx — The GRC eXperience  
-> **Current release**: `v1.3.0 — Sasebo` (Restricted Beta / Integration Testing)  
+> **Current release**: `v1.3.2 — Sasebo` (Restricted Beta / Integration Testing)  
 > **Maintainer**: Byron Turner ([`@eodartintlabs-hue`](https://github.com/eodartintlabs-hue))  
 > This file records **shipped** changes only. Commit and author accountability is tracked in [`PATCH_LOG.md`](PATCH_LOG.md). Planned work lives in [`ROADMAP.md`](ROADMAP.md). Versioning, codenames, and the release procedure live in [`RELEASING.md`](RELEASING.md).
 
@@ -28,6 +28,7 @@
 
 | Version | Codename | Date | Type | Commit | Summary |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| [`v1.3.2`](#v132--sasebo) | Sasebo | 2026-10-31 | Bug fix | _Pending_ | Multi-scan POA&M transformation (up to 5 scans), finding consolidation, and tri-ledger patch logs (`BUG`, `MINOR`, `MAJOR`) |
 | [`v1.3.0`](#v130--sasebo) | Sasebo | 2026-10-29 | Minor | `3398d69` | `scans/` drop-in folder and file picker; POA&M engine data-integrity hardening; unit tests |
 | [`v1.2.0`](#v120--misawa) | Misawa | 2026-10-20 | Minor | `c510bc3` | Standalone Tenable / AWS Inspector scan-to-FedRAMP POA&M transformer |
 | [`v1.1.0`](#v110--kadena) | Kadena | 2026-10-20 | Minor | `b2eea63` | Rebrand to GRCx; `INSTALL.md` and `COMMANDS.md`; logo lockups |
@@ -38,6 +39,37 @@
 | [`v1.0.2`](#v102--yokosuka) | Yokosuka | 2026-10-18 | Docs | `3445ac6` | Docs reorganized into `amplifying-info/`, `testing/`, `hygiene/` |
 | [`v1.0.1`](#v101--yokosuka) | Yokosuka | 2026-10-18 | Docs | `d038e81` | Codename adoption, release tracking files, live demo runbook |
 | [`v1.0.0`](#v100--yokosuka) | Yokosuka | 2026-10-18 | Beta baseline | `9bc27c3` | Initial 5-phase bundle and AMI review pipeline |
+
+---
+
+## v1.3.2 — Sasebo
+
+**Bug fix** · October 31, 2026 · Tag `v1.3.2`
+
+### Multi-scan transformation & finding consolidation (up to 5 scans)
+
+- **Interactive multi-scan selection prompt**: Fixed the scan ingestion workflow in `scripts/transform_scans.py` (`./grc transform`) which previously allowed selecting only one scan file at a time. Each time a scan file is selected interactively, the app prompts:
+  ```text
+  [?] Would you like to add an additional scan file to also be transformed? [y/N]:
+  ```
+  Entering `y` allows analysts to select additional scan files (up to **5 scan files** total) from `scans/` without running separate sessions or manually merging Excel workbooks afterward.
+- **Finding consolidation (`merge_scan_entries`)**: Enforces 1 POA&M row per unique `(Vulnerability + Asset)` pair across all input scans:
+  - Preserves the earliest `Original Detection Date` across scans.
+  - Retains the highest risk rating (recomputing the FedRAMP SLA date accordingly).
+  - Merges asset identifiers, host aliases, network ports, and protocols.
+  - Aggregates all source scan filenames into the `Supporting Documents` column.
+- **Combined asset discovery**: Combines scanned hosts and alias maps across all scans prior to reconciliation, ensuring auto-closure verification recognizes assets scanned in any of the provided files.
+- **CLI multi-scan support**: Added multi-scan support for CLI flags (`--scan scan1.csv --scan scan2.csv` or comma-separated `--scan scan1.csv,scan2.csv`) and positional arguments, with strict validation capping input at 5 scans.
+- **Reporting & output updates**: Updated terminal SLA aging banners, `poam_transform_summary.md`, and default output directory names (`evidence/poam-<scan>-and-<N>-more`) to reflect all ingested scan sources.
+- **Unit test suite expansion**: Added tests in `testing/test_transform_scans.py` verifying multi-scan finding consolidation, deduplication invariants, SLA recalculation, CLI limit enforcement, and interactive simulated prompts (15 unit tests passing).
+
+### Tri-ledger patch architecture (`hygiene/PATCH_LOG_*.md`)
+
+- Partitioned the running release ledger into three dedicated category logs aligned with Semantic Versioning:
+  - [`hygiene/PATCH_LOG_BUG.md`](PATCH_LOG_BUG.md): Tracks patch-level bug fixes, operational adjustments, scanner flag updates, and hygiene patches (`vX.Y.Z` where `Z > 0`).
+  - [`hygiene/PATCH_LOG_MINOR.md`](PATCH_LOG_MINOR.md): Tracks backward-compatible minor feature releases introducing new engines, subcommands, or compliance frameworks (`vX.Y.0` where `Y > 0`).
+  - [`hygiene/PATCH_LOG_MAJOR.md`](PATCH_LOG_MAJOR.md): Tracks major foundational baselines and lifecycle milestones (`vX.0.0`).
+- [`hygiene/PATCH_LOG.md`](PATCH_LOG.md) serves as the master navigation hub and cross-series reference table.
 
 ---
 

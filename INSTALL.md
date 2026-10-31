@@ -56,11 +56,11 @@ git clone https://github.com/eodartintlabs-hue/grc-test-dummies.git GRC-Test-Dum
 ```
 
 ### Option B: Clone from a Portable `.bundle` File (Self-Hosted / Air-Gapped Transfer)
-If you received **GRCx** as a portable Git bundle file (e.g., `grcx-v1.3.0.bundle`), verify and clone directly from the file with zero network access:
+If you received **GRCx** as a portable Git bundle file (e.g., `grcx-v1.3.2.bundle`), verify and clone directly from the file with zero network access:
 
 ```bash
-git bundle verify grcx-v1.3.0.bundle
-git clone grcx-v1.3.0.bundle GRC-x
+git bundle verify grcx-v1.3.2.bundle
+git clone grcx-v1.3.2.bundle GRC-x
 ```
 
 ---
@@ -98,7 +98,7 @@ git clone grcx-v1.3.0.bundle GRC-x
 Drop your files into **`scans/`** and run `./grc transform` interactively (or pass just the filenames):
 
 ```bash
-# Interactive Drop-In Mode (lists files in scans/ by number or accepts filename):
+# Interactive Drop-In Mode (lists files in scans/ by number, prompts to add up to 5 scans):
 ./grc transform
 
 # Or One-Line CLI Mode (resolves filenames automatically from scans/):

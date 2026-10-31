@@ -31,7 +31,7 @@
         .--.          .--.          .--.
   ,p#G*""TG#Gp, ,p#G*""TG#Gp, ,p#G*""TG#Gp,                  eodartintlabs-hue/grcx
  {GGG'     `G# {GGG     `GGG {GGG'     `G#                   ----------------------
- @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   App: GRCx v1.3.0 (Sasebo)
+ @GGG          @GGG     ,GGG @GGG          ,p#Gp,   ,p#Gp,   App: GRCx v1.3.2 (Sasebo)
  'GGG   ,p#GG# @GGG#**#GGG"  'GGG           `GGG, ,GGG'      OS: Darwin ARM64 / Linux Bookworm
   GGG   ""`GGG @GGG   `GGG,   GGG             `GGGGG'        Model: Out-of-Band (OOB) / Fail-Open
  ]GGG#     GGG @GGG    ]GGG  ]GGG#     ,G#    ,GGGGG,        Isolation: Air-Gapped (--network none, :ro)
@@ -46,7 +46,7 @@
 ```
 
 > **Classification**: Internal DevSecOps & Security Compliance Specification  
-> **Release Stage**: `v1.3.0 — Sasebo` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
+> **Release Stage**: `v1.3.2 — Sasebo` (**Restricted Beta — Integration Testing Access Only**) · *Full GA Release (`v2.0.0 — Pearl Harbor`) transitions to the **Hawaiian Military Base Cities** series (see [Roadmap](hygiene/ROADMAP.md))*  
 > **Target Frameworks**: DISA STIG, NIST SP 800-53 Rev. 5, FedRAMP High, DoD Cloud Computing SRG, OWASP Top 10  
 > **Operational Model**: Out-of-Band (OOB), Fail-Open, Zero Untrusted Execution, Ephemeral Hygiene  
 > **Companion Test Corpus**: [`grc-test-dummies`](https://github.com/eodartintlabs-hue/grc-test-dummies)  
@@ -280,7 +280,7 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 * 📘 **[Negative Testing & Scanner Verification Help Guide (`docs/test-dummies-guide.md`)](docs/test-dummies-guide.md)** — Master cheat sheet with copy-pasteable commands for every AOC, batch test runner loop, `jq` inspection one-liners, and troubleshooting FAQ.
 * 📋 **[End-to-End Verification Test Plan (`testing/TESTING.md`)](testing/TESTING.md)** — Formal test strategy, pre-flight checklist, tamper-rejection gate tests, and deliverable acceptance criteria.
 * 🎬 **[Live Demo Presentation Runbook (`testing/live-demo.md`)](testing/live-demo.md)** — Step-by-step live demo script covering AOC-09, AOC-10, and AOC-04.
-* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)**, **[v1 Patch Ledger (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)**, **[Product Roadmap (`hygiene/ROADMAP.md`)](hygiene/ROADMAP.md)** & **[Releasing Guide (`hygiene/RELEASING.md`)](hygiene/RELEASING.md)** — Version history, `Yokosuka`, `Kadena`, `Misawa` & `Sasebo` release notes, commit/author accountability ledger, release procedure, and the upcoming **`v2.0.0 — Pearl Harbor`** GA roadmap.
+* 🚀 **[Release Notes (`hygiene/RELEASE_NOTES.md`)](hygiene/RELEASE_NOTES.md)**, **[Patch Log Hub (`hygiene/PATCH_LOG.md`)](hygiene/PATCH_LOG.md)** ([`Bug Fixes`](hygiene/PATCH_LOG_BUG.md) · [`Minor Releases`](hygiene/PATCH_LOG_MINOR.md) · [`Major Baselines`](hygiene/PATCH_LOG_MAJOR.md)), **[Product Roadmap (`hygiene/ROADMAP.md`)](hygiene/ROADMAP.md)** & **[Releasing Guide (`hygiene/RELEASING.md`)](hygiene/RELEASING.md)** — Version history, `Yokosuka`, `Kadena`, `Misawa` & `Sasebo` release notes, commit/author accountability ledgers, release procedure, and the upcoming **`v2.0.0 — Pearl Harbor`** GA roadmap.
 
 ---
 
@@ -290,7 +290,8 @@ In high-assurance compliance automation, a scanner that outputs zero findings is
 | :--- | :--- | :--- |
 | **`v1.1.0 — Kadena`** *(Completed)* | 🇯🇵 Japan *(Beta)* | **Platform Rebrand to `GRCx` ("The GRC eXperience")**: Full repository rebrand to `GRCx`, dedicated [`INSTALL.md`](INSTALL.md) and [`COMMANDS.md`](COMMANDS.md) onboarding guides, theme-adaptive Light/Dark seagull-escaping-square brand lockups (`assets/logo/`), and updated `grcfetch` CLI banner. |
 | **`v1.2.0 — Misawa`** *(Completed)* | 🇯🇵 Japan *(Beta)* | **Standalone Tenable & AWS Inspector Scan-to-POA&M Transformer (`scripts/transform_scans.py` / `./grc transform`)**: Ingests Tenable and AWS Inspector `.csv`/`.xlsx` scans into the official **OPEN** & **CLOSED** FedRAMP POA&M `.xlsx` templates, reconciles Open $\rightarrow$ Closed transitions against previous POA&Ms, drafts missing remediation plans with official Tenable/AWS URLs, and reports passed SLA counts and finding age in days. |
-| **`v1.3.0 — Sasebo`** *(Active)* | 🇯🇵 Japan *(Beta)* | **Designated `scans/` Drop-In Folder & Universal Workstation Portability**: Eliminates path copy-pasting via the root `scans/` drop-in folder with interactive numbered file selection (`[1]`, `[2]`) and extensionless filename resolution in `transform_scans.py`, paired with cross-OS workstation ergonomics across macOS (`arm64`/`amd64`), Linux, and Windows. |
+| **`v1.3.0 — Sasebo`** *(Completed)* | 🇯🇵 Japan *(Beta)* | **Designated `scans/` Drop-In Folder & Universal Workstation Portability**: Eliminates path copy-pasting via the root `scans/` drop-in folder with interactive numbered file selection (`[1]`, `[2]`) and extensionless filename resolution in `transform_scans.py`, paired with cross-OS workstation ergonomics across macOS (`arm64`/`amd64`), Linux, and Windows. |
+| **`v1.3.2 — Sasebo`** *(Active)* | 🇯🇵 Japan *(Beta)* | **Multi-Scan Ingestion, Finding Consolidation & Tri-Ledger Patch Architecture**: Extends `transform_scans.py` (`./grc transform`) to ingest up to 5 Tenable and AWS Inspector scans simultaneously into the same FedRAMP POA&M workbook with interactive addition prompts (`[y/N]`), consolidating findings into 1 row per unique vulnerability + asset pair, preserving earliest detection dates, and recalculating SLA dates; partitions patch log into dedicated `BUG`, `MINOR`, and `MAJOR` ledgers. |
 | **`v2.0.0 — Pearl Harbor`** | 🌺 Hawaii *(GA Launch)* | **Full Production GA Launch & Helm Chart Auditing**: Graduates `GRCx` to General Availability and introduces **Helm chart compliance auditing (`./grc scan --engine helm`)** with offline template rendering and DISA K8s STIG / NSA-CISA checks. |
 | **`v2.1.0+ — Kaneohe`** | 🌺 Hawaii *(Post-GA)* | **Cloud Enclave Lift, Local LLM Baseline & RAM-Adaptive Scaling, and OSCAL**: Lifts execution from local workstations to **AWS EC2** and **AWS Bottlerocket** container hosts, integrates the air-gapped **Gemma / GPT-OSS** synthesis baseline alongside a dynamic endpoint RAM profiler (`8GB` to `64GB+`), and adds NIST OSCAL 1.1.x export. |
 
@@ -328,8 +329,11 @@ grcx/
 │
 ├── hygiene/                          # Release engineering, versioning, patch tracking & product roadmap
 │   ├── RELEASE_NOTES.md              # Narrative release notes and summary table (Yokosuka, Kadena, Misawa, Sasebo)
-│   ├── PATCH_LOG.md                  # Running commit, file-scope, and Author/POC accountability ledger
-│   ├── ROADMAP.md                    # v1.3.1 Sasebo & v2.x Pearl Harbor / Kaneohe / Wahiawa product roadmap
+│   ├── PATCH_LOG.md                  # Master patch log hub & cross-series reference table
+│   ├── PATCH_LOG_BUG.md              # Patch ledger for bug fixes, rule/catalog tuning & hygiene patches
+│   ├── PATCH_LOG_MINOR.md            # Patch ledger for minor capability releases (engines, subcommands)
+│   ├── PATCH_LOG_MAJOR.md            # Patch ledger for major lifecycle milestones & GA baselines
+│   ├── ROADMAP.md                    # v1.3.x Sasebo & v2.x Pearl Harbor / Kaneohe / Wahiawa product roadmap
 │   └── RELEASING.md                  # Semantic Versioning rules, codenames, and step-by-step release procedure
 │
 ├── docker/                           # Containerized scanning suite (100% local, $0 cloud cost)

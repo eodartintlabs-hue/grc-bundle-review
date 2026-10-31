@@ -19,7 +19,7 @@
 </p>
 
 > **Engine**: [`scripts/transform_scans.py`](../scripts/transform_scans.py) · **CLI Command**: `./grc transform`  
-> **Release Series**: `v1.3.0 — Sasebo` *(Introduced in `v1.2.0 — Misawa`, enhanced with `scans/` drop-in folder in `v1.3.0 — Sasebo`)*  
+> **Release Series**: `v1.3.2 — Sasebo` *(Introduced in `v1.2.0 — Misawa`, enhanced with `scans/` drop-in folder in `v1.3.0 — Sasebo`, multi-scan ingestion in `v1.3.2 — Sasebo`)*  
 > **Execution Mode**: **100% Standalone** *(Requires only Python 3.9+ Standard Library — no Docker container, no `.bundle` file, and no `pip install` needed)*
 
 ---
@@ -97,7 +97,7 @@ Drop your scan export (`.csv` or `.xlsx`) and previous OPEN POA&M (`.xlsx`) into
 ./grc transform
 ```
 
-1. **Scan File Selection Prompt (Numbered List or Filename in `scans/`)**:
+1. **Scan File Selection Prompt (Numbered List, Filename in `scans/`, Multi-Scan Support up to 5 Scans)**:
    ```text
    === GRCx Standalone FedRAMP POA&M Scan Transformer ===
      [*] Scan / Workbook files (.csv, .xlsx) detected in 'scans/':
@@ -105,8 +105,20 @@ Drop your scan export (`.csv` or `.xlsx`) and previous OPEN POA&M (`.xlsx`) into
          [2] previous_open_poam.xlsx
          [3] tenable_monthly_scan.csv
    [?] Select scan file by number [1-3] or enter filename in scans/ (.csv/.xlsx): 3
+   [+] Added scan [1/5]: tenable_monthly_scan.csv
+
+   [?] Would you like to add an additional scan file to also be transformed? [y/N]: y
+     [*] Additional scan files (.csv, .xlsx) [Scan 2/5] detected in 'scans/':
+         [1] aws_inspector_scan.csv
+         [2] previous_open_poam.xlsx
+   [?] Select additional scan file #2 by number [1-2] or enter filename in scans/ (.csv/.xlsx): 1
+   [+] Added scan [2/5]: aws_inspector_scan.csv
+
+   [?] Would you like to add an additional scan file to also be transformed? [y/N]: n
    ```
-   * Type **`3`** (or type `tenable_monthly_scan` / `tenable_monthly_scan.csv`).
+   * Select your first scan by number (e.g., `3` for `tenable_monthly_scan.csv`).
+   * Each time a scan is selected, GRCx prompts: `Would you like to add an additional scan file to also be transformed? [y/N]:`.
+   * Type **`y`** to ingest up to **5 scan files** simultaneously into the same POA&M tracker without running separate sessions, or press **Enter** / type **`n`** when finished.
 2. **Previous POA&M Selection Prompt**:
    ```text
      [*] Previous POA&M workbooks (.xlsx) detected in 'scans/':
@@ -123,14 +135,15 @@ Drop your scan export (`.csv` or `.xlsx`) and previous OPEN POA&M (`.xlsx`) into
    * Enter **`y`** to automatically populate `Column K` with a structured remediation action and direct URL links to Tenable's plugin database (`https://www.tenable.com/plugins/nessus/<Plugin_ID>`), AWS ALAS advisories (`https://explore.alas.aws.amazon.com/<ALAS_ID>.html`), AWS Inspector documentation, and NVD CVE records.
 
 #### Option B: Non-Interactive / One-Line CLI Mode
-Pass filenames in `scans/` (with or without extensions, or full paths) directly on the command line for repeatable or scripted execution:
+Pass filenames in `scans/` (with or without extensions, or full paths) directly on the command line for repeatable or scripted execution. Pass multiple `--scan` flags (or positional arguments) to combine up to **5 scans** at one time:
 
 ```bash
 ./grc transform \
   --scan tenable_monthly_scan.csv \
+  --scan aws_inspector_scan.csv \
   --previous-open previous_open_poam.xlsx \
   --draft-remediations y \
-  --output-dir ./evidence/poam-tenable-oct
+  --output-dir ./evidence/poam-consolidated-oct
 ```
 
 For an initial baseline with no previous POA&M file, pass `--no-previous`:
@@ -183,7 +196,7 @@ Try running the bundled sample Tenable reconciliation right now:
 [+] Drafted 5 Remediation Plans with official TENABLE remediation URLs.
 
 ================================================================================================
-  GRCx (v1.3.0 — Sasebo) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT
+  GRCx (v1.3.2 — Sasebo) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT
 ================================================================================================
   Analysis Reference Date : 2026-10-20
   Finished OPEN POA&M     : evidence/poam-tenable_monthly_scan/OPEN FedRAMP-POAM.xlsx

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GRCx (The GRC eXperience) — Standalone Scan-to-POA&M Transformation Engine
-Engine: scripts/transform_scans.py (v1.3.0 — Sasebo) [LEGACY match mode build]
+Engine: scripts/transform_scans.py (v1.3.2 — Sasebo) [LEGACY match mode build]
 
 Purpose:
   Standalone Continuous Monitoring (ConMon) engine for GRC analysts.
@@ -57,6 +57,7 @@ DEFAULT_KEV_CATALOG = os.path.join(REPO_ROOT, "rules", "cisa_kev_catalog.json")
 
 SCAN_EXTENSIONS = (".csv", ".xlsx", ".xlsm")
 POAM_EXTENSIONS = (".xlsx", ".xlsm")
+MAX_SCAN_FILES = 5
 
 EXCEL_EPOCH = datetime.date(1899, 12, 30)
 EXCEL_MAX_CELL_CHARS = 32767
@@ -944,6 +945,100 @@ def normalize_scan_rows(
     return list(grouped.values())
 
 
+def merge_scan_entries(entry_lists: List[List[Dict[str, object]]]) -> List[Dict[str, object]]:
+    """
+    Combine normalized POA&M findings across up to 5 scan files.
+    Enforces 1 POA&M row per unique (Vulnerability + Asset) combination,
+    preserving earliest detection dates, highest risk ratings, and aggregating
+    asset identifiers, aliases, and supporting document filenames.
+    """
+    if not entry_lists:
+        return []
+    if len(entry_lists) == 1:
+        return entry_lists[0]
+
+    grouped: Dict[Tuple[str, str], Dict[str, object]] = {}
+
+    for entries in entry_lists:
+        for entry in entries:
+            dedup_key = entry.get("_dedup_key")
+            if not dedup_key:
+                continue
+
+            if dedup_key not in grouped:
+                item = dict(entry)
+                item["_asset_aliases"] = set(entry.get("_asset_aliases", set()))
+                grouped[dedup_key] = item
+            else:
+                existing = grouped[dedup_key]
+
+                # Merge asset_identifier (different port, protocol, or display format)
+                curr_asset = str(existing.get("asset_identifier", ""))
+                new_asset = str(entry.get("asset_identifier", ""))
+                if new_asset and new_asset not in curr_asset.split("\n"):
+                    existing["asset_identifier"] = f"{curr_asset}\n{new_asset}" if curr_asset else new_asset
+
+                # Merge asset aliases
+                existing_aliases: Set[str] = set(existing.get("_asset_aliases", set()))
+                existing_aliases.update(entry.get("_asset_aliases", set()))
+                existing["_asset_aliases"] = existing_aliases
+
+                # Merge supporting documents (scan filenames)
+                curr_supp = str(existing.get("supporting_documents", ""))
+                new_supp = str(entry.get("supporting_documents", ""))
+                if new_supp:
+                    existing_parts = [p.strip() for p in curr_supp.split(",") if p.strip()]
+                    for np in [p.strip() for p in new_supp.split(",") if p.strip()]:
+                        if np not in existing_parts:
+                            existing_parts.append(np)
+                    existing["supporting_documents"] = ", ".join(existing_parts)
+
+                # Keep earliest detection date
+                det_date = entry.get("_det_date_obj")
+                needs_sla_recalc = False
+                if det_date and (not existing.get("_det_date_obj") or det_date < existing["_det_date_obj"]):
+                    existing["_det_date_obj"] = det_date
+                    existing["original_detection_date"] = format_date_iso(det_date)
+                    needs_sla_recalc = True
+
+                # Keep highest severity
+                new_risk = str(entry.get("original_risk_rating", ""))
+                curr_risk = str(existing.get("original_risk_rating", ""))
+                if RISK_ORDER.get(new_risk, 99) < RISK_ORDER.get(curr_risk, 99):
+                    existing["original_risk_rating"] = new_risk
+                    needs_sla_recalc = True
+
+                # Recalculate SLA date if detection date or risk changed
+                if needs_sla_recalc and existing.get("_det_date_obj"):
+                    new_sla = compute_sla_date(existing["_det_date_obj"], str(existing["original_risk_rating"]))
+                    existing["_sla_date_obj"] = new_sla
+                    existing["scheduled_completion_date"] = format_date_iso(new_sla)
+
+                # Merge remediation info if existing was blank
+                if not str(existing.get("remediation_plan", "")).strip() and str(entry.get("remediation_plan", "")).strip():
+                    existing["remediation_plan"] = entry["remediation_plan"]
+                if not str(existing.get("_raw_solution", "")).strip() and str(entry.get("_raw_solution", "")).strip():
+                    existing["_raw_solution"] = entry["_raw_solution"]
+                if not str(existing.get("_see_also", "")).strip() and str(entry.get("_see_also", "")).strip():
+                    existing["_see_also"] = entry["_see_also"]
+
+                # Merge CVEs
+                cve_existing = set(c.strip() for c in str(existing.get("cve", "")).split(",") if c.strip())
+                cve_new = set(c.strip() for c in str(entry.get("cve", "")).split(",") if c.strip())
+                merged_cves = sorted(cve_existing.union(cve_new))
+                if merged_cves:
+                    existing["cve"] = ", ".join(merged_cves)
+
+                # Merge BOD 22-01 status
+                if str(entry.get("bod_22_01_tracking", "")).strip().lower() == "yes":
+                    existing["bod_22_01_tracking"] = "Yes"
+                    if entry.get("bod_22_01_due_date"):
+                        if not existing.get("bod_22_01_due_date") or entry["bod_22_01_due_date"] < existing["bod_22_01_due_date"]:
+                            existing["bod_22_01_due_date"] = entry["bod_22_01_due_date"]
+
+    return list(grouped.values())
+
+
 # ---------------------------------------------------------------------------
 # Reading Previous OPEN & CLOSED FedRAMP POA&M Workbooks
 # ---------------------------------------------------------------------------
@@ -1787,6 +1882,7 @@ def analyze_and_report_sla(
     closed_out_path: str,
     summary_md_path: Optional[str] = None,
     dry_run: bool = False,
+    source_scan_paths: Optional[List[str]] = None,
 ) -> Dict[str, object]:
     """
     Calculate finding age (days from Original Detection Date) and SLA breach status
@@ -1819,9 +1915,12 @@ def analyze_and_report_sla(
 
     mode_banner = " [DRY-RUN PREVIEW — NO FILES WRITTEN]" if dry_run else ""
     print("\n" + "=" * 96)
-    print(f"  GRCx (v1.3.0 — Sasebo) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT{mode_banner}")
+    print(f"  GRCx (v1.3.2 — Sasebo) · FEDRAMP POA&M TRANSFORMATION & SLA AGING REPORT{mode_banner}")
     print("=" * 96)
     print(f"  Analysis Reference Date : {format_date_iso(today)}")
+    if source_scan_paths:
+        scan_display = ", ".join(os.path.basename(p) for p in source_scan_paths)
+        print(f"  Source Scan File(s)     : {scan_display} ({len(source_scan_paths)} file{'s' if len(source_scan_paths) > 1 else ''})")
     print(f"  Finished OPEN POA&M     : {open_out_path}{' (dry-run)' if dry_run else ''}")
     print(f"  Finished CLOSED POA&M   : {closed_out_path}{' (dry-run)' if dry_run else ''}")
     print("-" * 96)
@@ -1874,6 +1973,11 @@ def analyze_and_report_sla(
             "# GRCx FedRAMP POA&M Scan Transformation & SLA Aging Report",
             "",
             f"- **Transformation Date**: `{format_date_iso(today)}`",
+        ]
+        if source_scan_paths:
+            scans_formatted = ", ".join(f"`{os.path.basename(p)}`" for p in source_scan_paths)
+            lines.append(f"- **Source Scan File(s)**: {scans_formatted} ({len(source_scan_paths)} file{'s' if len(source_scan_paths) > 1 else ''})")
+        lines.extend([
             f"- **Generated OPEN FedRAMP POA&M**: `{os.path.basename(open_out_path)}`",
             f"- **Generated CLOSED FedRAMP POA&M**: `{os.path.basename(closed_out_path)}`",
             f"- **Total Active OPEN Entries**: **{len(open_entries)}** (*{stats['carry_over_open']} Carried Over, {stats['new_open']} Newly Detected*)",
@@ -1885,7 +1989,7 @@ def analyze_and_report_sla(
             "",
             "| POAM ID | Weakness Name | Asset Identifier | Risk | Original Detection Date | Age (Days Old) | Scheduled Completion Date (SLA) | SLA Status |",
             "| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |",
-        ]
+        ])
         for e in sorted_open:
             age_d = int(e.get("_age_days", 0))
             past_d = int(e.get("_days_past_sla", 0))
@@ -2083,14 +2187,17 @@ def main() -> int:
     )
     parser.add_argument(
         "scan_pos",
-        nargs="?",
-        default=None,
+        nargs="*",
+        default=[],
         metavar="SCAN_FILE",
-        help="Optional scan filename in scans/ (e.g. 'tenable_scan.csv' or 'tenable_scan') or path.",
+        help="Optional scan filename(s) in scans/ (up to 5 scans, e.g. 'tenable_scan.csv' or 'scan1.csv scan2.csv') or path.",
     )
     parser.add_argument(
         "--scan", "-s",
-        help="Scan filename in scans/ (or path to Tenable / AWS Inspector .csv or .xlsx file).",
+        action="append",
+        dest="scans",
+        default=[],
+        help="Scan filename in scans/ (or path to Tenable / AWS Inspector .csv or .xlsx file). May be passed multiple times (up to 5 scans) or as comma-separated filenames.",
     )
     parser.add_argument(
         "--scans-dir",
@@ -2205,51 +2312,115 @@ def main() -> int:
     if not today:
         today = datetime.date.today()
 
-    # 1. Resolve Scan Input Path (from CLI argument or interactive prompt in scans/)
-    raw_scan_arg = args.scan or args.scan_pos
-    scan_path: Optional[str] = None
+    # 1. Resolve Scan Input Paths (from CLI argument or interactive prompt in scans/)
+    raw_scan_args: List[str] = []
+    if args.scans:
+        for s in args.scans:
+            for part in s.split(","):
+                part_clean = part.strip()
+                if part_clean:
+                    raw_scan_args.append(part_clean)
+    if args.scan_pos:
+        for p in args.scan_pos:
+            for part in p.split(","):
+                part_clean = part.strip()
+                if part_clean:
+                    raw_scan_args.append(part_clean)
 
-    if raw_scan_arg:
-        scan_path = resolve_input_file(
-            raw_scan_arg,
-            scans_dir=scans_dir,
-            extensions=SCAN_EXTENSIONS,
-            fallback_dirs=fallback_dirs,
-        )
-        if not scan_path:
-            avail = [os.path.basename(p) for p in list_eligible_files(scans_dir, SCAN_EXTENSIONS)]
-            avail_hint = f" Available in scans/: {', '.join(avail)}" if avail else " Drop your file into the 'scans/' folder and pass just its filename."
-            print(f"[ERROR] Scan file not found: '{raw_scan_arg}' (searched ./scans/ and direct path).{avail_hint}", file=sys.stderr)
+    scan_paths: List[str] = []
+
+    if raw_scan_args:
+        if len(raw_scan_args) > MAX_SCAN_FILES:
+            print(
+                f"[ERROR] At most {MAX_SCAN_FILES} scan files can be transformed at one time (received {len(raw_scan_args)}).",
+                file=sys.stderr,
+            )
             return 1
+        for raw_arg in raw_scan_args:
+            resolved = resolve_input_file(
+                raw_arg,
+                scans_dir=scans_dir,
+                extensions=SCAN_EXTENSIONS,
+                fallback_dirs=fallback_dirs,
+            )
+            if not resolved:
+                avail = [os.path.basename(p) for p in list_eligible_files(scans_dir, SCAN_EXTENSIONS)]
+                avail_hint = f" Available in scans/: {', '.join(avail)}" if avail else " Drop your file into the 'scans/' folder and pass just its filename."
+                print(f"[ERROR] Scan file not found: '{raw_arg}' (searched ./scans/ and direct path).{avail_hint}", file=sys.stderr)
+                return 1
+            if resolved not in scan_paths:
+                scan_paths.append(resolved)
     else:
         if sys.stdin.isatty():
             print("\n=== GRCx Standalone FedRAMP POA&M Scan Transformer ===")
-            choices = display_detected_files(
-                scans_dir=scans_dir,
-                extensions=SCAN_EXTENSIONS,
-                label="Scan / Workbook files (.csv, .xlsx)",
-            )
-            prompt_msg = (
-                f"[?] Select scan file by number [1-{len(choices)}] or enter filename in scans/ (.csv/.xlsx): "
-                if choices
-                else "[?] Enter scan filename in scans/ (with or without .csv/.xlsx extension): "
-            )
-            user_scan = input(prompt_msg).strip()
-            if user_scan:
-                # Re-scan scans_dir dynamically in case the user dropped a file while at the prompt
-                live_choices = choices or list_eligible_files(scans_dir, SCAN_EXTENSIONS)
-                scan_path = resolve_input_file(
+            while len(scan_paths) < MAX_SCAN_FILES:
+                scan_idx = len(scan_paths) + 1
+                label = (
+                    "Scan / Workbook files (.csv, .xlsx)"
+                    if scan_idx == 1
+                    else f"Additional scan files (.csv, .xlsx) [Scan {scan_idx}/{MAX_SCAN_FILES}]"
+                )
+                choices = display_detected_files(
+                    scans_dir=scans_dir,
+                    extensions=SCAN_EXTENSIONS,
+                    label=label,
+                    exclude_paths=scan_paths,
+                )
+                if scan_idx == 1:
+                    prompt_msg = (
+                        f"[?] Select scan file by number [1-{len(choices)}] or enter filename in scans/ (.csv/.xlsx): "
+                        if choices
+                        else "[?] Enter scan filename in scans/ (with or without .csv/.xlsx extension): "
+                    )
+                else:
+                    prompt_msg = (
+                        f"[?] Select additional scan file #{scan_idx} by number [1-{len(choices)}] or enter filename in scans/ (.csv/.xlsx): "
+                        if choices
+                        else f"[?] Enter additional scan file #{scan_idx} filename in scans/ (with or without .csv/.xlsx extension): "
+                    )
+
+                user_scan = input(prompt_msg).strip()
+                if not user_scan:
+                    if scan_paths:
+                        break
+                    print("[ERROR] A scan file (.csv or .xlsx) is required.", file=sys.stderr)
+                    return 1
+
+                if user_scan.lower() in ("cancel", "done", "skip", "n", "no") and scan_paths:
+                    break
+
+                live_choices = choices or list_eligible_files(scans_dir, SCAN_EXTENSIONS, exclude_paths=scan_paths)
+                resolved = resolve_input_file(
                     user_scan,
                     scans_dir=scans_dir,
                     extensions=SCAN_EXTENSIONS,
                     numbered_choices=live_choices,
                     fallback_dirs=fallback_dirs,
                 )
-                if not scan_path:
+                if not resolved:
                     print(f"[ERROR] Scan file not found in scans/: '{user_scan}'", file=sys.stderr)
                     return 1
-        if not scan_path:
-            parser.error("A scan file (.csv or .xlsx) is required. Drop it in 'scans/' and pass --scan <filename> or run interactively.")
+
+                if resolved in scan_paths:
+                    print(f"[!] Scan file '{os.path.basename(resolved)}' is already selected.")
+                else:
+                    scan_paths.append(resolved)
+                    print(f"[+] Added scan file [{len(scan_paths)}/{MAX_SCAN_FILES}]: {os.path.basename(resolved)}")
+
+                if len(scan_paths) >= MAX_SCAN_FILES:
+                    print(f"\n[*] Maximum of {MAX_SCAN_FILES} scan files reached.")
+                    break
+
+                # Ask the user if they'd like to add an additional scan file
+                add_more = input("\n[?] Would you like to add an additional scan file to also be transformed? [y/N]: ").strip().lower()
+                if not add_more.startswith("y"):
+                    break
+
+    if not scan_paths:
+        parser.error(
+            f"A scan file (.csv or .xlsx) is required (up to {MAX_SCAN_FILES} scans supported). "
+            "Drop it in 'scans/' and pass --scan <filename> or run interactively."
+        )
 
     # 2. Request Previously Filled-Out OPEN FedRAMP POA&M Form (if not provided via flag)
     prev_open_path = ""
@@ -2271,7 +2442,7 @@ def main() -> int:
             scans_dir=scans_dir,
             extensions=POAM_EXTENSIONS,
             label="Previous POA&M workbooks (.xlsx)",
-            exclude_paths=[scan_path],
+            exclude_paths=scan_paths,
         )
         prev_prompt = (
             f"[?] Select previous OPEN FedRAMP POA&M by number [1-{len(poam_choices)}], enter filename in scans/,\n"
@@ -2282,7 +2453,7 @@ def main() -> int:
         )
         user_prev = input(prev_prompt).strip()
         if user_prev and user_prev.lower() not in ("none", "null", "false", "-"):
-            live_poam_choices = poam_choices or list_eligible_files(scans_dir, POAM_EXTENSIONS, exclude_paths=[scan_path])
+            live_poam_choices = poam_choices or list_eligible_files(scans_dir, POAM_EXTENSIONS, exclude_paths=scan_paths)
             resolved_prev = resolve_input_file(
                 user_prev,
                 scans_dir=scans_dir,
@@ -2310,24 +2481,46 @@ def main() -> int:
         prev_closed_path = resolved_closed
 
     # 3. Load and Normalize Scan Findings
-    records = load_scan_records(scan_path)
-    scanner_type = detect_scanner_type(records, None if args.scanner == "auto" else args.scanner)
-    scanned_assets, asset_alias_map = collect_scanned_assets(records)
+    per_file_entries: List[List[Dict[str, object]]] = []
+    all_scanned_assets: Set[str] = set()
+    all_asset_alias_map: Dict[str, Set[str]] = {}
+    detected_scanner_types: Set[str] = set()
+    total_raw_rows = 0
     kev_catalog = load_cisa_kev_catalog(args.kev_catalog)
-    print(
-        f"[*] Loaded {len(records)} scan rows from '{os.path.basename(scan_path)}' "
-        f"(Detected source: {scanner_type.upper()}, Scanned host identifiers: {len(scanned_assets)})"
-    )
 
-    scan_entries = normalize_scan_rows(
-        records=records,
-        scanner_type=scanner_type,
-        scan_filename=os.path.basename(scan_path),
-        today=today,
-        default_poc=args.poc,
-        kev_catalog=kev_catalog,
-        strict_fedramp_risk=args.strict_fedramp_risk,
-    )
+    print(f"\n[*] Ingesting findings from {len(scan_paths)} scan file(s)...")
+    for idx, spath in enumerate(scan_paths, start=1):
+        records = load_scan_records(spath)
+        total_raw_rows += len(records)
+        stype = detect_scanner_type(records, None if args.scanner == "auto" else args.scanner)
+        detected_scanner_types.add(stype)
+        scanned_assets, asset_alias_map = collect_scanned_assets(records)
+        all_scanned_assets.update(scanned_assets)
+        for k, v in asset_alias_map.items():
+            all_asset_alias_map.setdefault(k, set()).update(v)
+
+        print(
+            f"  [{idx}/{len(scan_paths)}] '{os.path.basename(spath)}': {len(records)} rows "
+            f"(Source: {stype.upper()}, Scanned host identifiers: {len(scanned_assets)})"
+        )
+
+        entries = normalize_scan_rows(
+            records=records,
+            scanner_type=stype,
+            scan_filename=os.path.basename(spath),
+            today=today,
+            default_poc=args.poc,
+            kev_catalog=kev_catalog,
+            strict_fedramp_risk=args.strict_fedramp_risk,
+        )
+        per_file_entries.append(entries)
+
+    scan_entries = merge_scan_entries(per_file_entries)
+    if len(scan_paths) > 1:
+        print(
+            f"[*] Consolidated into {len(scan_entries)} unique vulnerability + asset findings "
+            f"across {len(scan_paths)} scan files (Total scanned host identifiers: {len(all_scanned_assets)})"
+        )
 
     # Unless --include-scanner-solutions is explicitly passed, treat new scan entries without
     # an analyst-approved POA&M remediation plan (or with missing remediation URLs) as needing
@@ -2362,8 +2555,8 @@ def main() -> int:
         new_scan_entries=scan_entries,
         today=today,
         prev_closed_entries=prev_closed_entries,
-        scanned_assets=scanned_assets,
-        asset_alias_map=asset_alias_map,
+        scanned_assets=all_scanned_assets,
+        asset_alias_map=all_asset_alias_map,
         close_unscanned_hosts=args.close_unscanned_hosts,
     )
     all_closed = prev_closed_entries + newly_closed
@@ -2393,13 +2586,20 @@ def main() -> int:
         if choice == "y":
             for e in missing_remediation_entries:
                 e["remediation_plan"] = build_remediation_plan_with_urls(e)
-            print(f"[+] Drafted {len(missing_remediation_entries)} Remediation Plans with official {scanner_type.upper()} remediation URLs.")
+            stypes_str = "/".join(sorted(s.upper() for s in detected_scanner_types))
+            print(f"[+] Drafted {len(missing_remediation_entries)} Remediation Plans with official {stypes_str} remediation URLs.")
         else:
             print(f"[*] Left {len(missing_remediation_entries)} missing Remediation Plans blank per user selection.")
 
     # 6. Write Finished OPEN and CLOSED FedRAMP POA&M Workbooks (skipped in --dry-run mode)
-    scan_stem = os.path.splitext(os.path.basename(scan_path))[0]
-    out_dir = args.output_dir or os.path.join(REPO_ROOT, "evidence", f"poam-{scan_stem}")
+    if len(scan_paths) == 1:
+        scan_stem = os.path.splitext(os.path.basename(scan_paths[0]))[0]
+        default_out = f"poam-{scan_stem}"
+    else:
+        first_stem = os.path.splitext(os.path.basename(scan_paths[0]))[0]
+        default_out = f"poam-{first_stem}-and-{len(scan_paths)-1}-more"
+
+    out_dir = args.output_dir or os.path.join(REPO_ROOT, "evidence", default_out)
 
     open_out_path = os.path.join(out_dir, "OPEN FedRAMP-POAM.xlsx")
     closed_out_path = os.path.join(out_dir, "CLOSED FedRAMP-POAM.xlsx")
@@ -2433,6 +2633,7 @@ def main() -> int:
         closed_out_path=closed_out_path,
         summary_md_path=summary_md_path,
         dry_run=args.dry_run,
+        source_scan_paths=scan_paths,
     )
 
     return 0
